@@ -1,5 +1,6 @@
 module Components.Index where
 
+import Components.AppBar (indexAppBar)
 import WithRoot (withRoot)
 
 import Prelude
@@ -12,5 +13,6 @@ import MaterialUI.Enums (title)
 
 index :: ReactElement
 index = withRoot $ toElement
-  [ typography {gutterBottom: true, variant: title} [text "Just a Test"]
+  [ indexAppBar
+  , typography {gutterBottom: true, variant: title} [text "Just a Test"]
   ]
