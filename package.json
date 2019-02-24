@@ -1,0 +1,33 @@
+{
+  "name": "openchronology.github.io",
+  "version": "0.0.0",
+  "description": "Timeline Editor",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "pulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/openchronology/openchronology.github.io.git"
+  },
+  "keywords": [
+    "timeline",
+    "react",
+    "webapp",
+    "material-ui"
+  ],
+  "author": "Athan Clark <athan.clark@gmail.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/openchronology/openchronology.github.io/issues"
+  },
+  "homepage": "https://github.com/openchronology/openchronology.github.io#readme",
+  "dependencies": {
+    "@material-ui/core": "^3.9.2",
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3"
+  }
+}
