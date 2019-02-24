@@ -11,9 +11,9 @@ OUTPUT=./index.html
 pulp build && \
     purs bundle output/**/*.js -m Main --main Main > $JSTMP && \
     echo "Bundled" && \
-    ./node_modules/.bin/browserify $JSTMP > $JS && \
+    ./node_modules/.bin/browserify $JSTMP -o $JS -t [ babelify --presets [ @babel/preset-env ] --plugins [ @babel/plugin-proposal-class-properties ] ] && \
     rm $JSTMP && \
     ./node_modules/.bin/browserify $JS -g [ envify --NODE_ENV production ] -g uglifyify | ./node_modules/.bin/uglifyjs --compress --mangle > $JSMIN && \
     echo "Browserified" && \
-    ltext "$TEMPLATE $JSMIN" --raw $JSMIN && \
+    ltext "$TEMPLATE $JSMIN" --raw $JSMIN > $OUTPUT && \
     echo "Finished"
