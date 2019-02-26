@@ -1,11 +1,12 @@
-module Components.Dialogs.Import (importDialog) where
+module Components.Dialogs.Export (exportDialog) where
 
 import Prelude
 import Data.Maybe (Maybe (..))
 import Effect.Exception (throw)
 import Effect.Uncurried (mkEffectFn1)
-import Queue.One (Queue, put)
-import IOQueues (IOQueues (..))
+import Queue.One (Queue, WRITE)
+import Queue.Types (allowReading)
+import Web.File.Url (revokeObjectURL)
 import Web.File.Blob (Blob)
 import Web.File.File (toBlob)
 import Web.File.FileList (item)
@@ -25,52 +26,48 @@ import MaterialUI.Button (button)
 import MaterialUI.Input (input')
 import MaterialUI.Enums (primary)
 import Unsafe.Coerce (unsafeCoerce)
+import Global.Unsafe (unsafeEncodeURIComponent)
 
 
 
-type State = {open :: Boolean}
-
+type State = {open :: Boolean, value :: String}
 
 initialState :: State
-initialState = {open: false}
+initialState = {open: false, value: ""}
 
 
-importDialog :: IOQueues Queue Unit (Maybe Blob) -- ^ Write to this to open the dialog
+exportDialog :: Queue (write :: WRITE) String -- ^ Write to this to open the dialog
              -> ReactElement
-importDialog (IOQueues{input,output}) = createLeafElement c {}
+exportDialog input = createLeafElement c {}
   where
     c :: ReactClass {}
-    c = component "ImportDialog" constructor'
+    c = component "ExportDialog" constructor'
 
     constructor' :: ReactClassConstructor {} State _
-    constructor' = whileMountedOne input (\this _ -> setState this {open: true}) constructor
+    constructor' = whileMountedOne (allowReading input) (\this value -> setState this {open: true, value}) constructor
 
     constructor :: ReactClassConstructor {} State _
     constructor this =
-      let close = do
-            setState this initialState
-            put output Nothing
-          submit = do
-            doc <- (toNonElementParentNode <<< toDocument) <$> (window >>= document)
-            mEl <- getElementById "import-file" doc
-            case mEl of
-              Nothing -> throw "No #import-file <input> node!"
-              Just el -> put output (toBlob <$> item 0 (unsafeCoerce el).files)
+      let close = setState this initialState
       in  pure
             { componentDidMount: pure unit
             , componentWillUnmount: pure unit
             , state: initialState
             , render: do
-              {open} <- getState this
+              {open, value} <- getState this
               pure $
                 dialog'' {onClose: mkEffectFn1 (const close), open, "aria-labelledby": "import-dialog-title"}
-                  [ dialogTitle {id: "import-dialog-title"} [text "Import OpenChronology File"]
-                  , dialogContent_
-                    [ input' {type: "file", inputProps: {accept: ".och", id: "import-file"}}
-                    ]
+                  [ dialogTitle {id: "import-dialog-title"} [text "Export OpenChronology File"]
                   , dialogActions_
                     [ button {onClick: mkEffectFn1 (const close), color: primary} [text "Cancel"]
-                    , button {onClick: mkEffectFn1 (const submit), color: primary, autoFocus: true} [text "Import"]
+                    , let params :: {href :: String}
+                          params = unsafeCoerce
+                            { href: "data:text/json;charset=utf-8," <> unsafeEncodeURIComponent value
+                            , color: primary
+                            , autoFocus: true
+                            , download: "foodoc.och"
+                            }
+                      in  button params [text "Export"]
                     ]
                   ]
             }

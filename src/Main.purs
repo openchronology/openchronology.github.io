@@ -7,6 +7,7 @@ import Data.Maybe (Maybe (..))
 import Effect (Effect)
 import Effect.Console (log)
 import Effect.Exception (throw)
+import Effect.Ref (new) as Ref
 
 import ReactDOM (render)
 import React (ReactElement, ReactComponent)
@@ -30,4 +31,6 @@ main :: Effect Unit
 main = do
   log "Booting up application"
 
-  void (mountToRoot index)
+  stateRef <- Ref.new unit
+
+  void (mountToRoot (index {stateRef}))

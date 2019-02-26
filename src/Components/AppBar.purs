@@ -1,4 +1,4 @@
-module Components.AppBar where
+module Components.AppBar (indexAppBar) where
 
 import Prelude
 import Effect (Effect)
