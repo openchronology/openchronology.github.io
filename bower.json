@@ -15,7 +15,8 @@
     "purescript-web-html": "^2.0.0",
     "purescript-react-queue": "^1.2.0",
     "purescript-promises": "^3.0.0",
-    "purescript-argonaut": "^5.0.0"
+    "purescript-arraybuffer-class": "^0.0.0",
+    "purescript-base64": "purescript-base64-2#^2.0.0"
   },
   "devDependencies": {
     "purescript-psci-support": "^4.0.0"

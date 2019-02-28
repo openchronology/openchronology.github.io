@@ -1,8 +1,8 @@
-module Stream.Response (Response, newResponse, parseJson) where
+module Stream.Response (Response, newResponse, getArrayBuffer) where
 
 import Prelude ((<<<), (<$))
 import Data.Either (Either (..))
-import Data.Argonaut (Json)
+import Data.ArrayBuffer.Types (ArrayBuffer)
 import Web.File.Blob (Blob)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, runEffectFn1)
@@ -17,8 +17,8 @@ foreign import newResponseImpl :: EffectFn1 Blob Response
 newResponse :: Blob -> Effect Response
 newResponse = runEffectFn1 newResponseImpl
 
-foreign import parseJsonImpl :: Response -> Promise Json
+foreign import getArrayBufferImpl :: Response -> Promise ArrayBuffer
 
-parseJson :: Response -> Aff Json
-parseJson r = makeAff \resolve ->
-  nonCanceler <$ runPromise (resolve <<< Right) (resolve <<< Left) (parseJsonImpl r)
+getArrayBuffer :: Response -> Aff ArrayBuffer
+getArrayBuffer r = makeAff \resolve ->
+  nonCanceler <$ runPromise (resolve <<< Right) (resolve <<< Left) (getArrayBufferImpl r)

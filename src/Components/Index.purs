@@ -4,12 +4,14 @@ import Components.AppBar (indexAppBar)
 import Components.Dialogs.Import (importDialog)
 import Components.Dialogs.Export (exportDialog)
 import WithRoot (withRoot)
-import Stream.Response (newResponse, parseJson)
+import Stream.Response (newResponse, getArrayBuffer)
 
 import Prelude
 import Data.Either (Either (..))
 import Data.Maybe (Maybe (..))
-import Data.Argonaut (Json, encodeJson, stringify)
+import Data.ArrayBuffer.Types (ArrayBuffer)
+import Data.ArrayBuffer.Class (encodeArrayBuffer, decodeArrayBuffer)
+import Effect (Effect)
 import Effect.Console (log)
 import Effect.Class (liftEffect)
 import Effect.Exception (throwException)
@@ -41,20 +43,26 @@ index {stateRef} = withRoot e
                 Left err -> throwException err
                 Right x -> pure unit
 
+              onImport :: Effect Unit
               onImport = runAff_ resolve $ do
                 mF <- IOQueues.callAsync importQueues unit
                 case mF of
                   Nothing -> pure unit
                   Just f -> do
                     r <- liftEffect (newResponse f)
-                    json <- parseJson r
+                    b <- getArrayBuffer r
+                    -- TODO decode to content state
+                    -- TODO somehow get the actual filename?
                     liftEffect $ do
-                      log $ unsafeCoerce json
+                      log $ unsafeCoerce b
 
+              onExport :: Effect Unit
               onExport = do
-                let x :: Json
-                    x = encodeJson "yo dawg"
-                Q.put exportQueue (stringify x)
+                -- TODO encode actual content state
+                -- TODO grab filename from actual uploaded, make editable
+                -- - specifically, the filename should first reflect the title (camelcased), unless uploaded or decided
+                b <- encodeArrayBuffer "yo dawg"
+                Q.put exportQueue b
           pure
             { state: {}
             , render: pure $ toElement

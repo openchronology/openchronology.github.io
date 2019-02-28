@@ -2,8 +2,13 @@ module Components.Dialogs.Export (exportDialog) where
 
 import Prelude
 import Data.Maybe (Maybe (..))
+import Data.ArrayBuffer.Types (ArrayBuffer)
+import Data.ArrayBuffer.ArrayBuffer (empty) as AB
+import Data.ArrayBuffer.Typed (whole) as TA
+import Data.ArrayBuffer.Base64 (encodeBase64)
 import Effect.Exception (throw)
 import Effect.Uncurried (mkEffectFn1)
+import Effect.Unsafe (unsafePerformEffect)
 import Queue.One (Queue, WRITE)
 import Queue.Types (allowReading)
 import Web.File.Url (revokeObjectURL)
@@ -26,17 +31,18 @@ import MaterialUI.Button (button)
 import MaterialUI.Input (input')
 import MaterialUI.Enums (primary)
 import Unsafe.Coerce (unsafeCoerce)
-import Global.Unsafe (unsafeEncodeURIComponent)
+-- import Global.Unsafe (unsafeEncodeURIComponent)
 
 
 
-type State = {open :: Boolean, value :: String}
+type State = {open :: Boolean, value :: ArrayBuffer}
+
 
 initialState :: State
-initialState = {open: false, value: ""}
+initialState = {open: false, value: unsafePerformEffect (AB.empty 0)}
 
 
-exportDialog :: Queue (write :: WRITE) String -- ^ Write to this to open the dialog
+exportDialog :: Queue (write :: WRITE) ArrayBuffer -- ^ Write to this to open the dialog
              -> ReactElement
 exportDialog input = createLeafElement c {}
   where
@@ -55,6 +61,7 @@ exportDialog input = createLeafElement c {}
             , state: initialState
             , render: do
               {open, value} <- getState this
+              value' <- encodeBase64 <$> TA.whole value
               pure $
                 dialog'' {onClose: mkEffectFn1 (const close), open, "aria-labelledby": "import-dialog-title"}
                   [ dialogTitle {id: "import-dialog-title"} [text "Export OpenChronology File"]
@@ -62,7 +69,7 @@ exportDialog input = createLeafElement c {}
                     [ button {onClick: mkEffectFn1 (const close), color: primary} [text "Cancel"]
                     , let params :: {href :: String}
                           params = unsafeCoerce
-                            { href: "data:text/json;charset=utf-8," <> unsafeEncodeURIComponent value
+                            { href: "data:application/openchronology;base64," <> value'
                             , color: primary
                             , autoFocus: true
                             , download: "foodoc.och"
