@@ -9,7 +9,6 @@ import Stream.Response (newResponse, getArrayBuffer)
 import Prelude
 import Data.Either (Either (..))
 import Data.Maybe (Maybe (..))
-import Data.ArrayBuffer.Types (ArrayBuffer)
 import Data.ArrayBuffer.Class (encodeArrayBuffer, decodeArrayBuffer)
 import Effect (Effect)
 import Effect.Console (log)
@@ -20,6 +19,7 @@ import Effect.Ref (Ref)
 import Queue.One (new, put) as Q
 import Queue.Types (writeOnly) as Q
 import IOQueues (new, callAsync) as IOQueues
+import Web.File.File (toBlob)
 import React (ReactElement, ReactClass, toElement, pureComponent, createLeafElement)
 import React.DOM (text)
 import MaterialUI.Typography (typography)
@@ -45,16 +45,17 @@ index {stateRef} = withRoot e
 
               onImport :: Effect Unit
               onImport = runAff_ resolve $ do
-                mF <- IOQueues.callAsync importQueues unit
-                case mF of
+                mFile <- IOQueues.callAsync importQueues unit
+                case mFile of
                   Nothing -> pure unit
-                  Just f -> do
-                    r <- liftEffect (newResponse f)
-                    b <- getArrayBuffer r
+                  Just file -> do
+                    let blob = toBlob file
+                    resp <- liftEffect (newResponse blob)
+                    buffer <- getArrayBuffer resp
                     -- TODO decode to content state
                     -- TODO somehow get the actual filename?
                     liftEffect $ do
-                      log $ unsafeCoerce b
+                      log $ unsafeCoerce buffer
 
               onExport :: Effect Unit
               onExport = do

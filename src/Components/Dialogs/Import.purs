@@ -6,8 +6,7 @@ import Effect.Exception (throw)
 import Effect.Uncurried (mkEffectFn1)
 import Queue.One (Queue, put)
 import IOQueues (IOQueues (..))
-import Web.File.Blob (Blob)
-import Web.File.File (toBlob)
+import Web.File.File (File)
 import Web.File.FileList (item)
 import Web.HTML (window)
 import Web.HTML.Window (document)
@@ -35,7 +34,7 @@ initialState :: State
 initialState = {open: false}
 
 
-importDialog :: IOQueues Queue Unit (Maybe Blob) -- ^ Write to this to open the dialog
+importDialog :: IOQueues Queue Unit (Maybe File) -- ^ Write to this to open the dialog
              -> ReactElement
 importDialog (IOQueues{input,output}) = createLeafElement c {}
   where
@@ -55,7 +54,7 @@ importDialog (IOQueues{input,output}) = createLeafElement c {}
             mEl <- getElementById "import-file" doc
             case mEl of
               Nothing -> throw "No #import-file <input> node!"
-              Just el -> put output (toBlob <$> item 0 (unsafeCoerce el).files)
+              Just el -> put output (item 0 (unsafeCoerce el).files)
       in  pure
             { componentDidMount: pure unit
             , componentWillUnmount: pure unit
