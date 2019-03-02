@@ -2,6 +2,7 @@ module Components.Index where
 
 import Components.AppBar (indexAppBar)
 import Components.Dialogs.Import (importDialog)
+import Components.Dialogs.Import (ImportDialog (..)) as Import
 import Components.Dialogs.Export (exportDialog)
 import Timeline.Data.TimelineName (TimelineName, initialTimelineName)
 import WithRoot (withRoot)
@@ -42,7 +43,7 @@ index {stateRef} = withRoot e
     c :: ReactClass {}
     c = pureComponent "Index" \this -> do
           -- initialize asynchronous signals and queues
-          ( importQueues :: IOQueues Q.Queue Unit (Maybe File)
+          ( importQueues :: IOQueues Q.Queue Import.ImportDialog (Maybe File)
             ) <- IOQueues.new
           ( exportQueue :: Q.Queue (write :: Q.WRITE) ArrayBuffer
             ) <- Q.writeOnly <$> Q.new
@@ -58,10 +59,12 @@ index {stateRef} = withRoot e
 
               onImport :: Effect Unit
               onImport = runAff_ resolve $ do
-                mFile <- IOQueues.callAsync importQueues unit
+                mFile <- IOQueues.callAsync importQueues Import.Open -- invoke opener
                 case mFile of
                   Nothing -> pure unit
                   Just file -> do
+                    -- TODO invoke loader to show "loading..."
+                    -- TODO reconcile failure to parse with a `try` and throw a snackbar
                     let blob = toBlob file
                     resp <- liftEffect (newResponse blob)
                     buffer <- getArrayBuffer resp
