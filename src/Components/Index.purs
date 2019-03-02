@@ -4,6 +4,7 @@ import Components.AppBar (indexAppBar)
 import Components.Dialogs.Import (importDialog)
 import Components.Dialogs.Import (ImportDialog (..)) as Import
 import Components.Dialogs.Export (exportDialog)
+import Components.Snackbar (snackbars, SnackbarContent, SnackbarVariant (..))
 import Timeline.Data.TimelineName (TimelineName, initialTimelineName)
 import WithRoot (withRoot)
 import Stream.Response (newResponse, getArrayBuffer)
@@ -47,6 +48,8 @@ index {stateRef} = withRoot e
             ) <- IOQueues.new
           ( exportQueue :: Q.Queue (write :: Q.WRITE) ArrayBuffer
             ) <- Q.writeOnly <$> Q.new
+          ( snackbarQueue :: Q.Queue (write :: Q.WRITE) SnackbarContent
+            ) <- Q.writeOnly <$> Q.new
           ( nameEditQueues :: IOQueues Q.Queue Unit (Maybe TimelineName)
             ) <- IOQueues.new
           ( nameSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) TimelineName
@@ -63,7 +66,6 @@ index {stateRef} = withRoot e
                 case mFile of
                   Nothing -> pure unit
                   Just file -> do
-                    -- TODO invoke loader to show "loading..."
                     -- TODO reconcile failure to parse with a `try` and throw a snackbar
                     let blob = toBlob file
                     resp <- liftEffect (newResponse blob)
@@ -72,7 +74,7 @@ index {stateRef} = withRoot e
                     -- TODO assign new filename and timelineName to signal
                     liftEffect $ do
                       log $ unsafeCoerce buffer
-                    -- TODO close modal externally?
+                      -- TODO close modal externally or throw snackbar and stop loader
 
               onExport :: Effect Unit
               onExport = do
@@ -96,5 +98,6 @@ index {stateRef} = withRoot e
               , typography {gutterBottom: true, variant: title} [text "Just a Test"]
               , importDialog importQueues
               , exportDialog exportQueue
+              , snackbars snackbarQueue
               ]
             }

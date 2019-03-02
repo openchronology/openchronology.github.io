@@ -1,4 +1,4 @@
-module Components.Snackbar (snackbars, Variant, SnackbarContent) where
+module Components.Snackbar (snackbars, SnackbarVariant, SnackbarContent) where
 
 import Prelude
 import Data.Time.Duration (Milliseconds)
@@ -28,7 +28,7 @@ import Unsafe.Coerce (unsafeCoerce)
 
 
 
-data Variant
+data SnackbarVariant
   = Success
   | Error
   | Info
@@ -36,7 +36,7 @@ data Variant
 
 
 type SnackbarContent =
-  { variant :: Variant
+  { variant :: SnackbarVariant
   , message :: String
   , timeout :: Maybe Milliseconds
   }
