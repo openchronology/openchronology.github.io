@@ -1,37 +1,23 @@
 module Components.Dialogs.Export (exportDialog) where
 
 import Prelude
-import Data.Maybe (Maybe (..))
 import Data.ArrayBuffer.Types (ArrayBuffer)
 import Data.ArrayBuffer.ArrayBuffer (empty) as AB
 import Data.ArrayBuffer.Typed (whole) as TA
 import Data.ArrayBuffer.Base64 (encodeBase64)
-import Effect.Exception (throw)
 import Effect.Uncurried (mkEffectFn1)
 import Effect.Unsafe (unsafePerformEffect)
 import Queue.One (Queue, WRITE)
 import Queue.Types (allowReading)
-import Web.File.Url (revokeObjectURL)
-import Web.File.Blob (Blob)
-import Web.File.File (toBlob)
-import Web.File.FileList (item)
-import Web.HTML (window)
-import Web.HTML.Window (document)
-import Web.HTML.HTMLDocument (toDocument)
-import Web.DOM.Document (toNonElementParentNode)
-import Web.DOM.NonElementParentNode (getElementById)
 import React (ReactElement, ReactClass, ReactClassConstructor, component, setState, getState, createLeafElement)
 import React.DOM (text)
 import React.Queue.WhileMounted (whileMountedOne)
 import MaterialUI.Dialog (dialog'')
 import MaterialUI.DialogTitle (dialogTitle)
-import MaterialUI.DialogContent (dialogContent_)
 import MaterialUI.DialogActions (dialogActions_)
 import MaterialUI.Button (button)
-import MaterialUI.Input (input')
 import MaterialUI.Enums (primary)
 import Unsafe.Coerce (unsafeCoerce)
--- import Global.Unsafe (unsafeEncodeURIComponent)
 
 
 
