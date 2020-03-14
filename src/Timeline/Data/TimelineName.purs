@@ -3,7 +3,7 @@ module Timeline.Data.TimelineName where
 
 -- | Represents both the filename and the timeline's presented name
 type TimelineName =
-  { timelineName :: String
+  { title    :: String
   , filename :: String
   }
 
@@ -13,6 +13,6 @@ type TimelineName =
 -- | Chosen timeline name on boot, disregarding the shared signal
 initialTimelineName :: TimelineName
 initialTimelineName =
-  { timelineName: ""
+  { title: ""
   , filename: "timeline" -- ^ Automatically appends `.och` on download
   }

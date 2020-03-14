@@ -22,6 +22,7 @@ purs bundle output/**/*.js -m Main --main Main > $JSTMP || { echo "Bundle Failed
 echo "Bundled"
 ./node_modules/.bin/browserify $JSTMP -o $JS -t [ babelify --presets [ @babel/preset-env ] --plugins [ @babel/plugin-proposal-class-properties ] ] || { exit 1; }
 rm $JSTMP
+# uglify only in production
 if [ $# -eq 1 ] && [ $1 == "production" ]; then
     ./node_modules/.bin/browserify $JS -g [ envify --NODE_ENV production ] -g uglifyify | ./node_modules/.bin/uglifyjs --compress --mangle > $JSMIN || { exit 1; }
 fi

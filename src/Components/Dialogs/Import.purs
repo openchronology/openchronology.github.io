@@ -26,6 +26,7 @@ import MaterialUI.CircularProgress (circularProgress')
 import MaterialUI.Styles (withStyles)
 import MaterialUI.Input (input')
 import MaterialUI.Enums (primary)
+import Debug.Trace (trace)
 
 
 
@@ -45,6 +46,7 @@ importDialog (IOQueues{input,output}) = createLeafElement c {}
       where
         styles :: _
         styles theme =
+          trace theme \_ ->
           { loaderBackground:
             { zIndex: 1
             , width: "100%"
@@ -58,7 +60,7 @@ importDialog (IOQueues{input,output}) = createLeafElement c {}
             , left: 0
             }
           , loader:
-            { margin: theme.spacing.unit * 2
+            { margin: "1em" -- theme.spacing.unit * 2
             }
           , buttons:
             { zIndex: 2

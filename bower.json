@@ -16,7 +16,8 @@
     "purescript-promises": "^3.0.0",
     "purescript-arraybuffer-class": "^0.2.4",
     "purescript-file-store": "git://github.com/openchronology/purescript-file-store.git",
-    "purescript-math-equation": "^0.0.1"
+    "purescript-math-equation": "^0.0.1",
+    "purescript-debug": "^4.0.0"
   },
   "devDependencies": {
     "purescript-psci-support": "^4.0.0"

@@ -35,7 +35,7 @@ import Web.File.Store (fileToArrayBuffer)
 
 
 
-index :: { stateRef :: Ref Unit
+index :: { stateRef :: Ref Unit -- FIXME change to whatever state is changed
          }
       -> ReactElement
 index {stateRef} = withRoot e
@@ -50,8 +50,10 @@ index {stateRef} = withRoot e
             ) <- Q.writeOnly <$> Q.new
           ( snackbarQueue :: Q.Queue (write :: Q.WRITE) SnackbarContent
             ) <- Q.writeOnly <$> Q.new
+          -- TODO make a title and filename edit dialog
           ( nameEditQueues :: IOQueues Q.Queue Unit (Maybe TimelineName)
             ) <- IOQueues.new
+          -- status of the title and filename in the AppBar
           ( nameSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) TimelineName
             ) <- IxSig.make initialTimelineName
 
