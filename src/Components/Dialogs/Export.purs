@@ -3,8 +3,7 @@ module Components.Dialogs.Export (exportDialog) where
 import Prelude
 import Data.ArrayBuffer.Types (ArrayBuffer)
 import Data.ArrayBuffer.ArrayBuffer (empty) as AB
-import Data.ArrayBuffer.Typed (whole) as TA
-import Data.ArrayBuffer.Base64 (encodeBase64)
+import Data.MediaType (MediaType (..))
 import Effect.Uncurried (mkEffectFn1)
 import Effect.Unsafe (unsafePerformEffect)
 import Queue.One (Queue, WRITE)
@@ -18,7 +17,7 @@ import MaterialUI.DialogActions (dialogActions_)
 import MaterialUI.Button (button)
 import MaterialUI.Enums (primary)
 import Unsafe.Coerce (unsafeCoerce)
-
+import Web.File.Store (makeBase64Href)
 
 
 type State = {open :: Boolean, value :: ArrayBuffer}
@@ -47,7 +46,7 @@ exportDialog input = createLeafElement c {}
             , state: initialState
             , render: do
               {open, value} <- getState this
-              value' <- encodeBase64 <$> TA.whole value
+              href <- makeBase64Href (MediaType "application/openchronology") value
               pure $
                 dialog'' {onClose: mkEffectFn1 (const close), open, "aria-labelledby": "import-dialog-title"}
                   [ dialogTitle {id: "import-dialog-title"} [text "Export OpenChronology File"]
@@ -55,7 +54,7 @@ exportDialog input = createLeafElement c {}
                     [ button {onClick: mkEffectFn1 (const close), color: primary} [text "Cancel"]
                     , let params :: {href :: String}
                           params = unsafeCoerce
-                            { href: "data:application/openchronology;base64," <> value'
+                            { href
                             , color: primary
                             , autoFocus: true
                             , download: "foodoc.och"

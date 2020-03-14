@@ -1,7 +1,6 @@
 module Components.AppBar (indexAppBar) where
 
 import Prelude hiding (div)
-import Data.TSCompat.React (ReactNode)
 import Effect (Effect)
 import Effect.Uncurried (mkEffectFn1)
 import React (ReactElement, ReactClass, pureComponent, getProps, createLeafElement)
@@ -12,8 +11,7 @@ import MaterialUI.Toolbar (toolbar_)
 import MaterialUI.Button (button)
 import MaterialUI.Typography (typography)
 import MaterialUI.Styles (withStyles)
-import MaterialUI.Enums (title, static, inherit, normal)
-import Unsafe.Coerce (unsafeCoerce)
+import MaterialUI.Enums (title, static, inherit)
 
 
 

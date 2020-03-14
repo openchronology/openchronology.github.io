@@ -4,10 +4,9 @@ import Components.AppBar (indexAppBar)
 import Components.Dialogs.Import (importDialog)
 import Components.Dialogs.Import (ImportDialog (..)) as Import
 import Components.Dialogs.Export (exportDialog)
-import Components.Snackbar (snackbars, SnackbarContent, SnackbarVariant (..))
+import Components.Snackbar (snackbars, SnackbarContent)
 import Timeline.Data.TimelineName (TimelineName, initialTimelineName)
 import WithRoot (withRoot)
-import Stream.Response (newResponse, getArrayBuffer)
 
 import Prelude
 import Data.Either (Either (..))
@@ -26,12 +25,13 @@ import IOQueues (IOQueues)
 import IOQueues (new, callAsync) as IOQueues
 import Signal.Types (WRITE, READ) as S
 import IxSignal (IxSignal, make, setDiff) as IxSig
-import Web.File.File (File, toBlob)
+import Web.File.File (File)
 import React (ReactElement, ReactClass, toElement, pureComponent, createLeafElement)
 import React.DOM (text)
 import MaterialUI.Typography (typography)
 import MaterialUI.Enums (title)
 import Unsafe.Coerce (unsafeCoerce)
+import Web.File.Store (fileToArrayBuffer)
 
 
 
@@ -67,9 +67,7 @@ index {stateRef} = withRoot e
                   Nothing -> pure unit
                   Just file -> do
                     -- TODO reconcile failure to parse with a `try` and throw a snackbar
-                    let blob = toBlob file
-                    resp <- liftEffect (newResponse blob)
-                    buffer <- getArrayBuffer resp
+                    buffer <- fileToArrayBuffer file
                     -- TODO decode to content state, assign to content signal
                     -- TODO assign new filename and timelineName to signal
                     liftEffect $ do

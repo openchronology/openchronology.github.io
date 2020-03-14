@@ -8,12 +8,11 @@ import Effect.Uncurried (mkEffectFn1)
 import Queue.One (Queue, put)
 import IOQueues (IOQueues (..))
 import Web.File.File (File)
-import Web.File.FileList (item)
+import Web.File.Store (getFile)
 import Web.HTML (window)
 import Web.HTML.Window (document)
 import Web.HTML.HTMLDocument (toDocument)
 import Web.DOM.Document (toNonElementParentNode)
-import Web.DOM.NonElementParentNode (getElementById)
 import React (ReactElement, ReactClass, ReactClassConstructor, component, setState, getState, getProps, createLeafElement)
 import React.DOM (text, div)
 import React.DOM.Props (className) as RP
@@ -27,7 +26,6 @@ import MaterialUI.CircularProgress (circularProgress')
 import MaterialUI.Styles (withStyles)
 import MaterialUI.Input (input')
 import MaterialUI.Enums (primary)
-import Unsafe.Coerce (unsafeCoerce)
 
 
 
@@ -87,12 +85,12 @@ importDialog (IOQueues{input,output}) = createLeafElement c {}
                 put output Nothing
               submit = do
                 doc <- (toNonElementParentNode <<< toDocument) <$> (window >>= document)
-                mEl <- getElementById "import-file" doc
-                case mEl of
+                mFile <- getFile "import-file"
+                case mFile of
                   Nothing -> throw "No #import-file <input> node!"
-                  Just el -> do
+                  Just file -> do
                     setState this {loading: true}
-                    put output (item 0 (unsafeCoerce el).files)
+                    put output (Just file)
           in  pure
                 { componentDidMount: pure unit
                 , componentWillUnmount: pure unit
