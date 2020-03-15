@@ -25,7 +25,7 @@ import Queue.One (Queue, new, put) as Q
 import Queue.Types (writeOnly, allowReading, readOnly, WRITE) as Q
 import IOQueues (IOQueues)
 import IOQueues (new, callAsync) as IOQueues
-import Signal.Types (WRITE, READ) as S
+import Signal.Types (WRITE, READ, readOnly) as S
 import IxSignal (IxSignal, make, setDiff) as IxSig
 import Web.File.File (File)
 import Web.File.Store (fileToArrayBuffer)
@@ -69,6 +69,9 @@ index {stateRef} = withRoot e
           -- status of the timescale in the BottomBar
           ( timeScaleSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) TimeScale
             ) <- IxSig.make initialTimeScale
+          -- initial zoom level
+          ( zoomSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) Number
+            ) <- IxSig.make 100.0
 
           -- handlers for appbar buttons
           let resolve eX = case eX of
@@ -99,6 +102,7 @@ index {stateRef} = withRoot e
                 buffer <- encodeArrayBuffer "yo dawg"
                 Q.put exportQueue (Export.ExportDialog {buffer, filename: "foo.och"})
 
+              -- patching between dialog queues and state signals
               onNameEdit :: Effect Unit
               onNameEdit = runAff_ resolve $ do
                 mEditedName <- IOQueues.callAsync nameEditQueues unit
@@ -119,7 +123,7 @@ index {stateRef} = withRoot e
               , div [P.style {height: "100%", padding: "3em 0"}]
                 [ typography {gutterBottom: true, variant: title} [text "Just a Test"]
                 ]
-              , bottomBar {onTimeScaleEdit}
+              , bottomBar {onTimeScaleEdit, zoomSignal: S.readOnly zoomSignal}
               , importDialog importQueues
               , exportDialog (Q.readOnly (Q.allowReading exportQueue))
               , snackbars snackbarQueue
