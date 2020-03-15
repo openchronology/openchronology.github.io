@@ -7,6 +7,7 @@ import Components.Dialogs.Import (ImportDialog (..)) as Import
 import Components.Dialogs.Export (exportDialog)
 import Components.Dialogs.Export (ExportDialog (..)) as Export
 import Components.Dialogs.TimelineNameEdit (timelineNameEditDialog)
+import Components.Dialogs.TimeScaleEdit (timeScaleEditDialog)
 import Components.Snackbar (snackbars, SnackbarContent)
 import Timeline.Data.TimelineName (TimelineName, initialTimelineName)
 import Timeline.Data.TimeScale (TimeScale, initialTimeScale)
@@ -54,7 +55,6 @@ index {stateRef} = withRoot e
             ) <- IOQueues.new
           ( exportQueue :: Q.Queue (write :: Q.WRITE) Export.ExportDialog
             ) <- Q.writeOnly <$> Q.new
-          -- TODO make a title and filename edit dialog
           ( timelineNameEditQueues :: IOQueues Q.Queue Unit (Maybe TimelineName)
             ) <- IOQueues.new
           ( timeScaleEditQueues :: IOQueues Q.Queue Unit (Maybe TimeScale)
@@ -144,6 +144,10 @@ index {stateRef} = withRoot e
               , timelineNameEditDialog
                 { timelineNameSignal: S.readOnly timelineNameSignal
                 , timelineNameEditQueues
+                }
+              , timeScaleEditDialog
+                { timeScaleSignal: S.readOnly timeScaleSignal
+                , timeScaleEditQueues
                 }
               , snackbars snackbarQueue
               ]
