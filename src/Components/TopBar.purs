@@ -14,11 +14,15 @@ import React.Signal.WhileMounted (whileMountedIx)
 import MaterialUI.AppBar (appBar)
 import MaterialUI.Toolbar (toolbar)
 import MaterialUI.Button (button)
+import MaterialUI.IconButton (iconButton)
 import MaterialUI.Typography (typography)
 import MaterialUI.Styles (withStyles)
 import MaterialUI.Enums (title, absolute, inherit, dense)
+import MaterialUI.Icon (icon')
+import MaterialUI.Icons.SettingsIcon (settingsIcon)
 import Signal.Types (READ) as S
 import IxSignal (IxSignal, get) as IxSig
+import Unsafe.Coerce (unsafeCoerce)
 
 
 
@@ -78,6 +82,15 @@ topBar {onImport, onExport, onTimelineNameEdit, timelineNameSignal} = createLeaf
                       ]
                     , button {color: inherit, onClick: mkEffectFn1 (const onImport)} [text "Import"]
                     , button {color: inherit, onClick: mkEffectFn1 (const onExport)} [text "Export"]
+                    , iconButton {color: inherit} [settingsIcon]
+                    , let props' :: {href :: String}
+                          props' = unsafeCoerce
+                            { color: inherit
+                            , href: "https://github.com/openchronology/openchronology.github.io/"
+                            , target: "__blank"
+                            }
+                      in  iconButton props'
+                      [icon' {className: "fab fa-github"}]
                     ]
                   ]
             }
