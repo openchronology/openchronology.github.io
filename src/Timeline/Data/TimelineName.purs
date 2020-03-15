@@ -13,6 +13,6 @@ type TimelineName =
 -- | Chosen timeline name on boot, disregarding the shared signal
 initialTimelineName :: TimelineName
 initialTimelineName =
-  { title: ""
+  { title: "Timeline Name"
   , filename: "timeline" -- ^ Automatically appends `.och` on download
   }

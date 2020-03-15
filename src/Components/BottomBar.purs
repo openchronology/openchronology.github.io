@@ -1,5 +1,7 @@
 module Components.BottomBar (bottomBar) where
 
+import Timeline.Data.TimeScale (TimeScale)
+
 import Prelude hiding (div)
 import Data.Fixed (fromNumber, toString, P100, Fixed) as Fixed
 import Data.Maybe (Maybe (..))
@@ -36,37 +38,52 @@ styles theme =
     }
   }
 
+-- | Updates state when either signal is written to
+type State =
+  { zoom  :: Number
+  , name  :: String
+  , units :: String
+  }
 
-type State = {zoom :: Number}
-
-initialState :: IxSig.IxSignal (read :: S.READ) Number -> Effect State
-initialState zoomSignal = do
+initialState :: IxSig.IxSignal (read :: S.READ) Number
+             -> IxSig.IxSignal (read :: S.READ) TimeScale
+             -> Effect State
+initialState zoomSignal timeScaleSignal = do
   zoom <- IxSig.get zoomSignal
-  pure {zoom}
+  {name, units} <- IxSig.get timeScaleSignal
+  pure
+    { zoom
+    , name
+    , units
+    }
 
 
 bottomBar :: { onTimeScaleEdit :: Effect Unit
              , zoomSignal :: IxSig.IxSignal (read :: S.READ) Number
+             , timeScaleSignal :: IxSig.IxSignal (read :: S.READ) TimeScale
              } -> ReactElement
-bottomBar {onTimeScaleEdit, zoomSignal} = createLeafElement c' {}
+bottomBar {onTimeScaleEdit, zoomSignal, timeScaleSignal} = createLeafElement c' {}
   where
     c' :: ReactClass {}
     c' = withStyles styles c
-    c :: ReactClass {classes :: {root :: String, center :: String}}
-    c = component "BottomBar" constructor'
+      where
+        c :: ReactClass {classes :: {root :: String, center :: String}}
+        c = component "BottomBar" constructor'
     constructor' :: ReactClassConstructor _ State _
     constructor' =
-      whileMountedIx zoomSignal "BottomBar" (\this zoom -> setState this {zoom}) constructor
+      whileMountedIx zoomSignal "BottomBar" (\this zoom -> setState this {zoom}) $
+      whileMountedIx timeScaleSignal "BottomBar" (\this {name,units} -> setState this {name,units})
+      constructor
       where
-        constructor = \this -> do
-          state <- initialState zoomSignal
+        constructor this = do
+          state <- initialState zoomSignal timeScaleSignal
           pure
             { state
             , componentDidMount: pure unit
             , componentWillUnmount: pure unit
             , render: do
                 props <- getProps this
-                {zoom} <- getState this
+                {zoom, name, units} <- getState this
                 zoomShown <- showZoom zoom
                 pure $ appBar {position: absolute, className: props.classes.root}
                   [ toolbar {variant: dense}
@@ -75,7 +92,8 @@ bottomBar {onTimeScaleEdit, zoomSignal} = createLeafElement c' {}
                     , typography {variant: subheading, color: inherit} [text zoomShown]
                     , typography {variant: subheading, color: inherit} [text "%"]
                     , div [RP.className props.classes.center] []
-                    , button {color: inherit, onClick: mkEffectFn1 (const onTimeScaleEdit)} [text "TimeScale (Years)"]
+                    , button {color: inherit, onClick: mkEffectFn1 (const onTimeScaleEdit)}
+                      [text (name <> " (" <> units <> ")")]
                     ]
                   ]
             }

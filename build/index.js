@@ -3613,14 +3613,19 @@ var PS = {};
     }
 
     ;
-    throw new Error("Failed pattern match at Components.BottomBar (line 86, column 3 - line 88, column 66): " + [v.constructor.name]);
+    throw new Error("Failed pattern match at Components.BottomBar (line 104, column 3 - line 106, column 66): " + [v.constructor.name]);
   };
 
   var initialState = function initialState(zoomSignal) {
-    return function __do() {
-      var v = IxSignal.get(zoomSignal)();
-      return {
-        zoom: v
+    return function (timeScaleSignal) {
+      return function __do() {
+        var v = IxSignal.get(zoomSignal)();
+        var v1 = IxSignal.get(timeScaleSignal)();
+        return {
+          zoom: v,
+          name: v1.name,
+          units: v1.units
+        };
       };
     };
   };
@@ -3629,7 +3634,7 @@ var PS = {};
     var constructor$prime = function () {
       var constructor = function constructor($$this) {
         return function __do() {
-          var v1 = initialState(v.zoomSignal)();
+          var v1 = initialState(v.zoomSignal)(v.timeScaleSignal)();
           return {
             state: v1,
             componentDidMount: Control_Applicative.pure(Effect.applicativeEffect)(Data_Unit.unit),
@@ -3657,7 +3662,7 @@ var PS = {};
               })([React_DOM.text("%")]), React_DOM.div([React_DOM_Props.className(v2.classes.center)])([]), MaterialUI_Button.button(Data_TSCompat_Class.anyTSEq(Data_TSCompat_Class.optRecord()()(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.unionIsEq()(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.reflTSEq)(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.nilCheck)(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orTrue))))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.sameType)(Data_TSCompat_Class.nilRLEQ)))(Data_TSCompat_Class.nilAll)))({
                 color: MaterialUI_Enums.inherit,
                 onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onTimeScaleEdit))
-              })([React_DOM.text("TimeScale (Years)")])])]);
+              })([React_DOM.text(v3.name + (" (" + (v3.units + ")")))])])]);
             }
           };
         };
@@ -3669,11 +3674,21 @@ var PS = {};
             zoom: zoom
           });
         };
-      })(constructor);
+      })(React_Signal_WhileMounted.whileMountedIx(v.timeScaleSignal)("BottomBar")(function ($$this) {
+        return function (v1) {
+          return React.setState()($$this)({
+            name: v1.name,
+            units: v1.units
+          });
+        };
+      })(constructor));
     }();
 
-    var c = React.component(React.reactComponentSpec()())("BottomBar")(constructor$prime);
-    var c$prime = MaterialUI_Styles.withStyles(MaterialUI_Styles.convertStyleTypes()(MaterialUI_Styles.toClassNameCons(MaterialUI_Styles.toClassNameCons(MaterialUI_Styles.toClassNameNil)))(Type_RowList.listToRowCons(Type_RowList.listToRowCons(Type_RowList.listToRowNil)())()))(styles)(c);
+    var c$prime = function () {
+      var c = React.component(React.reactComponentSpec()())("BottomBar")(constructor$prime);
+      return MaterialUI_Styles.withStyles(MaterialUI_Styles.convertStyleTypes()(MaterialUI_Styles.toClassNameCons(MaterialUI_Styles.toClassNameCons(MaterialUI_Styles.toClassNameNil)))(Type_RowList.listToRowCons(Type_RowList.listToRowCons(Type_RowList.listToRowNil)())()))(styles)(c);
+    }();
+
     return React.createLeafElement(React.reactPropFields()())(c$prime)({});
   };
 
@@ -6868,8 +6883,10 @@ var PS = {};
   var Control_Applicative = $PS["Control.Applicative"];
   var Data_Function = $PS["Data.Function"];
   var Data_TSCompat_Class = $PS["Data.TSCompat.Class"];
+  var Data_Unit = $PS["Data.Unit"];
   var Effect = $PS["Effect"];
   var Effect_Uncurried = $PS["Effect.Uncurried"];
+  var IxSignal = $PS["IxSignal"];
   var MaterialUI_AppBar = $PS["MaterialUI.AppBar"];
   var MaterialUI_Button = $PS["MaterialUI.Button"];
   var MaterialUI_Enums = $PS["MaterialUI.Enums"];
@@ -6879,6 +6896,7 @@ var PS = {};
   var React = $PS["React"];
   var React_DOM = $PS["React.DOM"];
   var React_DOM_Props = $PS["React.DOM.Props"];
+  var React_Signal_WhileMounted = $PS["React.Signal.WhileMounted"];
   var Type_Data_Boolean = $PS["Type.Data.Boolean"];
   var Type_RowList = $PS["Type.RowList"];
 
@@ -6894,34 +6912,64 @@ var PS = {};
     };
   };
 
+  var initialState = function initialState(timelineNameSignal) {
+    return function __do() {
+      var v = IxSignal.get(timelineNameSignal)();
+      return {
+        title: v.title
+      };
+    };
+  };
+
   var topBar = function topBar(v) {
-    var c = React.pureComponent(React.reactPureComponentSpec()())("TopBar")(function ($$this) {
-      return Control_Applicative.pure(Effect.applicativeEffect)({
-        state: {},
-        render: function __do() {
-          var v1 = React.getProps($$this)();
-          return MaterialUI_AppBar.appBar(Data_TSCompat_Class.anyTSEq(Data_TSCompat_Class.optRecord()()(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.reflTSEq))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.unionIsEq()(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.reflTSEq)(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.nilCheck)(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orTrue))(Type_Data_Boolean.orFalse))))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.nilRLEQ)))(Data_TSCompat_Class.nilAll)))({
-            position: MaterialUI_Enums.absolute,
-            className: v1.classes.root
-          })([MaterialUI_Toolbar.toolbar(Data_TSCompat_Class.anyTSEq(Data_TSCompat_Class.optRecord()()(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.unionIsEq()(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.reflTSEq)(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.nilCheck)(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orTrue))))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.nilRLEQ))(Data_TSCompat_Class.nilAll)))({
-            variant: MaterialUI_Enums.dense
-          })([MaterialUI_Typography.typography(Data_TSCompat_Class.anyTSEq(Data_TSCompat_Class.optRecord()()(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.unionIsEq()(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.reflTSEq)(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.nilCheck)(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orTrue))))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.unionIsEq()(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.reflTSEq)(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.nilCheck)(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orTrue))))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.nilRLEQ)))(Data_TSCompat_Class.nilAll)))({
-            variant: MaterialUI_Enums.title,
-            color: MaterialUI_Enums.inherit
-          })([React_DOM.text("OpenChronology")]), React_DOM.div([React_DOM_Props.className(v1.classes.center)])([MaterialUI_Button.button(Data_TSCompat_Class.anyTSEq(Data_TSCompat_Class.optRecord()()(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.unionIsEq()(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.reflTSEq)(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.nilCheck)(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orTrue))))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.sameType)(Data_TSCompat_Class.nilRLEQ)))(Data_TSCompat_Class.nilAll)))({
-            color: MaterialUI_Enums.inherit,
-            onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onNameEdit))
-          })([React_DOM.text("Timeline Name")])]), MaterialUI_Button.button(Data_TSCompat_Class.anyTSEq(Data_TSCompat_Class.optRecord()()(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.unionIsEq()(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.reflTSEq)(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.nilCheck)(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orTrue))))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.sameType)(Data_TSCompat_Class.nilRLEQ)))(Data_TSCompat_Class.nilAll)))({
-            color: MaterialUI_Enums.inherit,
-            onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onImport))
-          })([React_DOM.text("Import")]), MaterialUI_Button.button(Data_TSCompat_Class.anyTSEq(Data_TSCompat_Class.optRecord()()(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.unionIsEq()(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.reflTSEq)(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.nilCheck)(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orTrue))))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.sameType)(Data_TSCompat_Class.nilRLEQ)))(Data_TSCompat_Class.nilAll)))({
-            color: MaterialUI_Enums.inherit,
-            onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onExport))
-          })([React_DOM.text("Export")])])]);
-        }
-      });
-    });
-    var c$prime = MaterialUI_Styles.withStyles(MaterialUI_Styles.convertStyleTypes()(MaterialUI_Styles.toClassNameCons(MaterialUI_Styles.toClassNameCons(MaterialUI_Styles.toClassNameNil)))(Type_RowList.listToRowCons(Type_RowList.listToRowCons(Type_RowList.listToRowNil)())()))(styles)(c);
+    var constructor$prime = function () {
+      var constructor = function constructor($$this) {
+        return function __do() {
+          var v1 = initialState(v.timelineNameSignal)();
+          return {
+            state: v1,
+            componentDidMount: Control_Applicative.pure(Effect.applicativeEffect)(Data_Unit.unit),
+            componentWillUnmount: Control_Applicative.pure(Effect.applicativeEffect)(Data_Unit.unit),
+            render: function __do() {
+              var v2 = React.getProps($$this)();
+              var v3 = React.getState($$this)();
+              return MaterialUI_AppBar.appBar(Data_TSCompat_Class.anyTSEq(Data_TSCompat_Class.optRecord()()(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.reflTSEq))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.unionIsEq()(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.reflTSEq)(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.nilCheck)(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orTrue))(Type_Data_Boolean.orFalse))))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.nilRLEQ)))(Data_TSCompat_Class.nilAll)))({
+                position: MaterialUI_Enums.absolute,
+                className: v2.classes.root
+              })([MaterialUI_Toolbar.toolbar(Data_TSCompat_Class.anyTSEq(Data_TSCompat_Class.optRecord()()(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.unionIsEq()(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.reflTSEq)(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.nilCheck)(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orTrue))))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.nilRLEQ))(Data_TSCompat_Class.nilAll)))({
+                variant: MaterialUI_Enums.dense
+              })([MaterialUI_Typography.typography(Data_TSCompat_Class.anyTSEq(Data_TSCompat_Class.optRecord()()(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.unionIsEq()(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.reflTSEq)(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.nilCheck)(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orTrue))))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.unionIsEq()(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.reflTSEq)(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.nilCheck)(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orTrue))))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.nilRLEQ)))(Data_TSCompat_Class.nilAll)))({
+                variant: MaterialUI_Enums.title,
+                color: MaterialUI_Enums.inherit
+              })([React_DOM.text("OpenChronology")]), React_DOM.div([React_DOM_Props.className(v2.classes.center)])([MaterialUI_Button.button(Data_TSCompat_Class.anyTSEq(Data_TSCompat_Class.optRecord()()(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.unionIsEq()(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.reflTSEq)(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.nilCheck)(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orTrue))))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.sameType)(Data_TSCompat_Class.nilRLEQ)))(Data_TSCompat_Class.nilAll)))({
+                color: MaterialUI_Enums.inherit,
+                onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onTimelineNameEdit))
+              })([React_DOM.text(v3.title)])]), MaterialUI_Button.button(Data_TSCompat_Class.anyTSEq(Data_TSCompat_Class.optRecord()()(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.unionIsEq()(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.reflTSEq)(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.nilCheck)(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orTrue))))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.sameType)(Data_TSCompat_Class.nilRLEQ)))(Data_TSCompat_Class.nilAll)))({
+                color: MaterialUI_Enums.inherit,
+                onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onImport))
+              })([React_DOM.text("Import")]), MaterialUI_Button.button(Data_TSCompat_Class.anyTSEq(Data_TSCompat_Class.optRecord()()(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.unionIsEq()(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.reflTSEq)(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.nilCheck)(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orTrue))))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.sameType)(Data_TSCompat_Class.nilRLEQ)))(Data_TSCompat_Class.nilAll)))({
+                color: MaterialUI_Enums.inherit,
+                onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onExport))
+              })([React_DOM.text("Export")])])]);
+            }
+          };
+        };
+      };
+
+      return React_Signal_WhileMounted.whileMountedIx(v.timelineNameSignal)("TopBar")(function ($$this) {
+        return function (v1) {
+          return React.setState()($$this)({
+            title: v1.title
+          });
+        };
+      })(constructor);
+    }();
+
+    var c$prime = function () {
+      var c = React.component(React.reactComponentSpec()())("TopBar")(constructor$prime);
+      return MaterialUI_Styles.withStyles(MaterialUI_Styles.convertStyleTypes()(MaterialUI_Styles.toClassNameCons(MaterialUI_Styles.toClassNameCons(MaterialUI_Styles.toClassNameNil)))(Type_RowList.listToRowCons(Type_RowList.listToRowCons(Type_RowList.listToRowNil)())()))(styles)(c);
+    }();
+
     return React.createLeafElement(React.reactPropFields()())(c$prime)({});
   };
 
@@ -8226,7 +8274,7 @@ var PS = {};
   $PS["Timeline.Data.TimelineName"] = $PS["Timeline.Data.TimelineName"] || {};
   var exports = $PS["Timeline.Data.TimelineName"];
   var initialTimelineName = {
-    title: "",
+    title: "Timeline Name",
     filename: "timeline"
   };
   exports["initialTimelineName"] = initialTimelineName;
@@ -8348,9 +8396,27 @@ var PS = {};
           }
 
           ;
-          throw new Error("Failed pattern match at Components.Index (line 77, column 28 - line 79, column 37): " + [eX.constructor.name]);
+          throw new Error("Failed pattern match at Components.Index (line 78, column 28 - line 80, column 37): " + [eX.constructor.name]);
         };
 
+        var onTimelineNameEdit = Effect_Aff.runAff_(resolve)(Control_Bind.bind(Effect_Aff.bindAff)(IOQueues.callAsync(Queue_One.queueQueueOne)(Queue_One.queueScopeQueueOne)(v3)(Data_Unit.unit))(function (v9) {
+          if (v9 instanceof Data_Maybe.Nothing) {
+            return Control_Applicative.pure(Effect_Aff.applicativeAff)(Data_Unit.unit);
+          }
+
+          ;
+
+          if (v9 instanceof Data_Maybe.Just) {
+            return Effect_Class.liftEffect(Effect_Aff.monadEffectAff)(IxSignal.setDiff(Data_Eq.eqRec()(Data_Eq.eqRowCons(Data_Eq.eqRowCons(Data_Eq.eqRowNil)()(new Data_Symbol.IsSymbol(function () {
+              return "title";
+            }))(Data_Eq.eqString))()(new Data_Symbol.IsSymbol(function () {
+              return "filename";
+            }))(Data_Eq.eqString)))(v9.value0)(v6));
+          }
+
+          ;
+          throw new Error("Failed pattern match at Components.Index (line 110, column 17 - line 112, column 104): " + [v9.constructor.name]);
+        }));
         var onTimeScaleEdit = Effect_Aff.runAff_(resolve)(Control_Bind.bind(Effect_Aff.bindAff)(IOQueues.callAsync(Queue_One.queueQueueOne)(Queue_One.queueScopeQueueOne)(v4)(Data_Unit.unit))(function (v9) {
           if (v9 instanceof Data_Maybe.Nothing) {
             return Control_Applicative.pure(Effect_Aff.applicativeAff)(Data_Unit.unit);
@@ -8369,25 +8435,7 @@ var PS = {};
           }
 
           ;
-          throw new Error("Failed pattern match at Components.Index (line 116, column 17 - line 118, column 95): " + [v9.constructor.name]);
-        }));
-        var onNameEdit = Effect_Aff.runAff_(resolve)(Control_Bind.bind(Effect_Aff.bindAff)(IOQueues.callAsync(Queue_One.queueQueueOne)(Queue_One.queueScopeQueueOne)(v3)(Data_Unit.unit))(function (v9) {
-          if (v9 instanceof Data_Maybe.Nothing) {
-            return Control_Applicative.pure(Effect_Aff.applicativeAff)(Data_Unit.unit);
-          }
-
-          ;
-
-          if (v9 instanceof Data_Maybe.Just) {
-            return Effect_Class.liftEffect(Effect_Aff.monadEffectAff)(IxSignal.setDiff(Data_Eq.eqRec()(Data_Eq.eqRowCons(Data_Eq.eqRowCons(Data_Eq.eqRowNil)()(new Data_Symbol.IsSymbol(function () {
-              return "title";
-            }))(Data_Eq.eqString))()(new Data_Symbol.IsSymbol(function () {
-              return "filename";
-            }))(Data_Eq.eqString)))(v9.value0)(v6));
-          }
-
-          ;
-          throw new Error("Failed pattern match at Components.Index (line 109, column 17 - line 111, column 96): " + [v9.constructor.name]);
+          throw new Error("Failed pattern match at Components.Index (line 117, column 17 - line 119, column 95): " + [v9.constructor.name]);
         }));
         var onImport = Effect_Aff.runAff_(resolve)(Control_Bind.bind(Effect_Aff.bindAff)(IOQueues.callAsync(Queue_One.queueQueueOne)(Queue_One.queueScopeQueueOne)(v1)(Components_Dialogs_Import.Open.value))(function (v9) {
           if (v9 instanceof Data_Maybe.Nothing) {
@@ -8403,7 +8451,7 @@ var PS = {};
           }
 
           ;
-          throw new Error("Failed pattern match at Components.Index (line 84, column 17 - line 93, column 48): " + [v9.constructor.name]);
+          throw new Error("Failed pattern match at Components.Index (line 85, column 17 - line 94, column 48): " + [v9.constructor.name]);
         }));
 
         var onExport = function __do() {
@@ -8419,7 +8467,8 @@ var PS = {};
           render: Control_Applicative.pure(Effect.applicativeEffect)(React.toElement(React.isReactElementArray)([Components_TopBar.topBar({
             onImport: onImport,
             onExport: onExport,
-            onNameEdit: onNameEdit
+            onTimelineNameEdit: onTimelineNameEdit,
+            timelineNameSignal: Signal_Types.readOnly(IxSignal.signalScopeIxSignal)(v6)
           }), React_DOM.div([React_DOM_Props.style({
             height: "100%",
             padding: "3em 0"
@@ -8428,7 +8477,8 @@ var PS = {};
             variant: MaterialUI_Enums.title
           })([React_DOM.text("Just a Test")])]), Components_BottomBar.bottomBar({
             onTimeScaleEdit: onTimeScaleEdit,
-            zoomSignal: Signal_Types.readOnly(IxSignal.signalScopeIxSignal)(v8)
+            zoomSignal: Signal_Types.readOnly(IxSignal.signalScopeIxSignal)(v8),
+            timeScaleSignal: Signal_Types.readOnly(IxSignal.signalScopeIxSignal)(v7)
           }), Components_Dialogs_Import.importDialog(v1), Components_Dialogs_Export.exportDialog(Queue_Types.readOnly(Queue_One.queueScopeQueueOne)(Queue_Types.allowReading(Queue_One.queueScopeQueueOne)(v2))), Components_Snackbar.snackbars(v5)]))
         };
       };

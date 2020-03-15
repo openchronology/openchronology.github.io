@@ -53,7 +53,7 @@ index {stateRef} = withRoot e
           ( exportQueue :: Q.Queue (write :: Q.WRITE) Export.ExportDialog
             ) <- Q.writeOnly <$> Q.new
           -- TODO make a title and filename edit dialog
-          ( nameEditQueues :: IOQueues Q.Queue Unit (Maybe TimelineName)
+          ( timelineNameEditQueues :: IOQueues Q.Queue Unit (Maybe TimelineName)
             ) <- IOQueues.new
           ( timeScaleEditQueues :: IOQueues Q.Queue Unit (Maybe TimeScale)
             ) <- IOQueues.new
@@ -63,8 +63,9 @@ index {stateRef} = withRoot e
             ) <- Q.writeOnly <$> Q.new
 
           -- shared state signals
+          -- TODO originate source of data from IndexedDB? File uploading _sets_ these signals
           -- status of the title and filename in the TopBar
-          ( nameSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) TimelineName
+          ( timelineNameSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) TimelineName
             ) <- IxSig.make initialTimelineName
           -- status of the timescale in the BottomBar
           ( timeScaleSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) TimeScale
@@ -103,12 +104,12 @@ index {stateRef} = withRoot e
                 Q.put exportQueue (Export.ExportDialog {buffer, filename: "foo.och"})
 
               -- patching between dialog queues and state signals
-              onNameEdit :: Effect Unit
-              onNameEdit = runAff_ resolve $ do
-                mEditedName <- IOQueues.callAsync nameEditQueues unit
-                case mEditedName of
+              onTimelineNameEdit :: Effect Unit
+              onTimelineNameEdit = runAff_ resolve $ do
+                mEditedTimelineName <- IOQueues.callAsync timelineNameEditQueues unit
+                case mEditedTimelineName of
                   Nothing -> pure unit
-                  Just newTimelineName -> liftEffect (IxSig.setDiff newTimelineName nameSignal)
+                  Just newTimelineName -> liftEffect (IxSig.setDiff newTimelineName timelineNameSignal)
 
               onTimeScaleEdit :: Effect Unit
               onTimeScaleEdit = runAff_ resolve $ do
@@ -119,11 +120,20 @@ index {stateRef} = withRoot e
           pure
             { state: {}
             , render: pure $ toElement
-              [ topBar {onImport, onExport, onNameEdit}
+              [ topBar
+                { onImport
+                , onExport
+                , onTimelineNameEdit
+                , timelineNameSignal: S.readOnly timelineNameSignal
+                }
               , div [P.style {height: "100%", padding: "3em 0"}]
                 [ typography {gutterBottom: true, variant: title} [text "Just a Test"]
                 ]
-              , bottomBar {onTimeScaleEdit, zoomSignal: S.readOnly zoomSignal}
+              , bottomBar
+                { onTimeScaleEdit
+                , zoomSignal: S.readOnly zoomSignal
+                , timeScaleSignal: S.readOnly timeScaleSignal
+                }
               , importDialog importQueues
               , exportDialog (Q.readOnly (Q.allowReading exportQueue))
               , snackbars snackbarQueue
