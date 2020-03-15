@@ -26,6 +26,7 @@ import Debug.Trace (trace)
 
 
 
+-- | Externally supplied signals to command the dialog
 data ImportDialog
   = Open
   | Close
@@ -79,7 +80,7 @@ importDialog (IOQueues{input,output}) = createLeafElement c {}
             Open -> setState this {open: true} -- don't return, leave that to the dialog
             Close -> do
               setState this {open: false, loading: false}
-              put output Nothing -- return when closing
+              -- put output Nothing -- return when closing
             Failed -> setState this {loading: false} -- snackbar is invoked from index
       in  whileMountedOne input handler constructor
       where

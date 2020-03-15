@@ -6,6 +6,7 @@ import Components.Dialogs.Import (importDialog)
 import Components.Dialogs.Import (ImportDialog (..)) as Import
 import Components.Dialogs.Export (exportDialog)
 import Components.Dialogs.Export (ExportDialog (..)) as Export
+import Components.Dialogs.TimelineNameEdit (timelineNameEditDialog)
 import Components.Snackbar (snackbars, SnackbarContent)
 import Timeline.Data.TimelineName (TimelineName, initialTimelineName)
 import Timeline.Data.TimeScale (TimeScale, initialTimeScale)
@@ -22,12 +23,13 @@ import Effect.Exception (throwException)
 import Effect.Aff (runAff_)
 import Effect.Ref (Ref)
 import Queue.One (Queue, new, put) as Q
-import Queue.Types (writeOnly, allowReading, readOnly, WRITE) as Q
-import IOQueues (IOQueues)
+import Queue.Types (allowWriting, writeOnly, allowReading, readOnly, WRITE) as Q
+import IOQueues (IOQueues (..))
 import IOQueues (new, callAsync) as IOQueues
 import Signal.Types (WRITE, READ, readOnly) as S
-import IxSignal (IxSignal, make, setDiff) as IxSig
+import IxSignal (IxSignal, make, setDiff, set, get) as IxSig
 import Web.File.File (File)
+import Web.File.File (name) as File
 import Web.File.Store (fileToArrayBuffer)
 import React (ReactElement, ReactClass, toElement, pureComponent, createLeafElement)
 import React.DOM (text, div)
@@ -74,7 +76,6 @@ index {stateRef} = withRoot e
           ( zoomSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) Number
             ) <- IxSig.make 100.0
 
-          -- handlers for appbar buttons
           let resolve eX = case eX of
                 Left err -> throwException err
                 Right x -> pure unit
@@ -85,34 +86,36 @@ index {stateRef} = withRoot e
                 case mFile of
                   Nothing -> pure unit
                   Just file -> do
-                    -- TODO store filename and title into TimelineName data
-                    -- TODO assign new filename and timelineName to signal
+                    -- assign the filename
+                    liftEffect do
+                      timelineName <- IxSig.get timelineNameSignal
+                      IxSig.setDiff (timelineName {filename = File.name file}) timelineNameSignal
                     -- TODO reconcile failure to parse with a `try` and throw a snackbar
                     -- TODO decode to content state, assign to content signal
                     buffer <- fileToArrayBuffer file
-                    liftEffect $ do
+                    liftEffect do
                       log $ unsafeCoerce buffer
-                      -- TODO close modal externally or throw snackbar and stop loader
+                      -- TODO throw snackbar and stop loader if failing
+                      case importQueues of
+                        IOQueues {input} -> Q.put (Q.allowWriting input) Import.Close
 
               onExport :: Effect Unit
               onExport = do
                 -- TODO encode actual content state from content signal
-                -- TODO grab filename from signal
-                -- - specifically, the filename should first reflect the title (camelcased),
-                --   unless uploaded or decided
                 buffer <- encodeArrayBuffer "yo dawg"
-                Q.put exportQueue (Export.ExportDialog {buffer, filename: "foo.och"})
+                {filename} <- IxSig.get timelineNameSignal
+                Q.put exportQueue (Export.ExportDialog {buffer, filename})
 
-              -- patching between dialog queues and state signals
+              -- invokes dialog queues and stores the result in state signals
               onTimelineNameEdit :: Effect Unit
-              onTimelineNameEdit = runAff_ resolve $ do
+              onTimelineNameEdit = runAff_ resolve do
                 mEditedTimelineName <- IOQueues.callAsync timelineNameEditQueues unit
                 case mEditedTimelineName of
                   Nothing -> pure unit
                   Just newTimelineName -> liftEffect (IxSig.setDiff newTimelineName timelineNameSignal)
 
               onTimeScaleEdit :: Effect Unit
-              onTimeScaleEdit = runAff_ resolve $ do
+              onTimeScaleEdit = runAff_ resolve do
                 mEditedTimeScale <- IOQueues.callAsync timeScaleEditQueues unit
                 case mEditedTimeScale of
                   Nothing -> pure unit
@@ -134,8 +137,14 @@ index {stateRef} = withRoot e
                 , zoomSignal: S.readOnly zoomSignal
                 , timeScaleSignal: S.readOnly timeScaleSignal
                 }
+
+              -- dialogs
               , importDialog importQueues
               , exportDialog (Q.readOnly (Q.allowReading exportQueue))
+              , timelineNameEditDialog
+                { timelineNameSignal: S.readOnly timelineNameSignal
+                , timelineNameEditQueues
+                }
               , snackbars snackbarQueue
               ]
             }

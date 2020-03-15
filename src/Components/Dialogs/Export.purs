@@ -64,7 +64,7 @@ exportDialog input = createLeafElement c {}
                       { href
                       , color: primary
                       , autoFocus: true
-                      , download: filename
+                      , download: filename <> ".och"
                       }
                 in  button params [text "Export"]
               ]
