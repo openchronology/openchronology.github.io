@@ -91,9 +91,12 @@ bottomBar {onTimeScaleEdit, zoomSignal, timeScaleSignal} = createLeafElement c' 
                     , span [RP.dangerouslySetInnerHTML {__html: "&nbsp;"}] []
                     , typography {variant: subheading, color: inherit} [text zoomShown]
                     , typography {variant: subheading, color: inherit} [text "%"]
-                    , div [RP.className props.classes.center] []
-                    , button {color: inherit, onClick: mkEffectFn1 (const onTimeScaleEdit)}
-                      [text (name <> " (" <> units <> ")")]
+                    , div [RP.className props.classes.center] [] -- divider
+                    , button
+                      { color: inherit
+                      , onClick: mkEffectFn1 (const onTimeScaleEdit)
+                      , title: "TimeScale Name and Description"
+                      } [text (name <> " (" <> units <> ")")]
                     ]
                   ]
             }

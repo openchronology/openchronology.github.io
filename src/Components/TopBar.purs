@@ -20,9 +20,9 @@ import MaterialUI.Styles (withStyles)
 import MaterialUI.Enums (title, absolute, inherit, dense)
 import MaterialUI.Icon (icon')
 import MaterialUI.Icons.SettingsIcon (settingsIcon)
+import MaterialUI.Icons.GetAppIcon (getAppIcon)
 import Signal.Types (READ) as S
 import IxSignal (IxSignal, get) as IxSig
-import Unsafe.Coerce (unsafeCoerce)
 
 
 
@@ -77,20 +77,29 @@ topBar {onImport, onExport, onTimelineNameEdit, timelineNameSignal} = createLeaf
                 pure $ appBar {position: absolute, className: props.classes.root}
                   [ toolbar {variant: dense}
                     [ typography {variant: title, color: inherit} [text "OpenChronology"]
-                    , div [RP.className props.classes.center]
-                      [ button {color: inherit, onClick: mkEffectFn1 (const onTimelineNameEdit)} [text titleValue]
-                      ]
+                    , button
+                        { color: inherit
+                        , onClick: mkEffectFn1 (const onTimelineNameEdit)
+                        , title: "Timeline Name and Description"
+                        } [text titleValue]
+                    , div [RP.className props.classes.center] [] -- divider
                     , button {color: inherit, onClick: mkEffectFn1 (const onImport)} [text "Import"]
                     , button {color: inherit, onClick: mkEffectFn1 (const onExport)} [text "Export"]
-                    , iconButton {color: inherit} [settingsIcon]
-                    , let props' :: {href :: String}
-                          props' = unsafeCoerce
-                            { color: inherit
-                            , href: "https://github.com/openchronology/openchronology.github.io/"
-                            , target: "__blank"
-                            }
-                      in  iconButton props'
-                      [icon' {className: "fab fa-github"}]
+                    , iconButton
+                        { color: inherit
+                        , title: "Settings"
+                        } [settingsIcon]
+                    , iconButton
+                        { color: inherit
+                        , href: "https://github.com/openchronology/openchronology.github.io/"
+                        , target: "__blank"
+                        , title: "GitHub"
+                        } [icon' {className: "fab fa-github"}]
+                    , iconButton
+                        { color: inherit
+                        , href: "./openchronology-static.zip"
+                        , title: "Download App"
+                        } [getAppIcon]
                     ]
                   ]
             }

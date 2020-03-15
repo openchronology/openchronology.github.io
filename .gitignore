@@ -7,3 +7,6 @@
 /.psc*
 /.purs*
 /.psa*
+/build/index.tmp.js
+/build/staticstyles.html
+/build/staticscripts.html

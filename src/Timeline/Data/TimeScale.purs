@@ -11,7 +11,7 @@ type TimeScale =
 
 initialTimeScale :: TimeScale
 initialTimeScale =
-  { name: "TimeScale"
+  { name: "TimeScale Name"
   , units: "Years"
   , description: ""
   }
