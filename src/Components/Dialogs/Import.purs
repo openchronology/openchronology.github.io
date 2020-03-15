@@ -9,10 +9,6 @@ import Queue.One (Queue, put)
 import IOQueues (IOQueues (..))
 import Web.File.File (File)
 import Web.File.Store (getFile)
-import Web.HTML (window)
-import Web.HTML.Window (document)
-import Web.HTML.HTMLDocument (toDocument)
-import Web.DOM.Document (toNonElementParentNode)
 import React (ReactElement, ReactClass, ReactClassConstructor, component, setState, getState, getProps, createLeafElement)
 import React.DOM (text, div)
 import React.DOM.Props (className) as RP
@@ -35,6 +31,12 @@ data ImportDialog
   | Close
   | Failed
 
+
+type State = {open :: Boolean, loading :: Boolean}
+
+
+initialState :: State
+initialState = {open: false, loading: false}
 
 
 importDialog :: IOQueues Queue ImportDialog (Maybe File) -- ^ Write `true` to this to open the dialog, `false` to close it
@@ -70,7 +72,7 @@ importDialog (IOQueues{input,output}) = createLeafElement c {}
     c' :: ReactClass {classes :: {loaderBackground :: String, loader :: String, buttons :: String}}
     c' = component "ImportDialog" constructor'
 
-    constructor' :: ReactClassConstructor _ {open :: Boolean, loading :: Boolean} _
+    constructor' :: ReactClassConstructor _ State _
     constructor' =
       let handler :: _ -> ImportDialog -> Effect Unit
           handler this x = case x of
@@ -78,25 +80,24 @@ importDialog (IOQueues{input,output}) = createLeafElement c {}
             Close -> do
               setState this {open: false, loading: false}
               put output Nothing -- return when closing
-            Failed -> setState this {loading: false}
+            Failed -> setState this {loading: false} -- snackbar is invoked from index
       in  whileMountedOne input handler constructor
       where
         constructor this =
           let close = do
-                setState this {open: false, loading: false}
+                setState this initialState
                 put output Nothing
               submit = do
-                doc <- (toNonElementParentNode <<< toDocument) <$> (window >>= document)
                 mFile <- getFile "import-file"
                 case mFile of
-                  Nothing -> throw "No #import-file <input> node!"
+                  Nothing -> throw "No #import-file <input> node!" -- no need to throw snackbar; internal error
                   Just file -> do
                     setState this {loading: true}
                     put output (Just file)
           in  pure
                 { componentDidMount: pure unit
                 , componentWillUnmount: pure unit
-                , state: {open: false, loading: false}
+                , state: initialState
                 , render: do
                   {open,loading} <- getState this
                   props <- getProps this

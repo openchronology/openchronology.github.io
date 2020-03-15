@@ -1,4 +1,4 @@
-module Components.AppBar (indexAppBar) where
+module Components.TopBar (topBar) where
 
 import Prelude hiding (div)
 import Effect (Effect)
@@ -7,11 +7,11 @@ import React (ReactElement, ReactClass, pureComponent, getProps, createLeafEleme
 import React.DOM (text, div)
 import React.DOM.Props (className) as RP
 import MaterialUI.AppBar (appBar)
-import MaterialUI.Toolbar (toolbar_)
+import MaterialUI.Toolbar (toolbar)
 import MaterialUI.Button (button)
 import MaterialUI.Typography (typography)
 import MaterialUI.Styles (withStyles)
-import MaterialUI.Enums (title, static, inherit)
+import MaterialUI.Enums (title, absolute, inherit, dense)
 
 
 
@@ -27,22 +27,22 @@ styles theme =
   }
 
 
-indexAppBar :: { onImport :: Effect Unit
-               , onExport :: Effect Unit
-               , onNameEdit :: Effect Unit
-               } -> ReactElement
-indexAppBar {onImport, onExport, onNameEdit} = createLeafElement c' {}
+topBar :: { onImport :: Effect Unit
+          , onExport :: Effect Unit
+          , onNameEdit :: Effect Unit
+          } -> ReactElement
+topBar {onImport, onExport, onNameEdit} = createLeafElement c' {}
   where
     c' :: ReactClass {}
     c' = withStyles styles c
     c :: ReactClass {classes :: {root :: String, center :: String}}
-    c = pureComponent "IndexAppBar" \this ->
+    c = pureComponent "TopBar" \this ->
       pure
         { state: {}
         , render: do
             props <- getProps this
-            pure $ appBar {position: static, className: props.classes.root}
-              [ toolbar_
+            pure $ appBar {position: absolute, className: props.classes.root}
+              [ toolbar {variant: dense}
                 [ typography {variant: title, color: inherit} [text "OpenChronology"]
                 , div [RP.className props.classes.center]
                   [ button {color: inherit, onClick: mkEffectFn1 (const onNameEdit)} [text "Timeline Name"]
