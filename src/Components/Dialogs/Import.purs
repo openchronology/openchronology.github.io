@@ -22,7 +22,6 @@ import MaterialUI.CircularProgress (circularProgress')
 import MaterialUI.Styles (withStyles)
 import MaterialUI.Input (input')
 import MaterialUI.Enums (primary)
-import Debug.Trace (trace)
 
 
 
@@ -49,7 +48,6 @@ importDialog (IOQueues{input,output}) = createLeafElement c {}
       where
         styles :: _
         styles theme =
-          trace theme \_ ->
           { loaderBackground:
             { zIndex: 1
             , width: "100%"
@@ -63,7 +61,7 @@ importDialog (IOQueues{input,output}) = createLeafElement c {}
             , left: 0
             }
           , loader:
-            { margin: "1em" -- theme.spacing.unit * 2
+            { margin: theme.spacing.unit * 2
             }
           , buttons:
             { zIndex: 2
@@ -78,9 +76,7 @@ importDialog (IOQueues{input,output}) = createLeafElement c {}
       let handler :: _ -> ImportDialog -> Effect Unit
           handler this x = case x of
             Open -> setState this {open: true} -- don't return, leave that to the dialog
-            Close -> do
-              setState this {open: false, loading: false}
-              -- put output Nothing -- return when closing
+            Close -> setState this {open: false, loading: false}
             Failed -> setState this {loading: false} -- snackbar is invoked from index
       in  whileMountedOne input handler constructor
       where

@@ -1,4 +1,4 @@
-module Components.Snackbar (snackbars, SnackbarVariant, SnackbarContent) where
+module Components.Snackbar (snackbars, SnackbarVariant (..), SnackbarContent) where
 
 import Prelude
 import Data.Time.Duration (Milliseconds)
@@ -19,8 +19,9 @@ import MaterialUI.Styles (withStyles)
 import MaterialUI.Enums (inherit)
 import MaterialUI.Colors (green, amber)
 import MaterialUI.Snackbar (snackbar'') as S
+import MaterialUI.SnackbarContent (snackbarContent')
 import MaterialUI.Button (button)
-import Queue.Types (WRITE, allowReading)
+import Queue.Types (READ)
 import Queue.One (Queue)
 import Record (get) as Rec
 import Data.Symbol (SProxy (..))
@@ -42,7 +43,7 @@ type SnackbarContent =
   }
 
 
-snackbars :: Queue (write :: WRITE) SnackbarContent -- ^ Write to this to add a snackbar to the stack
+snackbars :: Queue (read :: READ) SnackbarContent -- ^ Write to this to add a snackbar to the stack
           -> ReactElement
 snackbars snackQueue = createLeafElement c {}
   where
@@ -57,7 +58,7 @@ snackbars snackQueue = createLeafElement c {}
                   { snacks: snoc snacks (Tuple counter value)
                   , counter: counter + 1
                   }
-          in  whileMountedOne (allowReading snackQueue) go constructor'
+          in  whileMountedOne snackQueue go constructor'
           where
             constructor' this =
               let deleteIx :: Int -> Effect Unit
@@ -118,22 +119,25 @@ snackbar key onExited {variant,message,timeout} = createLeafElement c' {}
                     pure $ S.snackbar''
                       { open
                       , key: (unsafeCoerce key) :: OneOf (typed :: String, typed :: Number)
-                      , className: case variant of
-                          Success -> props.classes.success
-                          Error -> props.classes.error
-                          Info -> props.classes.info
-                          Warning -> props.classes.warning
-                      , message: (unsafeCoerce message) :: ReactNode
                       , onClose: mkEffectFn2 \_ _ -> onClose
-                      , autoHideDuration: (unsafeCoerce (toNullable timeout) :: Number)
-                      , action:
-                        let x :: ReactNode
-                            x = unsafeCoerce $
-                              button
-                                { onClick: mkEffectFn1 (const onClose)
-                                , color: inherit
-                                } [text "Close"]
-                        in  x
+                      , autoHideDuration: unsafeCoerce (toNullable timeout) :: Number
                       , onExited: mkEffectFn1 (const onExited)
-                      } []
+                      }
+                      [ snackbarContent'
+                        { className: case variant of
+                            Success -> props.classes.success
+                            Error -> props.classes.error
+                            Info -> props.classes.info
+                            Warning -> props.classes.warning
+                        , message: (unsafeCoerce message) :: ReactNode
+                        , action:
+                          let x :: ReactNode
+                              x = unsafeCoerce $
+                                button
+                                  { onClick: mkEffectFn1 (const onClose)
+                                  , color: inherit
+                                  } [text "Close"]
+                          in  x
+                        }
+                      ]
                 }

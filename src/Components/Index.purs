@@ -8,7 +8,7 @@ import Components.Dialogs.Export (exportDialog)
 import Components.Dialogs.Export (ExportDialog (..)) as Export
 import Components.Dialogs.TimelineNameEdit (timelineNameEditDialog)
 import Components.Dialogs.TimeScaleEdit (timeScaleEditDialog)
-import Components.Snackbar (snackbars, SnackbarContent)
+import Components.Snackbar (snackbars, SnackbarContent, SnackbarVariant (Warning))
 import Timeline.Data.TimelineName (TimelineName, initialTimelineName)
 import Timeline.Data.TimeScale (TimeScale, initialTimeScale)
 import WithRoot (withRoot)
@@ -17,6 +17,7 @@ import Prelude hiding (div)
 import Data.Either (Either (..))
 import Data.Maybe (Maybe (..))
 import Data.ArrayBuffer.Class (encodeArrayBuffer, decodeArrayBuffer)
+import Data.Time.Duration (Milliseconds (..))
 import Effect (Effect)
 import Effect.Console (log)
 import Effect.Class (liftEffect)
@@ -28,7 +29,7 @@ import Queue.Types (allowWriting, writeOnly, allowReading, readOnly, WRITE) as Q
 import IOQueues (IOQueues (..))
 import IOQueues (new, callAsync) as IOQueues
 import Signal.Types (WRITE, READ, readOnly) as S
-import IxSignal (IxSignal, make, setDiff, set, get) as IxSig
+import IxSignal (IxSignal, make, setDiff, get) as IxSig
 import Web.File.File (File)
 import Web.File.File (name) as File
 import Web.File.Store (fileToArrayBuffer)
@@ -106,6 +107,15 @@ index {stateRef} = withRoot e
                 {filename} <- IxSig.get timelineNameSignal
                 Q.put exportQueue (Export.ExportDialog {buffer, filename})
 
+              -- clears local unsaved cache, and triggers a snackbar message
+              onClickedExport :: Effect Unit
+              onClickedExport = do
+                Q.put snackbarQueue
+                  { variant: Warning
+                  , message: "Local Unsaved Data Cache Deleted"
+                  , timeout: Just (Milliseconds 5000.0)
+                  }
+
               -- invokes dialog queues and stores the result in state signals
               onTimelineNameEdit :: Effect Unit
               onTimelineNameEdit = runAff_ resolve do
@@ -140,7 +150,10 @@ index {stateRef} = withRoot e
 
               -- dialogs
               , importDialog importQueues
-              , exportDialog (Q.readOnly (Q.allowReading exportQueue))
+              , exportDialog
+                { exportQueue: Q.readOnly (Q.allowReading exportQueue)
+                , onClickedExport
+                }
               , timelineNameEditDialog
                 { timelineNameSignal: S.readOnly timelineNameSignal
                 , timelineNameEditQueues
@@ -149,6 +162,6 @@ index {stateRef} = withRoot e
                 { timeScaleSignal: S.readOnly timeScaleSignal
                 , timeScaleEditQueues
                 }
-              , snackbars snackbarQueue
+              , snackbars (Q.readOnly (Q.allowReading snackbarQueue))
               ]
             }
