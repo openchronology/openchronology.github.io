@@ -1,6 +1,6 @@
 module Components.Dialogs.TimeScaleEdit (timeScaleEditDialog) where
 
-import Timeline.Data.TimeScale (TimeScale)
+import Timeline.Data.TimeScale (TimeScale (..))
 
 import Prelude
 import Data.Maybe (Maybe (..))
@@ -38,7 +38,7 @@ type State =
 initialState :: IxSig.IxSignal (read :: S.READ) TimeScale
              -> Effect State
 initialState timeScaleSignal = do
-  {name,units,description} <- IxSig.get timeScaleSignal
+  TimeScale {name,units,description} <- IxSig.get timeScaleSignal
   pure
     { open: false
     , name
@@ -70,7 +70,8 @@ timeScaleEditDialog
       let handlerOpen :: _ -> Unit -> Effect Unit
           handlerOpen this _ = setState this {open: true}
           handlerChange :: _ -> TimeScale -> Effect Unit
-          handlerChange this {name,units,description} = setState this {name,units,description}
+          handlerChange this (TimeScale {name,units,description}) =
+            setState this {name,units,description}
       in  whileMountedOne input handlerOpen $
           whileMountedIx timeScaleSignal "TimeScaleEdit" handlerChange constructor
       where
@@ -87,7 +88,7 @@ timeScaleEditDialog
                     put output Nothing
                   submit = do
                     {name,units,description} <- getState this
-                    put output (Just {name,units,description})
+                    put output (Just (TimeScale {name,units,description}))
                     setState this {open: false}
                   changeName e = do
                     t <- target e

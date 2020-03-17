@@ -1,6 +1,6 @@
 module Components.BottomBar (bottomBar) where
 
-import Timeline.Data.TimeScale (TimeScale)
+import Timeline.Data.TimeScale (TimeScale (..))
 
 import Prelude hiding (div)
 import Data.Fixed (fromNumber, toString, P100, Fixed) as Fixed
@@ -50,7 +50,7 @@ initialState :: IxSig.IxSignal (read :: S.READ) Number
              -> Effect State
 initialState zoomSignal timeScaleSignal = do
   zoom <- IxSig.get zoomSignal
-  {name, units} <- IxSig.get timeScaleSignal
+  TimeScale {name, units} <- IxSig.get timeScaleSignal
   pure
     { zoom
     , name
@@ -62,7 +62,7 @@ bottomBar :: { onTimeScaleEdit :: Effect Unit
              , zoomSignal :: IxSig.IxSignal (read :: S.READ) Number
              , timeScaleSignal :: IxSig.IxSignal (read :: S.READ) TimeScale
              } -> ReactElement
-bottomBar {onTimeScaleEdit, zoomSignal, timeScaleSignal} = createLeafElement c' {}
+bottomBar {onTimeScaleEdit,zoomSignal,timeScaleSignal} = createLeafElement c' {}
   where
     c' :: ReactClass {}
     c' = withStyles styles c
@@ -72,7 +72,7 @@ bottomBar {onTimeScaleEdit, zoomSignal, timeScaleSignal} = createLeafElement c' 
     constructor' :: ReactClassConstructor _ State _
     constructor' =
       whileMountedIx zoomSignal "BottomBar" (\this zoom -> setState this {zoom}) $
-      whileMountedIx timeScaleSignal "BottomBar" (\this {name,units} -> setState this {name,units})
+      whileMountedIx timeScaleSignal "BottomBar" (\this (TimeScale {name,units}) -> setState this {name,units})
       constructor
       where
         constructor this = do

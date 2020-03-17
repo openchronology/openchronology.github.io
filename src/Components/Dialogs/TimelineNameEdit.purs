@@ -1,6 +1,6 @@
 module Components.Dialogs.TimelineNameEdit (timelineNameEditDialog) where
 
-import Timeline.Data.TimelineName (TimelineName)
+import Timeline.Data.TimelineName (TimelineName (..))
 
 import Prelude
 import Data.Maybe (Maybe (..))
@@ -38,7 +38,7 @@ type State =
 initialState :: IxSig.IxSignal (read :: S.READ) TimelineName
              -> Effect State
 initialState timelineNameSignal = do
-  {title,filename,description} <- IxSig.get timelineNameSignal
+  TimelineName {title,filename,description} <- IxSig.get timelineNameSignal
   pure
     { open: false
     , title
@@ -70,7 +70,8 @@ timelineNameEditDialog
       let handlerOpen :: _ -> Unit -> Effect Unit
           handlerOpen this _ = setState this {open: true}
           handlerChange :: _ -> TimelineName -> Effect Unit
-          handlerChange this {title,filename,description} = setState this {title,filename,description}
+          handlerChange this (TimelineName {title,filename,description}) =
+            setState this {title,filename,description}
       in  whileMountedOne input handlerOpen $
           whileMountedIx timelineNameSignal "TimelineNameEdit" handlerChange constructor
       where
@@ -87,7 +88,7 @@ timelineNameEditDialog
                     put output Nothing
                   submit = do
                     {title,filename,description} <- getState this
-                    put output (Just {title,filename,description})
+                    put output (Just (TimelineName {title,filename,description}))
                     setState this {open: false}
                   changeTitle e = do
                     t <- target e

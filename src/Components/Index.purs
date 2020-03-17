@@ -9,8 +9,9 @@ import Components.Dialogs.Export (ExportDialog (..)) as Export
 import Components.Dialogs.TimelineNameEdit (timelineNameEditDialog)
 import Components.Dialogs.TimeScaleEdit (timeScaleEditDialog)
 import Components.Snackbar (snackbars, SnackbarContent, SnackbarVariant (Warning))
-import Timeline.Data.TimelineName (TimelineName, initialTimelineName)
-import Timeline.Data.TimeScale (TimeScale, initialTimeScale)
+import Timeline.Data.TimelineName (TimelineName (..), newTimelineNameSignal, clearTimelineNameCache)
+import Timeline.Data.TimeScale (TimeScale, newTimeScaleSignal, clearTimeScaleCache)
+import Settings (Settings, newSettingsSignal)
 import WithRoot (withRoot)
 
 import Prelude hiding (div)
@@ -67,12 +68,14 @@ index {stateRef} = withRoot e
 
           -- shared state signals
           -- TODO originate source of data from IndexedDB? File uploading _sets_ these signals
+          ( settingsSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) Settings
+            ) <- newSettingsSignal {wasOpenedByFile: false} -- FIXME
           -- status of the title and filename in the TopBar
           ( timelineNameSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) TimelineName
-            ) <- IxSig.make initialTimelineName
+            ) <- newTimelineNameSignal (S.readOnly settingsSignal)
           -- status of the timescale in the BottomBar
           ( timeScaleSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) TimeScale
-            ) <- IxSig.make initialTimeScale
+            ) <- newTimeScaleSignal (S.readOnly settingsSignal)
           -- initial zoom level
           ( zoomSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) Number
             ) <- IxSig.make 100.0
@@ -89,8 +92,8 @@ index {stateRef} = withRoot e
                   Just file -> do
                     -- assign the filename
                     liftEffect do
-                      timelineName <- IxSig.get timelineNameSignal
-                      IxSig.setDiff (timelineName {filename = File.name file}) timelineNameSignal
+                      TimelineName timelineName <- IxSig.get timelineNameSignal
+                      IxSig.setDiff (TimelineName $ timelineName {filename = File.name file}) timelineNameSignal
                     -- TODO reconcile failure to parse with a `try` and throw a snackbar
                     -- TODO decode to content state, assign to content signal
                     buffer <- fileToArrayBuffer file
@@ -104,12 +107,14 @@ index {stateRef} = withRoot e
               onExport = do
                 -- TODO encode actual content state from content signal
                 buffer <- encodeArrayBuffer "yo dawg"
-                {filename} <- IxSig.get timelineNameSignal
+                TimelineName {filename} <- IxSig.get timelineNameSignal
                 Q.put exportQueue (Export.ExportDialog {buffer, filename})
 
               -- clears local unsaved cache, and triggers a snackbar message
               onClickedExport :: Effect Unit
               onClickedExport = do
+                clearTimelineNameCache
+                clearTimeScaleCache
                 Q.put snackbarQueue
                   { variant: Warning
                   , message: "Local Unsaved Data Cache Deleted"

@@ -1,6 +1,6 @@
 module Components.TopBar (topBar) where
 
-import Timeline.Data.TimelineName (TimelineName)
+import Timeline.Data.TimelineName (TimelineName (..))
 
 import Prelude hiding (div)
 import Effect (Effect)
@@ -44,7 +44,7 @@ type State =
 
 initialState :: IxSig.IxSignal (read :: S.READ) TimelineName -> Effect State
 initialState timelineNameSignal = do
-  {title} <- IxSig.get timelineNameSignal
+  TimelineName {title} <- IxSig.get timelineNameSignal
   pure {title}
 
 
@@ -53,7 +53,7 @@ topBar :: { onImport :: Effect Unit
           , onTimelineNameEdit :: Effect Unit
           , timelineNameSignal :: IxSig.IxSignal (read :: S.READ) TimelineName
           } -> ReactElement
-topBar {onImport, onExport, onTimelineNameEdit, timelineNameSignal} = createLeafElement c' {}
+topBar {onImport,onExport,onTimelineNameEdit,timelineNameSignal} = createLeafElement c' {}
   where
     c' :: ReactClass {}
     c' = withStyles styles c
@@ -62,7 +62,7 @@ topBar {onImport, onExport, onTimelineNameEdit, timelineNameSignal} = createLeaf
         c = component "TopBar" constructor'
     constructor' :: ReactClassConstructor _ State _
     constructor' =
-      whileMountedIx timelineNameSignal "TopBar" (\this {title} -> setState this {title})
+      whileMountedIx timelineNameSignal "TopBar" (\this (TimelineName {title}) -> setState this {title})
       constructor
       where
         constructor this = do
