@@ -191,10 +191,12 @@ index {stateRef} = withRoot e
               , newDialog {newQueues}
               , timelineNameEditDialog
                 { timelineNameSignal: S.readOnly timelineNameSignal
+                , settingsSignal: S.readOnly settingsSignal
                 , timelineNameEditQueues
                 }
               , timeScaleEditDialog
                 { timeScaleSignal: S.readOnly timeScaleSignal
+                , settingsSignal: S.readOnly settingsSignal
                 , timeScaleEditQueues
                 }
               , settingsEditDialog

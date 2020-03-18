@@ -10,8 +10,8 @@ import IOQueues (IOQueues (..))
 import Web.File.File (File)
 import Web.File.Store (getFile)
 import React (ReactElement, ReactClass, ReactClassConstructor, component, setState, getState, getProps, createLeafElement)
-import React.DOM (text, div)
-import React.DOM.Props (className) as RP
+import React.DOM (text, div, strong, span)
+import React.DOM.Props (className, dangerouslySetInnerHTML) as RP
 import React.Queue.WhileMounted (whileMountedOne)
 import MaterialUI.Dialog (dialog'')
 import MaterialUI.DialogTitle (dialogTitle)
@@ -20,8 +20,9 @@ import MaterialUI.DialogActions (dialogActions)
 import MaterialUI.Button (button)
 import MaterialUI.CircularProgress (circularProgress')
 import MaterialUI.Styles (withStyles)
+import MaterialUI.Typography (typography)
 import MaterialUI.Input (input')
-import MaterialUI.Enums (primary)
+import MaterialUI.Enums (primary, subheading)
 
 
 
@@ -102,7 +103,12 @@ importDialog (IOQueues{input,output}) = createLeafElement c {}
                     dialog'' {onClose: mkEffectFn1 (const close), open, "aria-labelledby": "import-dialog-title"}
                       [ dialogTitle {id: "import-dialog-title"} [text "Import OpenChronology File"]
                       , dialogContent_ $
-                        [ input' {type: "file", inputProps: {accept: ".och", id: "import-file"}}
+                        [ typography {gutterBottom: true, variant: subheading}
+                          [ strong [] [text "Warning!"]
+                          , span [RP.dangerouslySetInnerHTML {__html: "&nbsp;"}] []
+                          , text "Clicking \"Import\" will delete any unsaved data!"
+                          ]
+                        , input' {type: "file", inputProps: {accept: ".och", id: "import-file"}}
                         ] <> if loading
                                then [ div [RP.className props.classes.loaderBackground]
                                         [circularProgress' {className: props.classes.loader}]

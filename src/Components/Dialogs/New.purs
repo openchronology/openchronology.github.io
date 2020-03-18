@@ -79,7 +79,7 @@ newDialog {newQueues: IOQueues{input,output}} = createLeafElement c {}
                       { onClick: mkEffectFn1 (const submit)
                       , color: secondary
                       , autoFocus: true
-                      } [text "I Understand, Create New Timeline"]
+                      } [text "Create New Timeline"]
                     ]
                   ]
             }

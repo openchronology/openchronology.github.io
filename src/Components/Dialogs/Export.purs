@@ -67,7 +67,7 @@ exportDialog {exportQueue, onClickedExport} = createLeafElement c {}
               [ typography {gutterBottom: true, variant: subheading}
                 [ strong [] [text "Warning!"]
                 , span [RP.dangerouslySetInnerHTML {__html: "&nbsp;"}] []
-                , text "Clicking \"Export\" will delete any unsaved data"
+                , text "Clicking \"Export\" will delete any unsaved data!"
                 ]
               ]
             , dialogActions_
