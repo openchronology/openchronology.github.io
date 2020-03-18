@@ -1,6 +1,6 @@
 module Timeline.Data.TimeScale where
 
-import Settings
+import Settings (Settings (..))
 
 import Prelude
 import Data.Maybe (Maybe (..))
@@ -16,7 +16,7 @@ import Web.Storage.Storage (setItem, getItem, removeItem)
 import Effect (Effect)
 import Effect.Exception (throw)
 import Signal.Types (READ, WRITE) as S
-import IxSignal (IxSignal, make, get, subscribeDiffLight)
+import IxSignal (IxSignal, make, get, set, subscribeDiffLight)
 
 
 newtype TimeScale = TimeScale
@@ -67,10 +67,9 @@ newTimeScaleSignal settingsSignal = do
       Right x -> pure x
   sig <- make item
   let handler x = do
-        {localCacheTilExport} <- get settingsSignal
-        if localCacheTilExport
-          then setItem localstorageKey (stringify (encodeJson x)) store
-          else pure unit
+        Settings {localCacheTilExport} <- get settingsSignal
+        when localCacheTilExport $
+          setItem localstorageKey (stringify (encodeJson x)) store
   subscribeDiffLight localstorageSignalKey handler sig
   pure sig
 
@@ -79,3 +78,9 @@ clearTimeScaleCache :: Effect Unit
 clearTimeScaleCache = do
   store <- window >>= localStorage
   removeItem localstorageKey store
+
+
+setDefaultTimeScale :: IxSignal (write :: S.WRITE) TimeScale
+                    -> Effect Unit
+setDefaultTimeScale timeScaleSignal =
+  set (TimeScale {name: "TimeScale Name", units: "Years", description: ""}) timeScaleSignal

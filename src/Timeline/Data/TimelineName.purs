@@ -1,6 +1,6 @@
 module Timeline.Data.TimelineName where
 
-import Settings (Settings)
+import Settings (Settings (..))
 
 import Prelude
 import Data.Maybe (Maybe (..))
@@ -16,7 +16,7 @@ import Web.Storage.Storage (setItem, getItem, removeItem)
 import Effect (Effect)
 import Effect.Exception (throw)
 import Signal.Types (READ, WRITE) as S
-import IxSignal (IxSignal, make, get, subscribeDiffLight)
+import IxSignal (IxSignal, make, get, set, subscribeDiffLight)
 
 
 -- | Represents both the filename and the timeline's presented name
@@ -71,10 +71,9 @@ newTimelineNameSignal settingsSignal = do
       Right x -> pure x
   sig <- make item
   let handler x = do
-        {localCacheTilExport} <- get settingsSignal
-        if localCacheTilExport
-          then setItem localstorageKey (stringify (encodeJson x)) store
-          else pure unit
+        Settings {localCacheTilExport} <- get settingsSignal
+        when localCacheTilExport $
+          setItem localstorageKey (stringify (encodeJson x)) store
   subscribeDiffLight localstorageSignalKey handler sig
   pure sig
   -- FIXME store only when settings dictate to
@@ -84,3 +83,9 @@ clearTimelineNameCache :: Effect Unit
 clearTimelineNameCache = do
   store <- window >>= localStorage
   removeItem localstorageKey store
+
+
+setDefaultTimelineName :: IxSignal (write :: S.WRITE) TimelineName
+                       -> Effect Unit
+setDefaultTimelineName timelineNameSignal = do
+  set (TimelineName {title: "Timeline Name", filename: "timeline", description: ""}) timelineNameSignal

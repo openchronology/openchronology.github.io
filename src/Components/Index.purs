@@ -6,12 +6,16 @@ import Components.Dialogs.Import (importDialog)
 import Components.Dialogs.Import (ImportDialog (..)) as Import
 import Components.Dialogs.Export (exportDialog)
 import Components.Dialogs.Export (ExportDialog (..)) as Export
+import Components.Dialogs.New (newDialog)
 import Components.Dialogs.TimelineNameEdit (timelineNameEditDialog)
 import Components.Dialogs.TimeScaleEdit (timeScaleEditDialog)
+import Components.Dialogs.SettingsEdit (settingsEditDialog)
 import Components.Snackbar (snackbars, SnackbarContent, SnackbarVariant (Warning))
-import Timeline.Data.TimelineName (TimelineName (..), newTimelineNameSignal, clearTimelineNameCache)
-import Timeline.Data.TimeScale (TimeScale, newTimeScaleSignal, clearTimeScaleCache)
-import Settings (Settings, newSettingsSignal)
+import Timeline.Data.TimelineName
+  (TimelineName (..), newTimelineNameSignal, clearTimelineNameCache, setDefaultTimelineName)
+import Timeline.Data.TimeScale
+  (TimeScale, newTimeScaleSignal, clearTimeScaleCache, setDefaultTimeScale)
+import Settings (Settings (..), newSettingsSignal)
 import WithRoot (withRoot)
 
 import Prelude hiding (div)
@@ -29,7 +33,7 @@ import Queue.One (Queue, new, put) as Q
 import Queue.Types (allowWriting, writeOnly, allowReading, readOnly, WRITE) as Q
 import IOQueues (IOQueues (..))
 import IOQueues (new, callAsync) as IOQueues
-import Signal.Types (WRITE, READ, readOnly) as S
+import Signal.Types (WRITE, READ, readOnly, writeOnly) as S
 import IxSignal (IxSignal, make, setDiff, get) as IxSig
 import Web.File.File (File)
 import Web.File.File (name) as File
@@ -57,6 +61,10 @@ index {stateRef} = withRoot e
             ) <- IOQueues.new
           ( exportQueue :: Q.Queue (write :: Q.WRITE) Export.ExportDialog
             ) <- Q.writeOnly <$> Q.new
+          ( newQueues :: IOQueues Q.Queue Unit Boolean
+            ) <- IOQueues.new
+          ( settingsEditQueues :: IOQueues Q.Queue Unit (Maybe Settings)
+            ) <- IOQueues.new
           ( timelineNameEditQueues :: IOQueues Q.Queue Unit (Maybe TimelineName)
             ) <- IOQueues.new
           ( timeScaleEditQueues :: IOQueues Q.Queue Unit (Maybe TimeScale)
@@ -67,9 +75,8 @@ index {stateRef} = withRoot e
             ) <- Q.writeOnly <$> Q.new
 
           -- shared state signals
-          -- TODO originate source of data from IndexedDB? File uploading _sets_ these signals
           ( settingsSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) Settings
-            ) <- newSettingsSignal {wasOpenedByFile: false} -- FIXME
+            ) <- newSettingsSignal {wasOpenedByShareLink: false} -- FIXME
           -- status of the title and filename in the TopBar
           ( timelineNameSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) TimelineName
             ) <- newTimelineNameSignal (S.readOnly settingsSignal)
@@ -85,15 +92,20 @@ index {stateRef} = withRoot e
                 Right x -> pure unit
 
               onImport :: Effect Unit
-              onImport = runAff_ resolve $ do
+              onImport = runAff_ resolve do
                 mFile <- IOQueues.callAsync importQueues Import.Open -- invoke opener
                 case mFile of
                   Nothing -> pure unit
                   Just file -> do
-                    -- assign the filename
                     liftEffect do
+                      -- assign the filename
                       TimelineName timelineName <- IxSig.get timelineNameSignal
                       IxSig.setDiff (TimelineName $ timelineName {filename = File.name file}) timelineNameSignal
+
+                      -- reset settings to be read-only
+                      Settings settings <- IxSig.get settingsSignal
+                      IxSig.setDiff (Settings $ settings {isEditable = false}) settingsSignal
+
                     -- TODO reconcile failure to parse with a `try` and throw a snackbar
                     -- TODO decode to content state, assign to content signal
                     buffer <- fileToArrayBuffer file
@@ -109,6 +121,14 @@ index {stateRef} = withRoot e
                 buffer <- encodeArrayBuffer "yo dawg"
                 TimelineName {filename} <- IxSig.get timelineNameSignal
                 Q.put exportQueue (Export.ExportDialog {buffer, filename})
+
+              -- new timeline
+              onNew :: Effect Unit
+              onNew = runAff_ resolve do
+                resetAll <- IOQueues.callAsync newQueues unit
+                when resetAll $ liftEffect do
+                  setDefaultTimeScale (S.writeOnly timeScaleSignal)
+                  setDefaultTimelineName (S.writeOnly timelineNameSignal)
 
               -- clears local unsaved cache, and triggers a snackbar message
               onClickedExport :: Effect Unit
@@ -135,13 +155,22 @@ index {stateRef} = withRoot e
                 case mEditedTimeScale of
                   Nothing -> pure unit
                   Just newTimeScale -> liftEffect (IxSig.setDiff newTimeScale timeScaleSignal)
+
+              onSettingsEdit :: Effect Unit
+              onSettingsEdit = runAff_ resolve do
+                mEditedSettings <- IOQueues.callAsync settingsEditQueues unit
+                case mEditedSettings of
+                  Nothing -> pure unit
+                  Just newSettings -> liftEffect (IxSig.setDiff newSettings settingsSignal)
           pure
             { state: {}
             , render: pure $ toElement
               [ topBar
                 { onImport
                 , onExport
+                , onNew
                 , onTimelineNameEdit
+                , onSettingsEdit
                 , timelineNameSignal: S.readOnly timelineNameSignal
                 }
               , div [P.style {height: "100%", padding: "3em 0"}]
@@ -159,6 +188,7 @@ index {stateRef} = withRoot e
                 { exportQueue: Q.readOnly (Q.allowReading exportQueue)
                 , onClickedExport
                 }
+              , newDialog {newQueues}
               , timelineNameEditDialog
                 { timelineNameSignal: S.readOnly timelineNameSignal
                 , timelineNameEditQueues
@@ -166,6 +196,10 @@ index {stateRef} = withRoot e
               , timeScaleEditDialog
                 { timeScaleSignal: S.readOnly timeScaleSignal
                 , timeScaleEditQueues
+                }
+              , settingsEditDialog
+                { settingsSignal: S.readOnly settingsSignal
+                , settingsEditQueues
                 }
               , snackbars (Q.readOnly (Q.allowReading snackbarQueue))
               ]

@@ -50,10 +50,19 @@ initialState timelineNameSignal = do
 
 topBar :: { onImport :: Effect Unit
           , onExport :: Effect Unit
+          , onNew :: Effect Unit
           , onTimelineNameEdit :: Effect Unit
+          , onSettingsEdit :: Effect Unit
           , timelineNameSignal :: IxSig.IxSignal (read :: S.READ) TimelineName
           } -> ReactElement
-topBar {onImport,onExport,onTimelineNameEdit,timelineNameSignal} = createLeafElement c' {}
+topBar
+  { onImport
+  , onExport
+  , onNew
+  , onTimelineNameEdit
+  , onSettingsEdit
+  , timelineNameSignal
+  } = createLeafElement c' {}
   where
     c' :: ReactClass {}
     c' = withStyles styles c
@@ -83,11 +92,13 @@ topBar {onImport,onExport,onTimelineNameEdit,timelineNameSignal} = createLeafEle
                         , title: "Timeline Name and Description"
                         } [text titleValue]
                     , div [RP.className props.classes.center] [] -- divider
+                    , button {color: inherit, onClick: mkEffectFn1 (const onNew)} [text "New"]
                     , button {color: inherit, onClick: mkEffectFn1 (const onImport)} [text "Import"]
                     , button {color: inherit, onClick: mkEffectFn1 (const onExport)} [text "Export"]
                     , iconButton
                         { color: inherit
                         , title: "Settings"
+                        , onClick: mkEffectFn1 (const onSettingsEdit)
                         } [settingsIcon]
                     , iconButton
                         { color: inherit
