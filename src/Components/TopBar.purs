@@ -21,6 +21,7 @@ import MaterialUI.Enums (title, absolute, inherit, dense)
 import MaterialUI.Icon (icon')
 import MaterialUI.Icons.SettingsIcon (settingsIcon)
 import MaterialUI.Icons.GetAppIcon (getAppIcon)
+import MaterialUI.Icons.AddCircleIcon (addCircleIcon)
 import Signal.Types (READ) as S
 import IxSignal (IxSignal, get) as IxSig
 
@@ -92,7 +93,12 @@ topBar
                         , title: "Timeline Name and Description"
                         } [text titleValue]
                     , div [RP.className props.classes.center] [] -- divider
-                    , button {color: inherit, onClick: mkEffectFn1 (const onNew)} [text "New"]
+                    , iconButton
+                        { color: inherit
+                        , title: "Create Event / Time Span"
+                        -- , onClick: mkEffectFn1 (const onAddCircleEdit)
+                        } [addCircleIcon]
+                    , button {color: inherit, onClick: mkEffectFn1 (const onNew)} [text "New Timeline"]
                     , button {color: inherit, onClick: mkEffectFn1 (const onImport)} [text "Import"]
                     , button {color: inherit, onClick: mkEffectFn1 (const onExport)} [text "Export"]
                     , iconButton

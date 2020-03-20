@@ -63,7 +63,7 @@ newDialog {newQueues: IOQueues{input,output}} = createLeafElement c {}
               props <- getProps this
               pure $
                 dialog'' {onClose: mkEffectFn1 (const close), open, "aria-labelledby": "new-dialog-title"}
-                  [ dialogTitle {id: "new-dialog-title"} [text "New"]
+                  [ dialogTitle {id: "new-dialog-title"} [text "New Timeline"]
                   , dialogContent_
                     [ typography
                       { gutterBottom: true
