@@ -172,6 +172,7 @@ index {stateRef} = withRoot e
                 , onTimelineNameEdit
                 , onSettingsEdit
                 , timelineNameSignal: S.readOnly timelineNameSignal
+                , settingsSignal: S.readOnly settingsSignal
                 }
               , div [P.style {height: "100%", padding: "3em 0"}]
                 [ typography {gutterBottom: true, variant: title} [text "Just a Test"]

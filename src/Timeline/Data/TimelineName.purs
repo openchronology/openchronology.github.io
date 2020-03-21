@@ -8,7 +8,7 @@ import Data.Either (Either (..))
 import Data.Generic.Rep (class Generic)
 import Data.Argonaut
   ( class EncodeJson, class DecodeJson
-  , encodeJson, decodeJson, (:=), (.:), (~>), jsonEmptyObject
+  , encodeJson, decodeJson, (:=), (:=?), (.:), (.:?), (~>), (~>?), jsonEmptyObject
   , stringify, jsonParser)
 import Web.HTML (window)
 import Web.HTML.Window (localStorage)
@@ -22,7 +22,7 @@ import IxSignal (IxSignal, make, get, set, subscribeDiffLight)
 -- | Represents both the filename and the timeline's presented name
 newtype TimelineName = TimelineName
   { title       :: String
-  , filename    :: String
+  , filename    :: Maybe String -- Present only on the root timespan; the timeline itself
   , description :: String
   }
 derive instance genericTimelineName :: Generic TimelineName _
@@ -31,14 +31,14 @@ derive newtype instance showTimelineName :: Show TimelineName
 instance encodeJsonTimelineName :: EncodeJson TimelineName where
   encodeJson (TimelineName {title,filename,description}) =
     "title" := title
-    ~> "filename" := filename
-    ~> "description" := description
+    ~> "filename" :=? filename
+    ~>? "description" := description
     ~> jsonEmptyObject
 instance decodeJsonTimelineName :: DecodeJson TimelineName where
   decodeJson json = do
     o <- decodeJson json
     title <- o .: "title"
-    filename <- o .: "filename"
+    filename <- o .:? "filename"
     description <- o .: "description"
     pure (TimelineName {title,filename,description})
 
@@ -54,7 +54,8 @@ localstorageKey :: String
 localstorageKey = "TimelineName"
 
 
-  -- | Chosen timeline name on boot, disregarding the shared signal
+-- FIXME need to differentiate root from children; and whether a single node being a signal is even valid
+-- | Chosen timeline name on boot, disregarding the shared signal
 newTimelineNameSignal :: IxSignal (read :: S.READ) Settings
                       -> Effect (IxSignal (read :: S.READ, write :: S.WRITE) TimelineName)
 newTimelineNameSignal settingsSignal = do
@@ -76,7 +77,6 @@ newTimelineNameSignal settingsSignal = do
           setItem localstorageKey (stringify (encodeJson x)) store
   subscribeDiffLight localstorageSignalKey handler sig
   pure sig
-  -- FIXME store only when settings dictate to
 
 
 clearTimelineNameCache :: Effect Unit
