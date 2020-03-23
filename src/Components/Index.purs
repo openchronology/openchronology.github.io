@@ -100,7 +100,8 @@ index {stateRef} = withRoot e
                     liftEffect do
                       -- assign the filename
                       TimelineName timelineName <- IxSig.get timelineNameSignal
-                      IxSig.setDiff (TimelineName $ timelineName {filename = File.name file}) timelineNameSignal
+                      -- FIXME filename
+                      -- IxSig.setDiff (TimelineName $ timelineName {filename = File.name file}) timelineNameSignal
 
                       -- reset settings to be read-only
                       Settings settings <- IxSig.get settingsSignal
@@ -119,8 +120,9 @@ index {stateRef} = withRoot e
               onExport = do
                 -- TODO encode actual content state from content signal
                 buffer <- encodeArrayBuffer "yo dawg"
-                TimelineName {filename} <- IxSig.get timelineNameSignal
-                Q.put exportQueue (Export.ExportDialog {buffer, filename})
+                -- FIXME get filename state
+                -- TimelineName {filename} <- IxSig.get timelineNameSignal
+                Q.put exportQueue (Export.ExportDialog {buffer, filename: "foobar"})
 
               -- new timeline
               onNew :: Effect Unit

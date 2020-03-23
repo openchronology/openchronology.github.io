@@ -8,7 +8,7 @@ import Data.Either (Either (..))
 import Data.Generic.Rep (class Generic)
 import Data.Argonaut
   ( class EncodeJson, class DecodeJson
-  , encodeJson, decodeJson, (:=), (:=?), (.:), (.:?), (~>), (~>?), jsonEmptyObject
+  , encodeJson, decodeJson, (:=), (.:), (~>), jsonEmptyObject
   , stringify, jsonParser)
 import Web.HTML (window)
 import Web.HTML.Window (localStorage)
@@ -22,25 +22,22 @@ import IxSignal (IxSignal, make, get, set, subscribeDiffLight)
 -- | Represents both the filename and the timeline's presented name
 newtype TimelineName = TimelineName
   { title       :: String
-  , filename    :: Maybe String -- Present only on the root timespan; the timeline itself
   , description :: String
   }
 derive instance genericTimelineName :: Generic TimelineName _
 derive newtype instance eqTimelineName :: Eq TimelineName
 derive newtype instance showTimelineName :: Show TimelineName
 instance encodeJsonTimelineName :: EncodeJson TimelineName where
-  encodeJson (TimelineName {title,filename,description}) =
+  encodeJson (TimelineName {title,description}) =
     "title" := title
-    ~> "filename" :=? filename
-    ~>? "description" := description
+    ~> "description" := description
     ~> jsonEmptyObject
 instance decodeJsonTimelineName :: DecodeJson TimelineName where
   decodeJson json = do
     o <- decodeJson json
     title <- o .: "title"
-    filename <- o .:? "filename"
     description <- o .: "description"
-    pure (TimelineName {title,filename,description})
+    pure (TimelineName {title,description})
 
 
 
@@ -64,7 +61,6 @@ newTimelineNameSignal settingsSignal = do
   item <- case mItem of
     Nothing -> pure $ TimelineName
       { title: "Timeline Name"
-      , filename: "timeline" -- Automatically appends `.och` on download
       , description: ""
       }
     Just s -> case jsonParser s >>= decodeJson of
@@ -88,4 +84,4 @@ clearTimelineNameCache = do
 setDefaultTimelineName :: IxSignal (write :: S.WRITE) TimelineName
                        -> Effect Unit
 setDefaultTimelineName timelineNameSignal = do
-  set (TimelineName {title: "Timeline Name", filename: "timeline", description: ""}) timelineNameSignal
+  set (TimelineName {title: "Timeline Name", description: ""}) timelineNameSignal

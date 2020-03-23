@@ -34,7 +34,6 @@ type State =
   { open :: Boolean
   , isEditable :: Boolean
   , title :: String
-  , filename :: String
   , description :: String
   }
 
@@ -42,13 +41,12 @@ initialState :: IxSig.IxSignal (read :: S.READ) TimelineName
              -> IxSig.IxSignal (read :: S.READ) Settings
              -> Effect State
 initialState timelineNameSignal settingsSignal = do
-  TimelineName {title,filename,description} <- IxSig.get timelineNameSignal
+  TimelineName {title,description} <- IxSig.get timelineNameSignal
   Settings {isEditable} <- IxSig.get settingsSignal
   pure
     { open: false
     , isEditable
     , title
-    , filename
     , description
     }
 
@@ -78,8 +76,8 @@ timelineNameEditDialog
       let handlerOpen :: _ -> Unit -> Effect Unit
           handlerOpen this _ = setState this {open: true}
           handlerChange :: _ -> TimelineName -> Effect Unit
-          handlerChange this (TimelineName {title,filename,description}) =
-            setState this {title,filename,description}
+          handlerChange this (TimelineName {title,description}) =
+            setState this {title,description}
           handlerChangeEdit :: _ -> Settings -> Effect Unit
           handlerChangeEdit this (Settings {isEditable}) =
             setState this {isEditable}
@@ -99,19 +97,16 @@ timelineNameEditDialog
                     setState this state'
                     put output Nothing
                   submit = do
-                    {title,filename,description} <- getState this
-                    put output (Just (TimelineName {title,filename,description}))
+                    {title,description} <- getState this
+                    put output (Just (TimelineName {title,description}))
                     setState this {open: false}
                   changeTitle e = do
                     t <- target e
                     setState this {title: (unsafeCoerce t).value}
-                  changeFilename e = do
-                    t <- target e
-                    setState this {filename: (unsafeCoerce t).value}
                   changeDescription e = do
                     t <- target e
                     setState this {description: (unsafeCoerce t).value}
-              {open,isEditable,title,filename,description} <- getState this
+              {open,isEditable,title,description} <- getState this
               props <- getProps this
               pure $
                 dialog''
@@ -126,12 +121,6 @@ timelineNameEditDialog
                             { label: "Title"
                             , value: title
                             , onChange: mkEffectFn1 changeTitle
-                            , fullWidth: true
-                            }
-                          , textField'
-                            { label: "Filename"
-                            , value: filename
-                            , onChange: mkEffectFn1 changeFilename
                             , fullWidth: true
                             }
                           , textField'
@@ -155,10 +144,8 @@ timelineNameEditDialog
                       notEditable =
                         [ dialogTitle {id: "timelinenameedit-dialog-title"} [text title]
                         , dialogContent_
-                          [ typography {gutterBottom: true, variant: body2} [text $ "Filename: " <> filename]
-                          , hr []
-                          -- FIXME use markdown
-                          , typography {gutterBottom: true, variant: body2} [text description]
+                          [ -- FIXME use markdown
+                            typography {gutterBottom: true, variant: body2} [text description]
                           ]
                         , dialogActions {className: props.classes.buttons}
                           [button {onClick: mkEffectFn1 (const close), color: primary} [text "Close"]]
