@@ -76,6 +76,7 @@ rm $STATICSCRIPTS
 mkdir static/
 cp $OUTPUTSTATIC static/index.html
 cp -r fonts/ static/fonts/
+cp -r images/ static/images/
 
 cd static/
 zip -r ../openchronology-static.zip index.html fonts/ || { exit 1; }

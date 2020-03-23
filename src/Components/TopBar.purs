@@ -9,8 +9,8 @@ import Effect.Uncurried (mkEffectFn1)
 import React
   ( ReactElement, ReactClass, ReactClassConstructor
   , component, getProps, getState, setState, createLeafElement)
-import React.DOM (text, div)
-import React.DOM.Props (className) as RP
+import React.DOM (text, div, img)
+import React.DOM.Props (className, src, style) as RP
 import React.Signal.WhileMounted (whileMountedIx)
 import MaterialUI.AppBar (appBar)
 import MaterialUI.Toolbar (toolbar)
@@ -19,7 +19,7 @@ import MaterialUI.IconButton (iconButton)
 import MaterialUI.Typography (typography)
 import MaterialUI.Styles (withStyles)
 import MaterialUI.Enums (title, absolute, inherit, dense)
-import MaterialUI.Icon (icon')
+import MaterialUI.Icon (icon', icon_)
 import MaterialUI.Icons.SettingsIcon (settingsIcon)
 import MaterialUI.Icons.GetAppIcon (getAppIcon)
 import MaterialUI.Icons.AddCircleIcon (addCircleIcon)
@@ -96,7 +96,9 @@ topBar
                 pure $ appBar {position: absolute, className: props.classes.root} $
                   [ toolbar {variant: dense} $
                     let branding :: ReactElement
-                        branding = typography {variant: title, color: inherit} [text "OpenChronology"]
+                        branding = icon_
+                          [ img [RP.src "images/logo-white.svg", RP.style {width: "24px", height: "24px"}]
+                          ]
                         breadcrumb :: Array ReactElement
                         breadcrumb =
                           [ button

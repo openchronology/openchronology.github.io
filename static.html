@@ -8564,11 +8564,13 @@ var PS = {};
   var exports = $PS["React.DOM.Props"];
   var $foreign = $PS["React.DOM.Props"];
   var style = $foreign.unsafeUnfoldProps("style");
+  var src = $foreign.unsafeMkProps("src");
   var dangerouslySetInnerHTML = $foreign.unsafeMkProps("dangerouslySetInnerHTML");
   var className = $foreign.unsafeMkProps("className");
   exports["style"] = style;
   exports["dangerouslySetInnerHTML"] = dangerouslySetInnerHTML;
   exports["className"] = className;
+  exports["src"] = src;
   exports["unsafeFromPropsArray"] = $foreign.unsafeFromPropsArray;
 })(PS);
 
@@ -8627,6 +8629,10 @@ var PS = {};
   var span = mkDOM(false)("span");
   var strong = mkDOM(false)("strong");
 
+  var img = function img(props) {
+    return mkDOM(false)("img")(props)([]);
+  };
+
   var hr = function hr(props) {
     return mkDOM(false)("hr")(props)([]);
   };
@@ -8636,6 +8642,7 @@ var PS = {};
   exports["text"] = text;
   exports["div"] = div;
   exports["hr"] = hr;
+  exports["img"] = img;
   exports["span"] = span;
   exports["strong"] = strong;
 })(PS);
@@ -13248,12 +13255,15 @@ var PS = {};
   $PS["MaterialUI.Icon"] = $PS["MaterialUI.Icon"] || {};
   var exports = $PS["MaterialUI.Icon"];
   var $foreign = $PS["MaterialUI.Icon"];
+  var Data_TSCompat_React = $PS["Data.TSCompat.React"];
   var React = $PS["React"];
+  var icon_ = Data_TSCompat_React.unsafeCreateElement($foreign.classIcon)({});
 
   var icon$prime = function icon$prime(dictIsTSEq) {
     return React.unsafeCreateLeafElement($foreign.classIcon);
   };
 
+  exports["icon_"] = icon_;
   exports["icon'"] = icon$prime;
 })(PS);
 
@@ -13355,7 +13365,6 @@ var PS = {};
   var MaterialUI_Icons_SettingsIcon = $PS["MaterialUI.Icons.SettingsIcon"];
   var MaterialUI_Styles = $PS["MaterialUI.Styles"];
   var MaterialUI_Toolbar = $PS["MaterialUI.Toolbar"];
-  var MaterialUI_Typography = $PS["MaterialUI.Typography"];
   var React = $PS["React"];
   var React_DOM = $PS["React.DOM"];
   var React_DOM_Props = $PS["React.DOM.Props"];
@@ -13450,10 +13459,10 @@ var PS = {};
                   onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onTimelineNameEdit)),
                   title: "Timeline Name and Description"
                 })([React_DOM.text(v3.title)])];
-                var branding = MaterialUI_Typography.typography(Data_TSCompat_Class.anyTSEq(Data_TSCompat_Class.optRecord()()(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.unionIsEq()(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.reflTSEq)(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.nilCheck)(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orTrue))))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.consOptEQ()(Data_TSCompat_Class.nilOpt)(Data_TSCompat_Class.optional(Data_TSCompat_Class.unionIsEq()(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.reflTSEq)(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.consCheck(Data_TSCompat_Class.typeConsEq(Data_TSCompat_Class.notEq))(Data_TSCompat_Class.nilCheck)(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orFalse))(Type_Data_Boolean.orTrue))))(Data_TSCompat_Class.onlyTrue)(Data_TSCompat_Class.nilRLEQ)))(Data_TSCompat_Class.nilAll)))({
-                  variant: MaterialUI_Enums.title,
-                  color: MaterialUI_Enums.inherit
-                })([React_DOM.text("OpenChronology")]);
+                var branding = MaterialUI_Icon.icon_([React_DOM.img([React_DOM_Props.src("images/logo-white.svg"), React_DOM_Props.style({
+                  width: "24px",
+                  height: "24px"
+                })])]);
                 return Data_Semigroup.append(Data_Semigroup.semigroupArray)([branding])(Data_Semigroup.append(Data_Semigroup.semigroupArray)(breadcrumb)(Data_Semigroup.append(Data_Semigroup.semigroupArray)([divider])(Data_Semigroup.append(Data_Semigroup.semigroupArray)(createEvent)(standardButtons))));
               }())]);
             }
@@ -15079,7 +15088,7 @@ var PS = {};
         main: "#7b1fa2"
       },
       secondary: {
-        main: "#512da8"
+        main: "#e91e63"
       }
     }
   });

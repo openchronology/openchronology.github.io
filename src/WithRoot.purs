@@ -15,7 +15,7 @@ theme = createMuiTheme
       { main: "#7b1fa2"
       }
     , secondary:
-      { main: "#512da8"
+      { main: "#e91e63"
       }
     }
   }
