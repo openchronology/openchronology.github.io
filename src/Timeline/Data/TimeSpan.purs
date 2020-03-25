@@ -1,18 +1,13 @@
 module Timeline.Data.TimeSpan where
 
 
--- | Defined over the user-level timescale
-newtype Event a = Event
-  { name        :: String
-  , description :: String
-  , time        :: a
-  }
 
-
--- | Defined over the user-level timescale
+-- | An inclusive span of time from `startIndex` to `stopIndex`.
+-- |
+-- | Defined over the user-level timescale `a`.
 newtype TimeSpan a = TimeSpan
   { name        :: String
   , description :: String
-  , startTime   :: a
-  , endTime     :: a
+  , startIndex  :: a
+  , stopIndex   :: a
   }

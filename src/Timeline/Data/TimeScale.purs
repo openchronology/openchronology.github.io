@@ -19,11 +19,13 @@ import Signal.Types (READ, WRITE) as S
 import IxSignal (IxSignal, make, get, set, subscribeDiffLight)
 
 
-newtype TimeScale = TimeScale
+newtype TimeScale a = TimeScale
   { name        :: String
   , units       :: String
   , description :: String
   -- , morphism :: Equation -- change this for different mappings - for now, we're linear
+  , beginIndex  :: a
+  , endIndex    :: a
   }
 derive instance genericTimeScale :: Generic TimeScale _
 derive newtype instance eqTimeScale :: Eq TimeScale
