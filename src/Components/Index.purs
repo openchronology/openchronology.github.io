@@ -76,7 +76,7 @@ index {stateRef} = withRoot e
 
           -- shared state signals
           ( settingsSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) Settings
-            ) <- newSettingsSignal {wasOpenedByShareLink: false} -- FIXME
+            ) <- newSettingsSignal {wasOpenedByShareLink: false} -- FIXME bind to share link, if opened by one
           -- status of the title and filename in the TopBar
           ( timelineNameSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) TimelineName
             ) <- newTimelineNameSignal (S.readOnly settingsSignal)
