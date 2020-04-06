@@ -10,7 +10,7 @@ import Effect.Uncurried (mkEffectFn1)
 import React
   ( ReactClass, ReactClassConstructor, ReactElement
   , getState, setState, getProps, createLeafElement, component)
-import React.DOM (text, hr)
+import React.DOM (text)
 import React.SyntheticEvent (target)
 import React.Queue.WhileMounted (whileMountedOne)
 import React.Signal.WhileMounted (whileMountedIx)

@@ -10,11 +10,11 @@ import Data.Argonaut
   , stringify, jsonParser)
 import Web.HTML (window)
 import Web.HTML.Window (localStorage)
-import Web.Storage.Storage (setItem, getItem, removeItem)
+import Web.Storage.Storage (setItem, getItem)
 import Effect (Effect)
 import Effect.Exception (throw)
 import Signal.Types (READ, WRITE) as S
-import IxSignal (IxSignal, make, get, set, subscribeDiffLight)
+import IxSignal (IxSignal, make, subscribeDiffLight)
 
 
 newtype Settings = Settings

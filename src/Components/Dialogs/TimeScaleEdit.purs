@@ -32,13 +32,13 @@ import Unsafe.Coerce (unsafeCoerce)
 
 -- FIXME undo all this shit - the units is part of the state. IOQueues should be `Unit -> TimeScaleDecided`,
 -- while TimeScale is a moral polymorphic definition
-type TimeScaleEdit a =
-  { beginIndexEdit  :: (a -> Effect Unit) -> ReactElement
-  , endIndexEdit    :: (a -> Effect Unit) -> ReactElement
-  , newTimeIndexRef :: Effect (Ref a) -- ^ Necessary because `State` can't be polymorphic
-  , beginIndexView  :: a -> ReactElement
-  , endIndexView    :: a -> ReactElement
-  }
+-- type TimeScaleEdit a =
+--   { beginIndexEdit  :: (a -> Effect Unit) -> ReactElement
+--   , endIndexEdit    :: (a -> Effect Unit) -> ReactElement
+--   , newTimeIndexRef :: Effect (Ref a) -- ^ Necessary because `State` can't be polymorphic
+--   , beginIndexView  :: a -> ReactElement
+--   , endIndexView    :: a -> ReactElement
+--   }
 
 
 type State =
@@ -47,8 +47,8 @@ type State =
   , name         :: String
   , units        :: String
   , description  :: String
-  , editIndicies :: Maybe {beginIndex :: ReactElement, endIndex :: ReactElement}
-  , viewIndicies :: Maybe {beginIndex :: ReactElement, endIndex :: ReactElement}
+  -- , editIndicies :: Maybe {beginIndex :: ReactElement, endIndex :: ReactElement}
+  -- , viewIndicies :: Maybe {beginIndex :: ReactElement, endIndex :: ReactElement}
   }
 
 initialState :: IxSig.IxSignal (read :: S.READ) TimeScale
@@ -63,13 +63,13 @@ initialState timeScaleSignal settingsSignal = do
     , name
     , units
     , description
-    , editIndicies: Nothing
-    , viewIndicies: Nothing
+    -- , editIndicies: Nothing
+    -- , viewIndicies: Nothing
     }
 
 timeScaleEditDialog :: { timeScaleSignal     :: IxSig.IxSignal (read :: S.READ) TimeScale
                        , settingsSignal      :: IxSig.IxSignal (read :: S.READ) Settings
-                       , timeScaleEditQueues :: IOQueues Queue (TimeScaleEdit a) (Maybe (TimeScale a))
+                       , timeScaleEditQueues :: IOQueues Queue Unit (Maybe TimeScale)
                        } -> ReactElement
 timeScaleEditDialog
   { timeScaleSignal
@@ -90,15 +90,9 @@ timeScaleEditDialog
         c' = component "TimeScaleEdit" constructor'
     constructor' :: ReactClassConstructor _ State _
     constructor' =
-      let handlerOpen :: _ -> TimeScaleEdit a -> Effect Unit
-          handlerOpen this {beginIndexEdit,endIndexEdit,newTimeIndexRef} = do
-            beginIndexState <- newTimeIndexRef
-            endIndexState <- newTimeIndexRef
-            setState this
-              { open: true
-              , beginIndex: Just (beginIndexEdit (\x -> Ref.write x beginIndexState))
-              , endIndex: Just (endIndexEdit (\x -> Ref.write x endIndexState))
-              }
+      let handlerOpen :: _ -> Unit -> Effect Unit
+          handlerOpen this _ =
+            setState this {open: true}
           handlerChange :: _ -> TimeScale -> Effect Unit
           handlerChange this (TimeScale {name,units,description}) =
             setState this {name,units,description}
@@ -133,7 +127,7 @@ timeScaleEditDialog
                   changeDescription e = do
                     t <- target e
                     setState this {description: (unsafeCoerce t).value}
-              {open,isEditable,name,units,description,editIndicies,viewIndicies} <- getState this
+              {open,isEditable,name,units,description} <- getState this
               props <- getProps this
               pure $
                 dialog''
@@ -164,9 +158,9 @@ timeScaleEditDialog
                             , fullWidth: true
                             , rowsMax: 4
                             }
-                          ] <> case editIndicies of
-                                 Nothing -> []
-                                 Just {beginIndex, endIndex} -> [beginIndex, endIndex]
+                          ] -- <> case editIndicies of
+                                 -- Nothing -> []
+                                 -- Just {beginIndex, endIndex} -> [beginIndex, endIndex]
                         , dialogActions {className: props.classes.buttons}
                           [ button {onClick: mkEffectFn1 (const close), color: primary} [text "Cancel"]
                           , button
@@ -183,9 +177,9 @@ timeScaleEditDialog
                           , hr []
                           -- FIXME use markdown
                           , typography {gutterBottom: true, variant: body2} [text description]
-                          ] <> case viewIndicies of
-                                 Nothing -> []
-                                 Just {beginIndex, endIndex} -> [beginIndex, endIndex]
+                          ] -- <> case viewIndicies of
+                                 -- Nothing -> []
+                                 -- Just {beginIndex, endIndex} -> [beginIndex, endIndex]
                         , dialogActions {className: props.classes.buttons}
                           [button {onClick: mkEffectFn1 (const close), color: primary} [text "Close"]]
                         ]
