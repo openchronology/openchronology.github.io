@@ -12,6 +12,7 @@ from this standpoint:
 
 
 import Components.Index (index)
+import Plumbing (newPrimaryQueues, newPrimarySignals, logic)
 
 import Prelude
 import Data.Maybe (Maybe (..))
@@ -30,7 +31,7 @@ import Web.DOM.NonElementParentNode (getElementById)
 
 
 -- | Get the `Document` node, and look for the `<div id='root'></div>` element
--- | (found in the templates - see [build/README.md]()).
+-- | (found in the templates - see [build/README.md](../../build/README.md)).
 mountToRoot :: ReactElement -> Effect (Maybe ReactComponent)
 mountToRoot x = do
   doc <- (toNonElementParentNode <<< toDocument) <$> (window >>= document)
@@ -47,5 +48,17 @@ main = do
 
   stateRef <- Ref.new unit
 
+  -- initialize asynchronous signals and queues
+  primaryQueues <- newPrimaryQueues
+  -- shared state signals
+  primarySignals <- newPrimarySignals
+  -- create logic functions
+  let logicFunctions = logic primaryQueues primarySignals
+
   -- `mountToRoot` returns the react component generated when binding to the DOM node #root
-  void (mountToRoot (index {stateRef}))
+  void $ mountToRoot $ index
+    { stateRef
+    , primaryQueues
+    , primarySignals
+    , logicFunctions
+    }
