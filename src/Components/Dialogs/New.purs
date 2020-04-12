@@ -1,4 +1,4 @@
-module Components.Dialogs.New where
+module Components.Dialogs.New (newDialog) where
 
 import Prelude
 import Effect (Effect)

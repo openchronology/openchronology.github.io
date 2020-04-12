@@ -1,4 +1,4 @@
-module Components.Dialogs.SettingsEdit where
+module Components.Dialogs.SettingsEdit (settingsEditDialog) where
 
 import Settings (Settings (..), defaultSettings)
 

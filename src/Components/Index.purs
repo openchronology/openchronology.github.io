@@ -1,5 +1,13 @@
 module Components.Index where
 
+{-|
+
+This is the main entry point React.js component - basically, everything that's in the
+user interface visually, lives here.
+
+-}
+
+
 import Components.TopBar (topBar)
 import Components.BottomBar (bottomBar)
 import Components.Dialogs.Import (importDialog)

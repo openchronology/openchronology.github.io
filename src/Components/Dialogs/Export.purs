@@ -1,5 +1,15 @@
 module Components.Dialogs.Export (exportDialog, ExportDialog (..)) where
 
+{-|
+
+Export is an interesting dialog, because nothing is returned from it - there's
+nothing to await... it just gives the user the ability to "download" the exported
+file. Therefore, it just reads from a queue, and when you want to export the file,
+just write to the queue.
+
+-}
+
+
 import Prelude
 import Data.ArrayBuffer.Types (ArrayBuffer)
 import Data.ArrayBuffer.ArrayBuffer (empty) as AB
@@ -24,6 +34,7 @@ import Web.File.Store (arrayBufferToBlob)
 import Web.File.Url (createObjectURL)
 
 
+-- | The content of the dialog
 newtype ExportDialog = ExportDialog
   { buffer   :: ArrayBuffer
   , filename :: String
@@ -37,6 +48,8 @@ initialState :: State
 initialState = {open: false, buffer: unsafePerformEffect (AB.empty 0), filename: ""}
 
 
+-- | When "Export" is clicked, the app knows to delete cached / "unsaved" data from LocalStorage,
+-- | because... now it's clearly had every opportunity to be saved.
 exportDialog :: { exportQueue     :: Queue (read :: READ) ExportDialog -- ^ Write to this to open the dialog
                 , onClickedExport :: Effect Unit
                 } -> ReactElement

@@ -1,5 +1,13 @@
 module Components.TopBar (topBar) where
 
+{-|
+
+Both TopBar and BottomBar are Material-UI "AppBar"s - giving site-wide functionality, like navigation
+and access to control the side-wide settings.
+
+-}
+
+
 import Timeline.Data.TimelineName (TimelineName (..))
 import Settings (Settings (..))
 
@@ -26,7 +34,7 @@ import Signal.Types (READ) as S
 import IxSignal (IxSignal, get) as IxSig
 
 
-
+-- | This CSS allows the app bar to stretch across the screen
 styles :: _
 styles theme =
   { root:
@@ -53,6 +61,8 @@ initialState timelineNameSignal settingsSignal = do
   pure {title, isEditable}
 
 
+-- | The signals give some state to this component, while the functions are
+-- | how the component interact with the queues.
 topBar :: { onImport :: Effect Unit
           , onExport :: Effect Unit
           , onNew :: Effect Unit

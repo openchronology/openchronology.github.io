@@ -121,6 +121,7 @@ newPrimarySignals = do
     }
 
 
+-- | Functions given to the React.js components, to interact with the async devices.
 type LogicFunctions =
   { onImport           :: Effect Unit
   , onExport           :: Effect Unit
@@ -132,6 +133,7 @@ type LogicFunctions =
   }
 
 
+-- | Create the logical functions
 logic :: PrimaryQueues -> PrimarySignals -> LogicFunctions
 logic
   { importQueues
