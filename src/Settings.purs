@@ -1,5 +1,12 @@
 module Settings where
 
+{-|
+
+This module defines the `Settings` record, and how to obtain a signal for it,
+which gets its information from LocalStorage.
+
+-}
+
 import Prelude
 import Data.Maybe (Maybe (..))
 import Data.Either (Either (..))
@@ -17,6 +24,7 @@ import Signal.Types (READ, WRITE) as S
 import IxSignal (IxSignal, make, subscribeDiffLight)
 
 
+-- | The `Settings` record, which is JSON encodable so it can be stored.
 newtype Settings = Settings
   { isEditable :: Boolean -- ^ `true` when opening a new timeline, `false` when loading one
   , localCacheTilExport :: Boolean -- ^ `true` by default - store local changes until export
@@ -37,13 +45,17 @@ instance decodeJsonSettings :: DecodeJson Settings where
     pure (Settings {isEditable,localCacheTilExport})
 
 
+-- | The key to be used by the `Handler` that listens to the signal for changes
 localstorageSignalKey :: String
 localstorageSignalKey = "localstorage"
 
+-- | The key to be used in LocalStorage when storing or looking up data
 localstorageKey :: String
 localstorageKey = "Settings"
 
 
+-- | Create a `Signal` which updates the LocalStorage record whenever the settings change.
+-- | The initial argument makes sure the interface isn't in edit mode when opening a shared link.
 newSettingsSignal :: { wasOpenedByShareLink :: Boolean
                      } -> Effect (IxSignal (read :: S.READ, write :: S.WRITE) Settings)
 newSettingsSignal {wasOpenedByShareLink} = do
@@ -64,6 +76,7 @@ newSettingsSignal {wasOpenedByShareLink} = do
   pure sig
 
 
+-- | What the settings value should be for new users, with no link opened.
 defaultSettings :: Settings
 defaultSettings =
   Settings {isEditable: true, localCacheTilExport: true}

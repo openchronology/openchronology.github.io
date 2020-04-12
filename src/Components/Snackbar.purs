@@ -1,5 +1,15 @@
 module Components.Snackbar (snackbars, SnackbarVariant (..), SnackbarContent) where
 
+{-|
+
+The Snackbar is just what relays little notifications to the user whenever something
+needs to be said; like an interactive footnote. To use this, just bind an instance
+of the react component to the top-level of the app, and write to the Queue to send
+a message.
+
+-}
+
+
 import Prelude
 import Data.Time.Duration (Milliseconds)
 import Data.Nullable (toNullable)
@@ -29,6 +39,7 @@ import Unsafe.Coerce (unsafeCoerce)
 
 
 
+-- | The type of snackbar being sent
 data SnackbarVariant
   = Success
   | Error
@@ -36,6 +47,8 @@ data SnackbarVariant
   | Warning
 
 
+-- | All the information necessary to send a snackbar. Note that if the timeout is Nothing,
+-- | the user will have to close the message to get rid of it.
 type SnackbarContent =
   { variant :: SnackbarVariant
   , message :: String
@@ -43,6 +56,7 @@ type SnackbarContent =
   }
 
 
+-- | Shows all the active snackbars, and pulls them from the Queue.
 snackbars :: Queue (read :: READ) SnackbarContent -- ^ Write to this to add a snackbar to the stack
           -> ReactElement
 snackbars snackQueue = createLeafElement c {}
@@ -79,7 +93,7 @@ snackbars snackQueue = createLeafElement c {}
                     }
 
 
-
+-- | Individual snackbars with cosmetic details.
 snackbar :: Int -- ^ Key
          -> Effect Unit -- ^ Call this when exited
          -> SnackbarContent

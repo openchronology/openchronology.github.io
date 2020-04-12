@@ -1,5 +1,14 @@
 module Components.BottomBar (bottomBar) where
 
+
+{-|
+
+Both TopBar and BottomBar are Material-UI "AppBar"s - giving site-wide functionality, like navigation
+and access to control the side-wide settings.
+
+-}
+
+
 import Timeline.Data.TimeScale (TimeScale (..))
 
 import Prelude hiding (div)
@@ -25,6 +34,7 @@ import IxSignal (IxSignal, get) as IxSig
 
 
 
+ -- | This CSS allows the app bar to stretch across the screen
 styles :: _
 styles theme =
   { root:
@@ -58,6 +68,8 @@ initialState zoomSignal timeScaleSignal = do
     }
 
 
+-- | The signals give some state to this component, while the functions are
+-- | how the component interact with the queues.
 bottomBar :: { onTimeScaleEdit :: Effect Unit
              , zoomSignal :: IxSig.IxSignal (read :: S.READ) Number
              , timeScaleSignal :: IxSig.IxSignal (read :: S.READ) TimeScale

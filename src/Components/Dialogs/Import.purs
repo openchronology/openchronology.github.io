@@ -1,5 +1,18 @@
 module Components.Dialogs.Import (importDialog, ImportDialog (..)) where
 
+{-|
+
+An Import dialog is kinda weird - it takes an IOQueues, so it should act as something like
+"hey, user, give me a file", but in reality, the program will have to open the dialog, but
+do some processing before closing it.
+
+So, the "input" half of the IOQueues has a few different options for messages being
+sent to it, but the "output" will be written to immediately; it's up to a higher
+echelon of logic to determine when the dialog should be closed, or if it "failed".
+
+-}
+
+
 import Prelude hiding (div)
 import Data.Maybe (Maybe (..))
 import Effect (Effect)
@@ -28,9 +41,9 @@ import MaterialUI.Enums (primary, subheading)
 
 -- | Externally supplied signals to command the dialog
 data ImportDialog
-  = Open
-  | Close
-  | Failed
+  = Open -- | Opens the dialog, and allows a user to give a file
+  | Close -- | The program decides to close the dialog
+  | Failed -- | The program decides the import failed
 
 
 type State = {open :: Boolean, loading :: Boolean}
@@ -40,6 +53,8 @@ initialState :: State
 initialState = {open: false, loading: false}
 
 
+-- | If the user just decides to close the dialog themselves, then `Nothing` is
+-- | returned. Otherwise, it's just the file.
 importDialog :: IOQueues Queue ImportDialog (Maybe File) -- ^ Write `true` to this to open the dialog, `false` to close it
              -> ReactElement
 importDialog (IOQueues{input,output}) = createLeafElement c {}
