@@ -1,5 +1,8 @@
 # OpenChronology
 
+[![Build Status](https://travis-ci.org/openchronology/openchronology.github.io.svg?branch=master)](https://travis-ci.org/openchronology/openchronology.github.io)
+
+
 A web application for creating and sharing timelines.
 
 
