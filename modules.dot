@@ -1,40 +1,40 @@
 digraph Modules {
   settings [label = "Settings"];
-  {
-    rank = same;
+  // {
+  //   rank = same;
     compDialExport [label = "Components.Dialogs.Export"];
     compDialImport [label = "Components.Dialogs.Import"];
     compDialSettingsEdit [label = "Components.Dialogs.SettingsEdit"];
     compSnackbar [label = "Components.Snackbar"];
-  }
-  {
-    rank = same;
+  // }
+  // {
+  //   rank = same;
     compBottomBar [label = "Componenets.BottomBar"];
     compDialNew [label = "Components.Dialogs.New"];
     compDialTimelineNameEdit [label = "Components.Dialogs.TimelineNameEdit"];
     compDialTimeScaleEdit [label = "Components.Dialogs.TimescaleEdit"];
     compTopBar [label = "Components.TopBar"];
-  }
+  // }
   {
     rank = same;
     compIndex [label = "Components.Index"];
     plumbing [label = "Plumbing"];
     withRoot [label = "WithRoot"];
   }
-  {
-    rank = same;
+  // {
+  //   rank = same;
     timeDataEvent [label = "Timeline.Data.Event"];
     timeDataIndex [label = "Timeline.Data.Index"];
     timeDataTimeScale [label = "Timeline.Data.TimeScale"];
     timeDataTimelineName [label = "Timeline.Data.TimelineName"];
-  }
-  {
-    rank = same;
+  // }
+  // {
+  //   rank = same;
     timeDataTimeline [label = "Timeline.Data.Timeline"];
     timeDataStoredTimeline [label = "Timeline.Data.StoredTimeline"];
     timeDataTimeSpace [label = "Timeline.Data.TimeSpace"];
     timeDataTimeSpan [label = "Timeline.Data.TimeSpan"];
-  }
+  // }
   main [label = "Main"];
 
   compIndex -> main;
