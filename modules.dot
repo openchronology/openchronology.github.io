@@ -1,0 +1,63 @@
+digraph Modules {
+  compBottomBar [label = "Componenets.BottomBar"];
+  compDialExport [label = "Components.Dialogs.Export"];
+  compDialImport [label = "Components.Dialogs.Import"];
+  compDialNew [label = "Components.Dialogs.New"];
+  compDialSettingsEdit [label = "Components.Dialogs.SettingsEdit"];
+  compDialTimelineNameEdit [label = "Components.Dialogs.TimelineNameEdit"];
+  compDialTimescaleEdit [label = "Components.Dialogs.TimescaleEdit"];
+  compIndex [label = "Components.Index"];
+  compSnackbar [label = "Components.Snackbar"];
+  compTopBar [label = "Components.TopBar"];
+  main [label = "Main"];
+  plumbing [label = "Plumbing"];
+  settings [label = "Settings"];
+  timeDataEvent [label = "Timeline.Data.Event"];
+  timeDataIndex [label = "Timeline.Data.Index"];
+  timeDataStoredTimeline [label = "Timeline.Data.StoredTimeline"];
+  timeDataTimelineName [label = "Timeline.Data.TimelineName"];
+  timeDataTimeline [label = "Timeline.Data.Timeline"];
+  timeDataTimeScale [label = "Timeline.Data.TimeScale"];
+  timeDataTimeSpace [label = "Timeline.Data.TimeSpace"];
+  timeDataTimeSpan [label = "Timeline.Data.TimeSpan"];
+  withRoot [label = "WithRoot"];
+
+  compIndex -> main;
+  plumbing -> main;
+
+  compDialImport -> plumbing;
+  compDialExport -> plumbing;
+  timeDataTimelineName -> plumbing;
+  timeDataTimeScale -> plumbing;
+  compSnackbar -> plumbing;
+  settings -> plumbing;
+
+  timeDataTimeScale -> compBottomBar;
+
+  compTopBar -> compIndex;
+  compBottomBar -> compIndex;
+  compDialImport -> compIndex;
+  compDialExport -> compIndex;
+  compDialNew -> compIndex;
+  compDialTimelineNameEdit -> compIndex;
+  compDialTimeScaleEdit -> compIndex;
+  compDialSettingsEdit -> compIndex;
+  compSnackbar -> compIndex;
+  withRoot -> compIndex;
+  plumbing -> compIndex;
+
+  timeDataTimelineName -> compBottomBar;
+  settings -> compBottomBar;
+
+  settings -> compDialSettingsEdit;
+
+  timeDataTimeScale -> compDialTimeScaleEdit;
+  settings -> compDialTimeScaleEdit;
+
+  timeDataTimelineName -> compDialTimelineNameEdit;
+  settings -> compDialTimelineNameEdit;
+
+  settings -> timeDataTimeScale;
+
+  settings -> timeDataTimelineName;
+}
