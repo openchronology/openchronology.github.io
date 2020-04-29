@@ -1,5 +1,5 @@
 digraph G {
-size="6,4";
+size="12,8";
 ratio="fill";
 u13[label="Settings",style="filled",fillcolor="#bbffbb",penwidth="0"];
 u14[label="Plumbing",style="filled",fillcolor="#bbffbb",penwidth="0"];
@@ -75,38 +75,38 @@ u24[label="Timeline",style="filled",fillcolor="#7777ff",penwidth="0"];
 }
 
 }
-u3 -> u18;
-u5 -> u13;
-u6 -> u13;
-u6 -> u19;
-u7 -> u13;
-u7 -> u18;
-u10 -> u0;
-u10 -> u1;
-u10 -> u2;
-u10 -> u13;
-u10 -> u19;
-u11 -> u3;
-u11 -> u4;
-u11 -> u5;
-u11 -> u6;
-u11 -> u7;
-u11 -> u8;
-u11 -> u9;
-u11 -> u10;
-u11 -> u12;
-u11 -> u14;
-u11 -> u25;
-u14 -> u4;
-u14 -> u8;
-u14 -> u12;
-u14 -> u13;
-u14 -> u18;
-u14 -> u19;
-u16 -> u11;
-u16 -> u14;
-u18 -> u13;
-u19 -> u13;
-u19 -> u15;
+u18 -> u3;
+u13 -> u5;
+u13 -> u6;
+u19 -> u6;
+u13 -> u7;
+u18 -> u7;
+u0 -> u10;
+u1 -> u10;
+u2 -> u10;
+u13 -> u10;
+u19 -> u10;
+u3 -> u11;
+u4 -> u11;
+u5 -> u11;
+u6 -> u11;
+u7 -> u11;
+u8 -> u11;
+u9 -> u11;
+u10 -> u11;
+u12 -> u11;
+u14 -> u11;
+u25 -> u11;
+u4 -> u14;
+u8 -> u14;
+u12 -> u14;
+u13 -> u14;
+u18 -> u14;
+u19 -> u14;
+u11 -> u16;
+u14 -> u16;
+u13 -> u18;
+u13 -> u19;
+u15 -> u19;
 
 }
