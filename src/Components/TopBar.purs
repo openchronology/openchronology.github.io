@@ -30,8 +30,8 @@ import MaterialUI.Icon (icon', icon_)
 import MaterialUI.Icons.SettingsIcon (settingsIcon)
 import MaterialUI.Icons.GetAppIcon (getAppIcon)
 import MaterialUI.Icons.AddCircleIcon (addCircleIcon)
-import Signal.Types (READ) as S
-import IxSignal (IxSignal, get) as IxSig
+import Zeta.Types (READ) as S
+import IxZeta (IxSignal, get) as IxSig
 
 
 -- | This CSS allows the app bar to stretch across the screen

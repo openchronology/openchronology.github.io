@@ -50,9 +50,9 @@ fi
 
 # Build & Bundle the PureScript
 
-pulp build || { exit 1; }
-purs bundle output/**/*.js -m Main --main Main \
-     > $JSTMP || { echo "Bundle Failed"; exit 1; }
+spago build || { exit 1; }
+spago bundle-app -m Main --to $JSTMP \
+     || { echo "Bundle Failed"; exit 1; }
 echo "Bundled"
 
 

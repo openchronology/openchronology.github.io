@@ -26,8 +26,8 @@ import MaterialUI.Switch (switch')
 import MaterialUI.Enums (primary, secondary)
 import Queue.One (Queue, put)
 import IOQueues (IOQueues (..))
-import Signal.Types (READ) as S
-import IxSignal (IxSignal, get) as IxSig
+import Zeta.Types (READ) as S
+import IxZeta (IxSignal, get) as IxSig
 import Unsafe.Coerce (unsafeCoerce)
 
 

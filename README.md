@@ -1,5 +1,8 @@
 # OpenChronology
 
+[![Build Status](https://travis-ci.org/openchronology/openchronology.github.io.svg?branch=master)](https://travis-ci.org/openchronology/openchronology.github.io)
+
+
 A web application for creating and sharing timelines.
 
 
@@ -21,7 +24,7 @@ unusual, but the tool suite has thus far been robust.
 - a linux machine (sorry!)
 - [PureScript](https://purescript.org) v0.13.2
 - [Pulp](https://github.com/purescript-contrib/pulp) v13.0.0
-- [nvm](https://github.com/nvm-sh/nvm) node version v10.15.1
+- [nvm](https://github.com/nvm-sh/nvm) node version v12.16.2
 - [ltext](http://ltext.github.io/) v0.1.3 (may require [stack](https://haskellstack.org))
 - [browserify](http://browserify.org/) v16.5.0
 - [babelify](https://www.npmjs.com/package/babelify) v10.0.0

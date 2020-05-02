@@ -36,8 +36,8 @@ import Queue.One (Queue, new, put) as Q
 import Queue.Types (allowWriting, writeOnly, WRITE) as Q
 import IOQueues (IOQueues (..))
 import IOQueues (new, callAsync) as IOQueues
-import Signal.Types (WRITE, READ, readOnly, writeOnly) as S
-import IxSignal (IxSignal, make, setDiff, get) as IxSig
+import Zeta.Types (WRITE, READ, readOnly, writeOnly) as S
+import IxZeta (IxSignal, make, setDiff, get) as IxSig
 import Web.File.File (File)
 import Web.File.Store (fileToArrayBuffer)
 import Unsafe.Coerce (unsafeCoerce)

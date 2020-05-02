@@ -15,8 +15,10 @@ import Web.HTML.Window (localStorage)
 import Web.Storage.Storage (setItem, getItem, removeItem)
 import Effect (Effect)
 import Effect.Exception (throw)
-import Signal.Types (READ, WRITE) as S
-import IxSignal (IxSignal, make, get, set, subscribeDiffLight)
+import Zeta.Types (READ, WRITE) as S
+import IxZeta (IxSignal, make, get, set, subscribeDiffLight)
+import Test.QuickCheck (class Arbitrary)
+import Test.QuickCheck.UTF8String (genString)
 
 
 -- | Represents both the filename and the timeline's presented name
@@ -38,6 +40,11 @@ instance decodeJsonTimelineName :: DecodeJson TimelineName where
     title <- o .: "title"
     description <- o .: "description"
     pure (TimelineName {title,description})
+instance arbitraryTimelineName :: Arbitrary TimelineName where
+  arbitrary = do
+    title <- genString
+    description <- genString
+    pure (TimelineName {title, description})
 
 
 
