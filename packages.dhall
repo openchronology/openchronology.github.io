@@ -119,10 +119,44 @@ let additions =
 
 
 let upstream =
-      https://github.com/purescript/package-sets/releases/download/psc-0.13.6-20200404/packages.dhall sha256:f239f2e215d0cbd5c203307701748581938f74c4c78f4aeffa32c11c131ef7b6
+      https://github.com/purescript/package-sets/releases/download/psc-0.13.6-20200502/packages.dhall sha256:1e1ecbf222c709b76cc7e24cf63af3c2089ffd22bbb1e3379dfd3c07a1787694
 
 let overrides = {=}
 
-let additions = {=}
+let additions =
+  { tscompat =
+    { dependencies = [ "react", "lists", "strings", "typelevel-prelude" ]
+    , repo = "https://github.com/athanclark/purescript-tscompat.git"
+    , version = "master"
+    }
+  , react-mui =
+    { dependencies =
+      [ "react-dom"
+      , "typelevel-prelude"
+      , "web-html"
+      , "web-dom"
+      , "react"
+      , "tscompat"
+      ]
+    , repo = "https://github.com/openchronology/purescript-react-mui.git"
+    , version = "master"
+    }
+  , file-store =
+    { dependencies =
+      [ "aff"
+      , "arraybuffer"
+      , "b64"
+      , "promises"
+      , "web-html"
+      ]
+    , repo = "https://github.com/openchronology/purescript-file-store.git"
+    , version = "master"
+    }
+  , fixed-precision =
+    { dependencies = [ "integers", "maybe", "bigints", "strings", "math" ]
+    , repo = "https://github.com/lumihq/purescript-fixed-precision.git"
+    , version = "v4.3.1"
+    }
+  }
 
 in  upstream // overrides // additions

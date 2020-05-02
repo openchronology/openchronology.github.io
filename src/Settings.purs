@@ -20,8 +20,8 @@ import Web.HTML.Window (localStorage)
 import Web.Storage.Storage (setItem, getItem)
 import Effect (Effect)
 import Effect.Exception (throw)
-import Signal.Types (READ, WRITE) as S
-import IxSignal (IxSignal, make, subscribeDiffLight)
+import Zeta.Types (READ, WRITE) as S
+import IxZeta (IxSignal, make, subscribeDiffLight)
 
 
 -- | The `Settings` record, which is JSON encodable so it can be stored.

@@ -29,8 +29,8 @@ import MaterialUI.Button (button)
 import MaterialUI.Typography (typography)
 import MaterialUI.Styles (withStyles)
 import MaterialUI.Enums (subheading, absolute, inherit, dense)
-import Signal.Types (READ) as S
-import IxSignal (IxSignal, get) as IxSig
+import Zeta.Types (READ) as S
+import IxZeta (IxSignal, get) as IxSig
 
 
 

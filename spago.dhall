@@ -4,13 +4,17 @@ You can edit this file as you like.
 -}
 { name = "openchronology.github.io"
 , dependencies =
-  [ "console"
+  [ "argonaut"
+  , "arraybuffer-class"
+  , "console"
   , "debug"
-  , "effect"
-  , "prelude"
+  , "file-store"
+  , "fixed-precision"
   , "promises"
   , "psci-support"
   , "quickcheck"
+  , "react-mui"
+  , "react-queue"
   , "spec"
   ]
 , packages = ./packages.dhall

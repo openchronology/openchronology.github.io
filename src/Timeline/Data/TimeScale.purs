@@ -15,8 +15,8 @@ import Web.HTML.Window (localStorage)
 import Web.Storage.Storage (setItem, getItem, removeItem)
 import Effect (Effect)
 import Effect.Exception (throw)
-import Signal.Types (READ, WRITE) as S
-import IxSignal (IxSignal, make, get, set, subscribeDiffLight)
+import Zeta.Types (READ, WRITE) as S
+import IxZeta (IxSignal, make, get, set, subscribeDiffLight)
 
 
 newtype TimeScale = TimeScale

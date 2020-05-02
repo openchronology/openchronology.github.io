@@ -23,7 +23,7 @@ import Plumbing (PrimaryQueues, PrimarySignals, LogicFunctions)
 import Prelude hiding (div)
 import Effect.Ref (Ref)
 import Queue.Types (allowReading, readOnly) as Q
-import Signal.Types (readOnly) as S
+import Zeta.Types (readOnly) as S
 import React (ReactElement, ReactClass, toElement, pureComponent, createLeafElement)
 import React.DOM (text, div)
 import React.DOM.Props (style) as P
