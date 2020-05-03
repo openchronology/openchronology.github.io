@@ -20,8 +20,9 @@ import Effect.Uncurried (mkEffectFn1)
 import React
   ( ReactElement, ReactClass, ReactClassConstructor
   , component, getProps, getState, setState, createLeafElement)
-import React.DOM (text, div, span)
-import React.DOM.Props (className, dangerouslySetInnerHTML) as RP
+import React.DOM (text, div)
+import React.DOM.Props (className) as RP
+import React.DOM.NonBlockingSpace (nbsp)
 import React.Signal.WhileMounted (whileMountedIx)
 import MaterialUI.AppBar (appBar)
 import MaterialUI.Toolbar (toolbar)
@@ -100,7 +101,7 @@ bottomBar {onTimeScaleEdit,zoomSignal,timeScaleSignal} = createLeafElement c' {}
                 pure $ appBar {position: absolute, className: props.classes.root}
                   [ toolbar {variant: dense}
                     [ typography {variant: subheading, color: inherit} [text "Zoom"]
-                    , span [RP.dangerouslySetInnerHTML {__html: "&nbsp;"}] []
+                    , nbsp
                     , typography {variant: subheading, color: inherit} [text zoomShown]
                     , typography {variant: subheading, color: inherit} [text "%"]
                     , div [RP.className props.classes.center] [] -- divider

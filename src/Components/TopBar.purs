@@ -28,7 +28,6 @@ import MaterialUI.Styles (withStyles)
 import MaterialUI.Enums (absolute, inherit, dense)
 import MaterialUI.Icon (icon', icon_)
 import MaterialUI.Icons.SettingsIcon (settingsIcon)
-import MaterialUI.Icons.GetAppIcon (getAppIcon)
 import MaterialUI.Icons.AddCircleIcon (addCircleIcon)
 import Zeta.Types (READ) as S
 import IxZeta (IxSignal, get) as IxSig
@@ -139,17 +138,6 @@ topBar
                               , title: "Settings"
                               , onClick: mkEffectFn1 (const onSettingsEdit)
                               } [settingsIcon]
-                          , iconButton
-                              { color: inherit
-                              , href: "https://github.com/openchronology/openchronology.github.io/"
-                              , target: "__blank"
-                              , title: "GitHub"
-                              } [icon' {className: "fab fa-github"}]
-                          , iconButton
-                              { color: inherit
-                              , href: "./openchronology-static.zip"
-                              , title: "Download App"
-                              } [getAppIcon]
                           ]
                     in  [branding] <> breadcrumb <> [divider] <> createEvent <> standardButtons
                   ]

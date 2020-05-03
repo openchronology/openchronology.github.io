@@ -48,12 +48,15 @@ fi
 
 # ----------- compiling
 
-# Build & Bundle the PureScript
-
-spago build || { exit 1; }
+# spago build || { exit 1; }
 spago bundle-app -m Main --to $JSTMP \
      || { echo "Bundle Failed"; exit 1; }
 echo "Bundled"
+
+# ----------- update module graph
+
+./build_modules.sh
+echo "Module Graph Built"
 
 
 
@@ -109,7 +112,7 @@ cp -r fonts/ static/fonts/
 cp -r images/ static/images/
 
 cd static/
-zip -r ../openchronology-static.zip index.html fonts/ || { exit 1; }
+zip -q -r ../openchronology-static.zip index.html fonts/ || { exit 1; }
 cd ../
 
 # clean up static dir

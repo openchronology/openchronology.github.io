@@ -11,7 +11,8 @@ import React
   ( ReactElement, ReactClass, ReactClassConstructor
   , getState, setState, getProps, component, createLeafElement
   )
-import React.DOM (text)
+import React.DOM (text, br)
+import React.DOM.NonBlockingSpace (nbsp)
 import React.Queue.WhileMounted (whileMountedOne)
 import React.Signal.WhileMounted (whileMountedIx)
 import MaterialUI.Dialog (dialog'')
@@ -22,8 +23,10 @@ import MaterialUI.Button (button)
 import MaterialUI.Styles (withStyles)
 import MaterialUI.FormGroup (formGroup_)
 import MaterialUI.FormControlLabel (formControlLabel')
+import MaterialUI.Icon (icon')
+import MaterialUI.Icons.GetAppIcon (getAppIcon)
 import MaterialUI.Switch (switch')
-import MaterialUI.Enums (primary, secondary)
+import MaterialUI.Enums (primary, secondary, contained)
 import Queue.One (Queue, put)
 import IOQueues (IOQueues (..))
 import Zeta.Types (READ) as S
@@ -103,7 +106,31 @@ settingsEditDialog
                 dialog'' {onClose: mkEffectFn1 (const close), open, "aria-labelledby": "settingsedit-dialog-title"}
                   [ dialogTitle {id: "settingsedit-dialog-title"} [text "Settings"]
                   , dialogContent_
-                    [ formGroup_
+                    [ button
+                      { variant: contained
+                      , color: primary
+                      , href: "https://github.com/openchronology/openchronology.github.io/"
+                      , target: "__blank"
+                      , title: "GitHub"
+                      }
+                      [ text "GitHub"
+                      , nbsp
+                      , icon' {className: "fab fa-github"}
+                      ]
+                    , br []
+                    , br []
+                    , button
+                      { variant: contained
+                      , color: primary
+                      , href: "./openchronology-static.zip"
+                      , title: "Download App"
+                      }
+                      [ text "Download"
+                      , nbsp
+                      , getAppIcon
+                      ]
+                    , br []
+                    , formGroup_
                       [ formControlLabel'
                         { control: switch'
                           { checked: isEditable
