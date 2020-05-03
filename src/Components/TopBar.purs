@@ -117,28 +117,33 @@ topBar
                           ]
                         divider :: ReactElement
                         divider = div [RP.className props.classes.center] []
-                        createEvent :: Array ReactElement
-                        createEvent =
-                          if isEditable
-                            then
-                              [ iconButton
-                                { color: inherit
-                                , title: "Create Event / Time Span"
-                                -- , onClick: mkEffectFn1 (const onAddCircleEdit)
-                                } [addCircleIcon]
-                              ]
-                            else []
+                        -- createEvent :: Array ReactElement
+                        -- createEvent =
+                        --   if isEditable
+                        --     then
+                        --       [ iconButton
+                        --         { color: inherit
+                        --         , title: "Create Event / Time Span"
+                        --         -- , onClick: mkEffectFn1 (const onAddCircleEdit)
+                        --         } [addCircleIcon]
+                        --       ]
+                        --     else []
                         standardButtons :: Array ReactElement
                         standardButtons =
-                          [ button {color: inherit, onClick: mkEffectFn1 (const onNew)} [text "New Timeline"]
-                          , button {color: inherit, onClick: mkEffectFn1 (const onImport)} [text "Import"]
-                          , button {color: inherit, onClick: mkEffectFn1 (const onExport)} [text "Export"]
-                          , iconButton
-                              { color: inherit
-                              , title: "Settings"
-                              , onClick: mkEffectFn1 (const onSettingsEdit)
-                              } [settingsIcon]
-                          ]
-                    in  [branding] <> breadcrumb <> [divider] <> createEvent <> standardButtons
+                          newTimeline <>
+                            [ button {color: inherit, onClick: mkEffectFn1 (const onImport)} [text "Import"]
+                            , button {color: inherit, onClick: mkEffectFn1 (const onExport)} [text "Export"]
+                            , iconButton
+                                { color: inherit
+                                , title: "Settings"
+                                , onClick: mkEffectFn1 (const onSettingsEdit)
+                                } [settingsIcon]
+                            ]
+                          where
+                            newTimeline =
+                              if isEditable
+                                then [button {color: inherit, onClick: mkEffectFn1 (const onNew)} [text "New Timeline"]]
+                                else []
+                    in  [branding] <> breadcrumb <> [divider] {-<> createEvent-} <> standardButtons
                   ]
             }
