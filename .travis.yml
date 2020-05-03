@@ -1,5 +1,7 @@
 node_js:
   - "node"
+addons:
+  chrome: stable
 language: node_js
 install:
   - npm install -g purescript spago
