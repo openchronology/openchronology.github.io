@@ -31,13 +31,15 @@ import MaterialUI.Icons.SettingsIcon (settingsIcon)
 import MaterialUI.Icons.AddCircleIcon (addCircleIcon)
 import Zeta.Types (READ) as S
 import IxZeta (IxSignal, get) as IxSig
+import Debug.Trace (trace)
 
 
 -- | This CSS allows the app bar to stretch across the screen
 styles :: _
-styles theme =
+styles theme = -- trace theme \_ ->
   { root:
     { flexGrow: 1
+    , zIndex: theme.zIndex.drawer + 1
     }
   , center:
     { flexGrow: 1
