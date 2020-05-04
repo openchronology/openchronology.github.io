@@ -17,20 +17,27 @@ import Data.Maybe (Maybe (..))
 import Effect (Effect)
 import Effect.Exception (throw)
 import Effect.Uncurried (mkEffectFn1)
+import Effect.Console (log)
 import React
   ( ReactElement, ReactClass, ReactClassConstructor
   , component, getProps, getState, setState, createLeafElement)
-import React.DOM (text, div, span)
-import React.DOM.Props (className, dangerouslySetInnerHTML) as RP
+import React.SyntheticEvent (preventDefault, stopPropagation, deltaY)
+import React.DOM (text, div)
+import React.DOM.Props (className) as RP
+import React.DOM.NonBlockingSpace (nbsp)
 import React.Signal.WhileMounted (whileMountedIx)
 import MaterialUI.AppBar (appBar)
 import MaterialUI.Toolbar (toolbar)
-import MaterialUI.Button (button)
+import MaterialUI.Button (button, button'')
+import MaterialUI.IconButton (iconButton)
+import MaterialUI.Icons.AddIcon (addIcon)
+import MaterialUI.Icons.RemoveIcon (removeIcon)
 import MaterialUI.Typography (typography)
 import MaterialUI.Styles (withStyles)
 import MaterialUI.Enums (subheading, absolute, inherit, dense)
-import Zeta.Types (READ) as S
-import IxZeta (IxSignal, get) as IxSig
+import Zeta.Types (READ, WRITE, readOnly) as S
+import IxZeta (IxSignal, get, set) as IxSig
+import Debug.Trace (traceM)
 
 
 
@@ -71,7 +78,7 @@ initialState zoomSignal timeScaleSignal = do
 -- | The signals give some state to this component, while the functions are
 -- | how the component interact with the queues.
 bottomBar :: { onTimeScaleEdit :: Effect Unit
-             , zoomSignal :: IxSig.IxSignal (read :: S.READ) Number
+             , zoomSignal :: IxSig.IxSignal (read :: S.READ, write :: S.WRITE) Number
              , timeScaleSignal :: IxSig.IxSignal (read :: S.READ) TimeScale
              } -> ReactElement
 bottomBar {onTimeScaleEdit,zoomSignal,timeScaleSignal} = createLeafElement c' {}
@@ -88,7 +95,16 @@ bottomBar {onTimeScaleEdit,zoomSignal,timeScaleSignal} = createLeafElement c' {}
       constructor
       where
         constructor this = do
-          state <- initialState zoomSignal timeScaleSignal
+          state <- initialState (S.readOnly zoomSignal) timeScaleSignal
+          let resetZoom = IxSig.set 100.0 zoomSignal
+              zoomOut = do
+                z <- IxSig.get zoomSignal
+                let z' | z <= 10.0 = 10.0
+                       | otherwise = z - 10.0
+                IxSig.set z' zoomSignal
+              zoomIn = do
+                z <- IxSig.get zoomSignal
+                IxSig.set (z + 10.0) zoomSignal
           pure
             { state
             , componentDidMount: pure unit
@@ -99,10 +115,34 @@ bottomBar {onTimeScaleEdit,zoomSignal,timeScaleSignal} = createLeafElement c' {}
                 zoomShown <- showZoom zoom
                 pure $ appBar {position: absolute, className: props.classes.root}
                   [ toolbar {variant: dense}
-                    [ typography {variant: subheading, color: inherit} [text "Zoom"]
-                    , span [RP.dangerouslySetInnerHTML {__html: "&nbsp;"}] []
-                    , typography {variant: subheading, color: inherit} [text zoomShown]
-                    , typography {variant: subheading, color: inherit} [text "%"]
+                    [ button''
+                      { color: inherit
+                      , title: "Reset Zoom to 100%"
+                      , onClick: mkEffectFn1 (const resetZoom)
+                      , onWheel: mkEffectFn1 \e -> do
+                          preventDefault e
+                          stopPropagation e
+                          y <- deltaY e
+                          case y of
+                            _ | y > 0.0 -> zoomIn
+                              | y < 0.0 -> zoomOut
+                              | otherwise -> pure unit
+                      }
+                      [ text "Zoom"
+                      , nbsp
+                      , text (zoomShown <> "%")
+                      ]
+                    , iconButton
+                      { color: inherit
+                      , title: "Zoom Out"
+                      , disabled: zoom <= 10.0
+                      , onClick: mkEffectFn1 (const zoomOut)
+                      } [removeIcon]
+                    , iconButton
+                      { color: inherit
+                      , title: "Zoom In"
+                      , onClick: mkEffectFn1 (const zoomIn)
+                      } [addIcon]
                     , div [RP.className props.classes.center] [] -- divider
                     , button
                       { color: inherit

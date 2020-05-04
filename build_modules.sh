@@ -1,7 +1,8 @@
 #! /bin/bash
 
 # build graph
-find src -name '*.purs' | xargs graphmod -q -R 'MaterialUI' -d 12,8 > modules.dot
+find src -name '*.purs' | xargs graphmod -q \
+  -R 'MaterialUI' -R 'React' -d 12,8 > modules.dot
 # rename graph
 sed -i 's/digraph G/digraph Modules/' modules.dot
 # redirect nodes - "is imported by"

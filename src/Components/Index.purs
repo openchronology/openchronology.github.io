@@ -91,7 +91,7 @@ index
               ]
             , bottomBar
               { onTimeScaleEdit
-              , zoomSignal: S.readOnly zoomSignal
+              , zoomSignal
               , timeScaleSignal: S.readOnly timeScaleSignal
               }
 
