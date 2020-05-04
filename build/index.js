@@ -8660,6 +8660,7 @@ var PS = {};
   var Control_Applicative = $PS["Control.Applicative"];
   var Data_Boolean = $PS["Data.Boolean"];
   var Data_Semigroup = $PS["Data.Semigroup"];
+  var Data_Show = $PS["Data.Show"];
   var Data_Unit = $PS["Data.Unit"];
   var Effect = $PS["Effect"];
   var IxZeta = $PS["IxZeta"];
@@ -8695,24 +8696,26 @@ var PS = {};
       },
       drawerPaper: {
         width: drawerWidth,
-        paddingTop: theme.spacing.unit * 8 | 0
+        marginTop: theme.spacing.unit * 6 | 0,
+        marginBottom: theme.spacing.unit * 6 | 0,
+        height: "calc(100vh - " + (Data_Show.show(Data_Show.showInt)(theme.spacing.unit * 12 | 0) + "px)")
       },
       contentEditMode: {
         flexGrow: 1,
-        paddingTop: theme.spacing.unit * 8 | 0,
-        paddingBottom: theme.spacing.unit * 8 | 0,
         padding: theme.spacing.unit * 2 | 0,
+        paddingTop: theme.spacing.unit * 8 | 0,
+        marginTop: 0,
+        marginBottom: theme.spacing.unit * 6 | 0,
         marginLeft: drawerWidth,
         marginRight: drawerWidth,
-        height: "100%",
-        zIndex: theme.zIndex.drawer
+        height: "calc(100vh - " + (Data_Show.show(Data_Show.showInt)(theme.spacing.unit * 12 | 0) + "px)")
       },
       content: {
         flexGrow: 1,
-        paddingTop: theme.spacing.unit * 8 | 0,
-        paddingBottom: theme.spacing.unit * 8 | 0,
         padding: theme.spacing.unit * 2 | 0,
-        height: "100%"
+        marginTop: theme.spacing.unit * 6 | 0,
+        marginBottom: theme.spacing.unit * 6 | 0,
+        height: "calc(100vh - " + (Data_Show.show(Data_Show.showInt)(theme.spacing.unit * 12 | 0) + "px)")
       }
     };
   };
@@ -8751,7 +8754,7 @@ var PS = {};
                 }
 
                 ;
-                throw new Error("Failed pattern match at Components.Index (line 169, column 19 - line 180, column 37): " + []);
+                throw new Error("Failed pattern match at Components.Index (line 197, column 19 - line 208, column 37): " + []);
               }();
 
               var leftDrawer = function () {
@@ -8764,6 +8767,58 @@ var PS = {};
                     }
                   })([MaterialUI_Typography.typography()({
                     variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")]), MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
                   })([React_DOM.text("Drawer!")])])];
                 }
 
@@ -8774,7 +8829,7 @@ var PS = {};
                 }
 
                 ;
-                throw new Error("Failed pattern match at Components.Index (line 158, column 19 - line 168, column 37): " + []);
+                throw new Error("Failed pattern match at Components.Index (line 160, column 19 - line 196, column 37): " + []);
               }();
 
               return React.toElement(React.isReactElementArray)(Data_Semigroup.append(Data_Semigroup.semigroupArray)([Components_TopBar.topBar({

@@ -56,24 +56,26 @@ styles theme =
     }
   , drawerPaper:
     { width: drawerWidth
-    , paddingTop: theme.spacing.unit * 8
+    , marginTop: theme.spacing.unit * 6
+    , marginBottom: theme.spacing.unit * 6
+    , height: "calc(100vh - " <> show (theme.spacing.unit * 12) <> "px)"
     }
   , contentEditMode:
     { flexGrow: 1
-    , paddingTop: theme.spacing.unit * 8
-    , paddingBottom: theme.spacing.unit * 8
     , padding: theme.spacing.unit * 2
+    , paddingTop: theme.spacing.unit * 8
+    , marginTop: 0
+    , marginBottom: theme.spacing.unit * 6
     , marginLeft: drawerWidth
     , marginRight: drawerWidth
-    , height: "100%"
-    , zIndex: theme.zIndex.drawer
+    , height: "calc(100vh - " <> show (theme.spacing.unit * 12) <> "px)"
     }
   , content:
     { flexGrow: 1
-    , paddingTop: theme.spacing.unit * 8
-    , paddingBottom: theme.spacing.unit * 8
     , padding: theme.spacing.unit * 2
-    , height: "100%"
+    , marginTop: theme.spacing.unit * 6
+    , marginBottom: theme.spacing.unit * 6
+    , height: "calc(100vh - " <> show (theme.spacing.unit * 12) <> "px)"
     }
   }
 
@@ -163,6 +165,32 @@ index
                           , classes: {paper: props.classes.drawerPaper}
                           }
                           [ typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
+                          , typography {variant: title} [text "Drawer!"]
                           ]
                         ]
                     | otherwise = []
