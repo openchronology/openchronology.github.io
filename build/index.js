@@ -8658,6 +8658,8 @@ var PS = {};
   var Components_Snackbar = $PS["Components.Snackbar"];
   var Components_TopBar = $PS["Components.TopBar"];
   var Control_Applicative = $PS["Control.Applicative"];
+  var Data_Boolean = $PS["Data.Boolean"];
+  var Data_Semigroup = $PS["Data.Semigroup"];
   var Data_Unit = $PS["Data.Unit"];
   var Effect = $PS["Effect"];
   var IxZeta = $PS["IxZeta"];
@@ -8695,7 +8697,7 @@ var PS = {};
         width: drawerWidth,
         paddingTop: theme.spacing.unit * 8 | 0
       },
-      content: {
+      contentEditMode: {
         flexGrow: 1,
         paddingTop: theme.spacing.unit * 8 | 0,
         paddingBottom: theme.spacing.unit * 8 | 0,
@@ -8704,6 +8706,13 @@ var PS = {};
         marginRight: drawerWidth,
         height: "100%",
         zIndex: theme.zIndex.drawer
+      },
+      content: {
+        flexGrow: 1,
+        paddingTop: theme.spacing.unit * 8 | 0,
+        paddingBottom: theme.spacing.unit * 8 | 0,
+        padding: theme.spacing.unit * 2 | 0,
+        height: "100%"
       }
     };
   };
@@ -8719,7 +8728,56 @@ var PS = {};
             componentWillUnmount: Control_Applicative.pure(Effect.applicativeEffect)(Data_Unit.unit),
             render: function __do() {
               var props = React.getProps($$this)();
-              return React.toElement(React.isReactElementArray)([Components_TopBar.topBar({
+              var v1 = React.getState($$this)();
+
+              var rightDrawer = function () {
+                if (v1.isEditable) {
+                  return [MaterialUI_Drawer.drawer()({
+                    className: props.classes.drawer,
+                    variant: MaterialUI_Enums.permanent,
+                    classes: {
+                      paper: props.classes.drawerPaper
+                    },
+                    anchor: MaterialUI_Enums.right
+                  })([MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")])])];
+                }
+
+                ;
+
+                if (Data_Boolean.otherwise) {
+                  return [];
+                }
+
+                ;
+                throw new Error("Failed pattern match at Components.Index (line 169, column 19 - line 180, column 37): " + []);
+              }();
+
+              var leftDrawer = function () {
+                if (v1.isEditable) {
+                  return [MaterialUI_Drawer.drawer()({
+                    className: props.classes.drawer,
+                    variant: MaterialUI_Enums.permanent,
+                    classes: {
+                      paper: props.classes.drawerPaper
+                    }
+                  })([MaterialUI_Typography.typography()({
+                    variant: MaterialUI_Enums.title
+                  })([React_DOM.text("Drawer!")])])];
+                }
+
+                ;
+
+                if (Data_Boolean.otherwise) {
+                  return [];
+                }
+
+                ;
+                throw new Error("Failed pattern match at Components.Index (line 158, column 19 - line 168, column 37): " + []);
+              }();
+
+              return React.toElement(React.isReactElementArray)(Data_Semigroup.append(Data_Semigroup.semigroupArray)([Components_TopBar.topBar({
                 onImport: v.logicFunctions.onImport,
                 onExport: v.logicFunctions.onExport,
                 onNew: v.logicFunctions.onNew,
@@ -8727,27 +8785,17 @@ var PS = {};
                 onSettingsEdit: v.logicFunctions.onSettingsEdit,
                 timelineNameSignal: Zeta_Types.readOnly(IxZeta.signalScopeIxSignal)(v.primarySignals.timelineNameSignal),
                 settingsSignal: Zeta_Types.readOnly(IxZeta.signalScopeIxSignal)(v.primarySignals.settingsSignal)
-              }), MaterialUI_Drawer.drawer()({
-                className: props.classes.drawer,
-                variant: MaterialUI_Enums.permanent,
-                classes: {
-                  paper: props.classes.drawerPaper
+              })])(Data_Semigroup.append(Data_Semigroup.semigroupArray)(leftDrawer)(Data_Semigroup.append(Data_Semigroup.semigroupArray)([React_DOM.main([React_DOM_Props.className(function () {
+                if (v1.isEditable) {
+                  return props.classes.contentEditMode;
                 }
-              })([MaterialUI_Typography.typography()({
-                variant: MaterialUI_Enums.title
-              })([React_DOM.text("Drawer!")])]), React_DOM.main([React_DOM_Props.className(props.classes.content)])([MaterialUI_Typography.typography()({
+
+                ;
+                return props.classes.content;
+              }())])([MaterialUI_Typography.typography()({
                 gutterBottom: true,
                 variant: MaterialUI_Enums.title
-              })([React_DOM.text("Just a Test - blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah")])]), MaterialUI_Drawer.drawer()({
-                className: props.classes.drawer,
-                variant: MaterialUI_Enums.permanent,
-                classes: {
-                  paper: props.classes.drawerPaper
-                },
-                anchor: MaterialUI_Enums.right
-              })([MaterialUI_Typography.typography()({
-                variant: MaterialUI_Enums.title
-              })([React_DOM.text("Drawer!")])]), Components_BottomBar.bottomBar({
+              })([React_DOM.text("Just a Test - blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah")])])])(Data_Semigroup.append(Data_Semigroup.semigroupArray)(rightDrawer)([Components_BottomBar.bottomBar({
                 onTimeScaleEdit: v.logicFunctions.onTimeScaleEdit,
                 zoomSignal: v.primarySignals.zoomSignal,
                 timeScaleSignal: Zeta_Types.readOnly(IxZeta.signalScopeIxSignal)(v.primarySignals.timeScaleSignal)
@@ -8767,7 +8815,7 @@ var PS = {};
               }), Components_Dialogs_SettingsEdit.settingsEditDialog({
                 settingsSignal: Zeta_Types.readOnly(IxZeta.signalScopeIxSignal)(v.primarySignals.settingsSignal),
                 settingsEditQueues: v.primaryQueues.settingsEditQueues
-              }), Components_Snackbar.snackbars(Queue_Types.readOnly(Queue_One.queueScopeQueueOne)(Queue_Types.allowReading(Queue_One.queueScopeQueueOne)(v.primaryQueues.snackbarQueue)))]);
+              }), Components_Snackbar.snackbars(Queue_Types.readOnly(Queue_One.queueScopeQueueOne)(Queue_Types.allowReading(Queue_One.queueScopeQueueOne)(v.primaryQueues.snackbarQueue)))])))));
             }
           };
         };

@@ -29,7 +29,7 @@ import Zeta.Types (READ, readOnly) as S
 import IxZeta (IxSignal, get) as IxSig
 import React
   ( ReactElement, ReactClass, ReactClassConstructor
-  , toElement, component, setState, getProps, createLeafElement)
+  , toElement, component, setState, getState, getProps, createLeafElement)
 import React.DOM (text, div, main)
 import React.DOM.Props (style, className) as P
 import React.Signal.WhileMounted (whileMountedIx)
@@ -58,7 +58,7 @@ styles theme =
     { width: drawerWidth
     , paddingTop: theme.spacing.unit * 8
     }
-  , content:
+  , contentEditMode:
     { flexGrow: 1
     , paddingTop: theme.spacing.unit * 8
     , paddingBottom: theme.spacing.unit * 8
@@ -67,6 +67,13 @@ styles theme =
     , marginRight: drawerWidth
     , height: "100%"
     , zIndex: theme.zIndex.drawer
+    }
+  , content:
+    { flexGrow: 1
+    , paddingTop: theme.spacing.unit * 8
+    , paddingBottom: theme.spacing.unit * 8
+    , padding: theme.spacing.unit * 2
+    , height: "100%"
     }
   }
 
@@ -129,6 +136,7 @@ index
                 { drawer :: String
                 , drawerPaper :: String
                 , content :: String
+                , contentEditMode :: String
                 }
               }
         c' = component "Index" constructor'
@@ -146,7 +154,31 @@ index
             , componentWillUnmount: pure unit
             , render: do
               props <- getProps this
-              pure $ toElement
+              {isEditable} <- getState this
+              let leftDrawer
+                    | isEditable =
+                        [ drawer
+                          { className: props.classes.drawer
+                          , variant: permanent
+                          , classes: {paper: props.classes.drawerPaper}
+                          }
+                          [ typography {variant: title} [text "Drawer!"]
+                          ]
+                        ]
+                    | otherwise = []
+                  rightDrawer
+                    | isEditable =
+                        [ drawer
+                          { className: props.classes.drawer
+                          , variant: permanent
+                          , classes: {paper: props.classes.drawerPaper}
+                          , anchor: right
+                          }
+                          [ typography {variant: title} [text "Drawer!"]
+                          ]
+                        ]
+                    | otherwise = []
+              pure $ toElement $
                 [ topBar
                   { onImport
                   , onExport
@@ -156,29 +188,20 @@ index
                   , timelineNameSignal: S.readOnly timelineNameSignal
                   , settingsSignal: S.readOnly settingsSignal
                   }
+                ] <> leftDrawer <>
 
-                , drawer
-                  { className: props.classes.drawer
-                  , variant: permanent
-                  , classes: {paper: props.classes.drawerPaper}
-                  }
-                  [ typography {variant: title} [text "Drawer!"]
+                [ main
+                  [ P.className $
+                    if isEditable
+                      then props.classes.contentEditMode
+                      else props.classes.content
                   ]
-
-                , main [P.className props.classes.content] -- [P.style {height: "100%", padding: "3em 0"}, ]
-                  [ typography {gutterBottom: true, variant: title} [text "Just a Test - blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah"]
+                  [ typography {gutterBottom: true, variant: title}
+                    [text "Just a Test - blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah"]
                   ]
+                ] <> rightDrawer <>
 
-                , drawer
-                  { className: props.classes.drawer
-                  , variant: permanent
-                  , classes: {paper: props.classes.drawerPaper}
-                  , anchor: right
-                  }
-                  [ typography {variant: title} [text "Drawer!"]
-                  ]
-
-                , bottomBar
+                [ bottomBar
                   { onTimeScaleEdit
                   , zoomSignal
                   , timeScaleSignal: S.readOnly timeScaleSignal
