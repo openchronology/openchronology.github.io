@@ -10,7 +10,7 @@ describe('Testing OpenChronology', function () {
   });
 
   it('Should Have The Title', async function() {
-    await driver.get('file:///home/athan/dev/openchronology.github.io/static.html');
+    await driver.get('file://' + process.cwd() + '/static.html');
 
     let title = await driver.getTitle();
     assert.equal(title, 'OpenChronology');
