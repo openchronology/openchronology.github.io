@@ -25,7 +25,7 @@ import MaterialUI.Toolbar (toolbar)
 import MaterialUI.Button (button)
 import MaterialUI.IconButton (iconButton)
 import MaterialUI.Styles (withStyles)
-import MaterialUI.Enums (absolute, inherit, dense, secondary, raised)
+import MaterialUI.Enums (absolute, inherit, dense)
 import MaterialUI.Icon (icon', icon_)
 import MaterialUI.Icons.SettingsIcon (settingsIcon)
 import MaterialUI.Icons.AddCircleIcon (addCircleIcon)
@@ -49,7 +49,6 @@ styles theme = -- trace theme \_ ->
   , breadcrumb:
     { overflowX: "auto"
     , whiteSpace: "nowrap"
-    -- , height: theme.spacing.unit * 6
     }
   , appBarButton:
     { whiteSpace: "nowrap"
@@ -121,50 +120,13 @@ topBar
                 {title: titleValue, isEditable} <- getState this
                 pure $ appBar {position: absolute, className: props.classes.root} $
                   [ toolbar {variant: dense} $
-                    let breadcrumb :: ReactElement
-                        breadcrumb = toolbar
-                          { variant: dense
-                          , className: props.classes.breadcrumb
-                          , disableGutters: true
-                          }
-                          [ button
-                            { color: secondary
-                            , onClick: mkEffectFn1 (const onTimelineNameEdit)
-                            , title: "Timeline Name and Description"
-                            , variant: raised
-                            , className: props.classes.appBarButton
-                            } [text titleValue]
-                          , button
-                            { color: inherit
-                            , onClick: mkEffectFn1 (const onTimelineNameEdit)
-                            , title: "Timeline Name and Description"
-                            , className: props.classes.appBarButton
-                            } [text titleValue]
-                          , button
-                            { color: inherit
-                            , onClick: mkEffectFn1 (const onTimelineNameEdit)
-                            , title: "Timeline Name and Description"
-                            , className: props.classes.appBarButton
-                            } [text titleValue]
-                          , button
-                            { color: inherit
-                            , onClick: mkEffectFn1 (const onTimelineNameEdit)
-                            , title: "Timeline Name and Description"
-                            , className: props.classes.appBarButton
-                            } [text titleValue]
-                          , button
-                            { color: inherit
-                            , onClick: mkEffectFn1 (const onTimelineNameEdit)
-                            , title: "Timeline Name and Description"
-                            , className: props.classes.appBarButton
-                            } [text titleValue]
-                          , button
-                            { color: inherit
-                            , onClick: mkEffectFn1 (const onTimelineNameEdit)
-                            , title: "Timeline Name and Description"
-                            , className: props.classes.appBarButton
-                            } [text titleValue]
-                          ]
+                    let timeSpaceButton :: ReactElement
+                        timeSpaceButton = button
+                          { color: inherit
+                          , onClick: mkEffectFn1 (const onTimelineNameEdit)
+                          , title: "TimeSpace Name and Description"
+                          , className: props.classes.appBarButton
+                          } [text titleValue]
                         divider :: ReactElement
                         divider = div [RP.className props.classes.center] []
                         -- createEvent :: Array ReactElement
@@ -192,6 +154,6 @@ topBar
                                 , onClick: mkEffectFn1 (const onSettingsEdit)
                                 } [settingsIcon]
                             ]
-                    in  [breadcrumb, divider] {-<> createEvent-} <> standardButtons
+                    in  [timeSpaceButton, divider] <> standardButtons
                   ]
             }

@@ -67,7 +67,7 @@ newTimelineNameSignal settingsSignal = do
   mItem <- getItem localstorageKey store
   item <- case mItem of
     Nothing -> pure $ TimelineName
-      { title: "Timeline Name"
+      { title: "TimeSpace Name"
       , description: ""
       }
     Just s -> case jsonParser s >>= decodeJson of

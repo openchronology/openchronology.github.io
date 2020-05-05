@@ -3452,7 +3452,6 @@ var PS = {};
   var subheading = "subheading";
   var secondary = "secondary";
   var right = "right";
-  var raised = "raised";
   var primary = "primary";
   var permanent = "permanent";
   var inherit = "inherit";
@@ -3467,7 +3466,6 @@ var PS = {};
   exports["inherit"] = inherit;
   exports["permanent"] = permanent;
   exports["primary"] = primary;
-  exports["raised"] = raised;
   exports["right"] = right;
   exports["secondary"] = secondary;
   exports["subheading"] = subheading;
@@ -8506,6 +8504,12 @@ var PS = {};
               })([MaterialUI_Toolbar.toolbar()({
                 variant: MaterialUI_Enums.dense
               })(function () {
+                var timeSpaceButton = MaterialUI_Button.button()({
+                  color: MaterialUI_Enums.inherit,
+                  onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onTimelineNameEdit)),
+                  title: "TimeSpace Name and Description",
+                  className: props.classes.appBarButton
+                })([React_DOM.text(v1.title)]);
                 var standardButtons = Data_Semigroup.append(Data_Semigroup.semigroupArray)(function () {
                   if (v1.isEditable) {
                     return [MaterialUI_Button.button()({
@@ -8531,43 +8535,7 @@ var PS = {};
                   onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onSettingsEdit))
                 })([MaterialUI_Icons_SettingsIcon.settingsIcon])]);
                 var divider = React_DOM.div([React_DOM_Props.className(props.classes.center)])([]);
-                var breadcrumb = MaterialUI_Toolbar.toolbar()({
-                  variant: MaterialUI_Enums.dense,
-                  className: props.classes.breadcrumb,
-                  disableGutters: true
-                })([MaterialUI_Button.button()({
-                  color: MaterialUI_Enums.secondary,
-                  onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onTimelineNameEdit)),
-                  title: "Timeline Name and Description",
-                  variant: MaterialUI_Enums.raised,
-                  className: props.classes.appBarButton
-                })([React_DOM.text(v1.title)]), MaterialUI_Button.button()({
-                  color: MaterialUI_Enums.inherit,
-                  onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onTimelineNameEdit)),
-                  title: "Timeline Name and Description",
-                  className: props.classes.appBarButton
-                })([React_DOM.text(v1.title)]), MaterialUI_Button.button()({
-                  color: MaterialUI_Enums.inherit,
-                  onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onTimelineNameEdit)),
-                  title: "Timeline Name and Description",
-                  className: props.classes.appBarButton
-                })([React_DOM.text(v1.title)]), MaterialUI_Button.button()({
-                  color: MaterialUI_Enums.inherit,
-                  onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onTimelineNameEdit)),
-                  title: "Timeline Name and Description",
-                  className: props.classes.appBarButton
-                })([React_DOM.text(v1.title)]), MaterialUI_Button.button()({
-                  color: MaterialUI_Enums.inherit,
-                  onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onTimelineNameEdit)),
-                  title: "Timeline Name and Description",
-                  className: props.classes.appBarButton
-                })([React_DOM.text(v1.title)]), MaterialUI_Button.button()({
-                  color: MaterialUI_Enums.inherit,
-                  onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onTimelineNameEdit)),
-                  title: "Timeline Name and Description",
-                  className: props.classes.appBarButton
-                })([React_DOM.text(v1.title)])]);
-                return Data_Semigroup.append(Data_Semigroup.semigroupArray)([breadcrumb, divider])(standardButtons);
+                return Data_Semigroup.append(Data_Semigroup.semigroupArray)([timeSpaceButton, divider])(standardButtons);
               }())]);
             }
           };
@@ -10442,7 +10410,7 @@ var PS = {};
       var item = function () {
         if (mItem instanceof Data_Maybe.Nothing) {
           return {
-            title: "Timeline Name",
+            title: "TimeSpace Name",
             description: ""
           };
         }
