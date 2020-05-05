@@ -62,8 +62,7 @@ styles theme =
     }
   , contentEditMode:
     { flexGrow: 1
-    , padding: theme.spacing.unit * 2
-    , paddingTop: theme.spacing.unit * 8
+    , paddingTop: theme.spacing.unit * 6
     , marginTop: 0
     , marginBottom: theme.spacing.unit * 6
     , marginLeft: drawerWidth
@@ -72,8 +71,8 @@ styles theme =
     }
   , content:
     { flexGrow: 1
-    , padding: theme.spacing.unit * 2
-    , marginTop: theme.spacing.unit * 6
+    , paddingTop: theme.spacing.unit * 6
+    , marginTop: 0
     , marginBottom: theme.spacing.unit * 6
     , height: "calc(100vh - " <> show (theme.spacing.unit * 12) <> "px)"
     }

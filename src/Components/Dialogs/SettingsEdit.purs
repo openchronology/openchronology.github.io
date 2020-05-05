@@ -11,7 +11,8 @@ import React
   ( ReactElement, ReactClass, ReactClassConstructor
   , getState, setState, getProps, component, createLeafElement
   )
-import React.DOM (text, br)
+import React.DOM (text, br, img)
+import React.DOM.Props (src, style) as RP
 import React.DOM.NonBlockingSpace (nbsp)
 import React.Queue.WhileMounted (whileMountedOne)
 import React.Signal.WhileMounted (whileMountedIx)
@@ -25,8 +26,9 @@ import MaterialUI.FormGroup (formGroup_)
 import MaterialUI.FormControlLabel (formControlLabel')
 import MaterialUI.Icon (icon')
 import MaterialUI.Icons.GetAppIcon (getAppIcon)
+import MaterialUI.Typography (typography)
 import MaterialUI.Switch (switch')
-import MaterialUI.Enums (primary, secondary, contained)
+import MaterialUI.Enums (primary, secondary, contained, subheading)
 import Queue.One (Queue, put)
 import IOQueues (IOQueues (..))
 import Zeta.Types (READ) as S
@@ -106,7 +108,12 @@ settingsEditDialog
                 dialog'' {onClose: mkEffectFn1 (const close), open, "aria-labelledby": "settingsedit-dialog-title"}
                   [ dialogTitle {id: "settingsedit-dialog-title"} [text "Settings"]
                   , dialogContent_
-                    [ button
+                    [ typography {variant: subheading, paragraph: true}
+                      [ img [RP.src "images/logo.svg", RP.style {width: "24px", height: "24px"}]
+                      , nbsp
+                      , text "OpenChronology"
+                      ]
+                    , button
                       { variant: contained
                       , color: primary
                       , href: "https://github.com/openchronology/openchronology.github.io/"

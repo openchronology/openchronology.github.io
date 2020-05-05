@@ -3452,6 +3452,7 @@ var PS = {};
   var subheading = "subheading";
   var secondary = "secondary";
   var right = "right";
+  var raised = "raised";
   var primary = "primary";
   var permanent = "permanent";
   var inherit = "inherit";
@@ -3466,6 +3467,7 @@ var PS = {};
   exports["inherit"] = inherit;
   exports["permanent"] = permanent;
   exports["primary"] = primary;
+  exports["raised"] = raised;
   exports["right"] = right;
   exports["secondary"] = secondary;
   exports["subheading"] = subheading;
@@ -6981,15 +6983,12 @@ var PS = {};
   $PS["MaterialUI.Icon"] = $PS["MaterialUI.Icon"] || {};
   var exports = $PS["MaterialUI.Icon"];
   var $foreign = $PS["MaterialUI.Icon"];
-  var Data_TSCompat_React = $PS["Data.TSCompat.React"];
   var React = $PS["React"];
-  var icon_ = Data_TSCompat_React.unsafeCreateElement($foreign.classIcon)({});
 
   var icon$prime = function icon$prime(dictIsTSEq) {
     return React.unsafeCreateLeafElement($foreign.classIcon);
   };
 
-  exports["icon_"] = icon_;
   exports["icon'"] = icon$prime;
 })(PS);
 
@@ -7499,11 +7498,13 @@ var PS = {};
   var MaterialUI_Icons_GetAppIcon = $PS["MaterialUI.Icons.GetAppIcon"];
   var MaterialUI_Styles = $PS["MaterialUI.Styles"];
   var MaterialUI_Switch = $PS["MaterialUI.Switch"];
+  var MaterialUI_Typography = $PS["MaterialUI.Typography"];
   var Queue_One = $PS["Queue.One"];
   var Queue_Types = $PS["Queue.Types"];
   var React = $PS["React"];
   var React_DOM = $PS["React.DOM"];
   var React_DOM_NonBlockingSpace = $PS["React.DOM.NonBlockingSpace"];
+  var React_DOM_Props = $PS["React.DOM.Props"];
   var React_Queue_WhileMounted = $PS["React.Queue.WhileMounted"];
   var React_Signal_WhileMounted = $PS["React.Signal.WhileMounted"];
   var Settings = $PS["Settings"];
@@ -7573,7 +7574,13 @@ var PS = {};
                   "aria-labelledby": "settingsedit-dialog-title"
                 })([MaterialUI_DialogTitle.dialogTitle()({
                   id: "settingsedit-dialog-title"
-                })([React_DOM.text("Settings")]), MaterialUI_DialogContent.dialogContent_([MaterialUI_Button.button()({
+                })([React_DOM.text("Settings")]), MaterialUI_DialogContent.dialogContent_([MaterialUI_Typography.typography()({
+                  variant: MaterialUI_Enums.subheading,
+                  paragraph: true
+                })([React_DOM.img([React_DOM_Props.src("images/logo.svg"), React_DOM_Props.style({
+                  width: "24px",
+                  height: "24px"
+                })]), React_DOM_NonBlockingSpace.nbsp, React_DOM.text("OpenChronology")]), MaterialUI_Button.button()({
                   variant: MaterialUI_Enums.contained,
                   color: MaterialUI_Enums.primary,
                   href: "https://github.com/openchronology/openchronology.github.io/",
@@ -8438,7 +8445,6 @@ var PS = {};
   var MaterialUI_AppBar = $PS["MaterialUI.AppBar"];
   var MaterialUI_Button = $PS["MaterialUI.Button"];
   var MaterialUI_Enums = $PS["MaterialUI.Enums"];
-  var MaterialUI_Icon = $PS["MaterialUI.Icon"];
   var MaterialUI_IconButton = $PS["MaterialUI.IconButton"];
   var MaterialUI_Icons_SettingsIcon = $PS["MaterialUI.Icons.SettingsIcon"];
   var MaterialUI_Styles = $PS["MaterialUI.Styles"];
@@ -8452,11 +8458,19 @@ var PS = {};
     return {
       root: {
         flexGrow: 1,
-        zIndex: theme.zIndex.drawer + 1 | 0
+        zIndex: theme.zIndex.drawer + 1 | 0,
+        height: theme.spacing.unit * 6 | 0
       },
       center: {
         flexGrow: 1,
         textAlign: "center"
+      },
+      breadcrumb: {
+        overflowX: "auto",
+        whiteSpace: "nowrap"
+      },
+      appBarButton: {
+        whiteSpace: "nowrap"
       }
     };
   };
@@ -8492,43 +8506,68 @@ var PS = {};
               })([MaterialUI_Toolbar.toolbar()({
                 variant: MaterialUI_Enums.dense
               })(function () {
-                var standardButtons = function () {
-                  var newTimeline = function () {
-                    if (v1.isEditable) {
-                      return [MaterialUI_Button.button()({
-                        color: MaterialUI_Enums.inherit,
-                        onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onNew))
-                      })([React_DOM.text("New Timeline")])];
-                    }
+                var standardButtons = Data_Semigroup.append(Data_Semigroup.semigroupArray)(function () {
+                  if (v1.isEditable) {
+                    return [MaterialUI_Button.button()({
+                      color: MaterialUI_Enums.inherit,
+                      onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onNew)),
+                      className: props.classes.appBarButton
+                    })([React_DOM.text("New Timeline")])];
+                  }
 
-                    ;
-                    return [];
-                  }();
-
-                  return Data_Semigroup.append(Data_Semigroup.semigroupArray)(newTimeline)([MaterialUI_Button.button()({
-                    color: MaterialUI_Enums.inherit,
-                    onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onImport))
-                  })([React_DOM.text("Import")]), MaterialUI_Button.button()({
-                    color: MaterialUI_Enums.inherit,
-                    onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onExport))
-                  })([React_DOM.text("Export")]), MaterialUI_IconButton.iconButton()({
-                    color: MaterialUI_Enums.inherit,
-                    title: "Settings",
-                    onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onSettingsEdit))
-                  })([MaterialUI_Icons_SettingsIcon.settingsIcon])]);
-                }();
-
+                  ;
+                  return [];
+                }())([MaterialUI_Button.button()({
+                  color: MaterialUI_Enums.inherit,
+                  onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onImport)),
+                  className: props.classes.appBarButton
+                })([React_DOM.text("Import")]), MaterialUI_Button.button()({
+                  color: MaterialUI_Enums.inherit,
+                  onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onExport)),
+                  className: props.classes.appBarButton
+                })([React_DOM.text("Export")]), MaterialUI_IconButton.iconButton()({
+                  color: MaterialUI_Enums.inherit,
+                  title: "Settings",
+                  onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onSettingsEdit))
+                })([MaterialUI_Icons_SettingsIcon.settingsIcon])]);
                 var divider = React_DOM.div([React_DOM_Props.className(props.classes.center)])([]);
-                var breadcrumb = [MaterialUI_Button.button()({
+                var breadcrumb = MaterialUI_Toolbar.toolbar()({
+                  variant: MaterialUI_Enums.dense,
+                  className: props.classes.breadcrumb,
+                  disableGutters: true
+                })([MaterialUI_Button.button()({
+                  color: MaterialUI_Enums.secondary,
+                  onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onTimelineNameEdit)),
+                  title: "Timeline Name and Description",
+                  variant: MaterialUI_Enums.raised,
+                  className: props.classes.appBarButton
+                })([React_DOM.text(v1.title)]), MaterialUI_Button.button()({
                   color: MaterialUI_Enums.inherit,
                   onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onTimelineNameEdit)),
-                  title: "Timeline Name and Description"
-                })([React_DOM.text(v1.title)])];
-                var branding = MaterialUI_Icon.icon_([React_DOM.img([React_DOM_Props.src("images/logo-white.svg"), React_DOM_Props.style({
-                  width: "24px",
-                  height: "24px"
-                })])]);
-                return Data_Semigroup.append(Data_Semigroup.semigroupArray)([branding])(Data_Semigroup.append(Data_Semigroup.semigroupArray)(breadcrumb)(Data_Semigroup.append(Data_Semigroup.semigroupArray)([divider])(standardButtons)));
+                  title: "Timeline Name and Description",
+                  className: props.classes.appBarButton
+                })([React_DOM.text(v1.title)]), MaterialUI_Button.button()({
+                  color: MaterialUI_Enums.inherit,
+                  onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onTimelineNameEdit)),
+                  title: "Timeline Name and Description",
+                  className: props.classes.appBarButton
+                })([React_DOM.text(v1.title)]), MaterialUI_Button.button()({
+                  color: MaterialUI_Enums.inherit,
+                  onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onTimelineNameEdit)),
+                  title: "Timeline Name and Description",
+                  className: props.classes.appBarButton
+                })([React_DOM.text(v1.title)]), MaterialUI_Button.button()({
+                  color: MaterialUI_Enums.inherit,
+                  onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onTimelineNameEdit)),
+                  title: "Timeline Name and Description",
+                  className: props.classes.appBarButton
+                })([React_DOM.text(v1.title)]), MaterialUI_Button.button()({
+                  color: MaterialUI_Enums.inherit,
+                  onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](v.onTimelineNameEdit)),
+                  title: "Timeline Name and Description",
+                  className: props.classes.appBarButton
+                })([React_DOM.text(v1.title)])]);
+                return Data_Semigroup.append(Data_Semigroup.semigroupArray)([breadcrumb, divider])(standardButtons);
               }())]);
             }
           };
@@ -8702,8 +8741,7 @@ var PS = {};
       },
       contentEditMode: {
         flexGrow: 1,
-        padding: theme.spacing.unit * 2 | 0,
-        paddingTop: theme.spacing.unit * 8 | 0,
+        paddingTop: theme.spacing.unit * 6 | 0,
         marginTop: 0,
         marginBottom: theme.spacing.unit * 6 | 0,
         marginLeft: drawerWidth,
@@ -8712,8 +8750,8 @@ var PS = {};
       },
       content: {
         flexGrow: 1,
-        padding: theme.spacing.unit * 2 | 0,
-        marginTop: theme.spacing.unit * 6 | 0,
+        paddingTop: theme.spacing.unit * 6 | 0,
+        marginTop: 0,
         marginBottom: theme.spacing.unit * 6 | 0,
         height: "calc(100vh - " + (Data_Show.show(Data_Show.showInt)(theme.spacing.unit * 12 | 0) + "px)")
       }
@@ -8754,7 +8792,7 @@ var PS = {};
                 }
 
                 ;
-                throw new Error("Failed pattern match at Components.Index (line 197, column 19 - line 208, column 37): " + []);
+                throw new Error("Failed pattern match at Components.Index (line 196, column 19 - line 207, column 37): " + []);
               }();
 
               var leftDrawer = function () {
@@ -8829,7 +8867,7 @@ var PS = {};
                 }
 
                 ;
-                throw new Error("Failed pattern match at Components.Index (line 160, column 19 - line 196, column 37): " + []);
+                throw new Error("Failed pattern match at Components.Index (line 159, column 19 - line 195, column 37): " + []);
               }();
 
               return React.toElement(React.isReactElementArray)(Data_Semigroup.append(Data_Semigroup.semigroupArray)([Components_TopBar.topBar({
