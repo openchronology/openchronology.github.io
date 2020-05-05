@@ -36,7 +36,12 @@ import React.Signal.WhileMounted (whileMountedIx)
 import MaterialUI.Styles (withStyles)
 import MaterialUI.Typography (typography)
 import MaterialUI.Drawer (drawer)
-import MaterialUI.Enums (title, permanent, right)
+import MaterialUI.Divider (divider_)
+import MaterialUI.List (list_, list)
+import MaterialUI.ListItem (listItem)
+import MaterialUI.ListItemText (listItemText')
+import MaterialUI.Enums (title, subheading, permanent, right)
+import Unsafe.Coerce (unsafeCoerce)
 
 
 
@@ -56,25 +61,33 @@ styles theme =
     }
   , drawerPaper:
     { width: drawerWidth
-    , marginTop: theme.spacing.unit * 6
-    , marginBottom: theme.spacing.unit * 6
-    , height: "calc(100vh - " <> show (theme.spacing.unit * 12) <> "px)"
+    , marginTop: theme.spacing.unit * 6.0
+    , marginBottom: theme.spacing.unit * 6.0
+    , height: "calc(100vh - " <> show (theme.spacing.unit * 12.0) <> "px)"
     }
   , contentEditMode:
     { flexGrow: 1
-    , paddingTop: theme.spacing.unit * 6
+    , paddingTop: theme.spacing.unit * 6.0
     , marginTop: 0
-    , marginBottom: theme.spacing.unit * 6
+    , marginBottom: theme.spacing.unit * 6.0
     , marginLeft: drawerWidth
     , marginRight: drawerWidth
-    , height: "calc(100vh - " <> show (theme.spacing.unit * 12) <> "px)"
+    , height: "calc(100vh - " <> show (theme.spacing.unit * 12.0) <> "px)"
     }
   , content:
     { flexGrow: 1
-    , paddingTop: theme.spacing.unit * 6
+    , paddingTop: theme.spacing.unit * 6.0
     , marginTop: 0
-    , marginBottom: theme.spacing.unit * 6
-    , height: "calc(100vh - " <> show (theme.spacing.unit * 12) <> "px)"
+    , marginBottom: theme.spacing.unit * 6.0
+    , height: "calc(100vh - " <> show (theme.spacing.unit * 12.0) <> "px)"
+    }
+  , rightDrawerList:
+    { height: "calc(100vh - " <> show ((theme.spacing.unit * 12.0) + (24.5 * 2.0)) <> "px)"
+    , overflowY: "auto"
+    }
+  , leftDrawerList:
+    { height: "calc(100vh - " <> show ((theme.spacing.unit * 12.0) + (24.5 * 3.0)) <> "px)"
+    , overflowY: "auto"
     }
   }
 
@@ -138,6 +151,8 @@ index
                 , drawerPaper :: String
                 , content :: String
                 , contentEditMode :: String
+                , rightDrawerList :: String
+                , leftDrawerList :: String
                 }
               }
         c' = component "Index" constructor'
@@ -163,33 +178,27 @@ index
                           , variant: permanent
                           , classes: {paper: props.classes.drawerPaper}
                           }
-                          [ typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
-                          , typography {variant: title} [text "Drawer!"]
+                          [ typography {variant: title} [text "Timelines"]
+                          , list {className: props.classes.leftDrawerList} $ map mkTextItem
+                              [ "Timeline A"
+                              , "Timeline B"
+                              , "Timeline C"
+                              , "Timeline D"
+                              , "Timeline E"
+                              , "Timeline F"
+                              , "Timeline G"
+                              ]
+                          , divider_ []
+                          , typography {variant: title} [text "Events and TimeSpans"]
+                          , typography {variant: subheading} [text "For Multiple Timelines"]
+                          , list {className: props.classes.leftDrawerList} $ map mkTextItemTime
+                            [ {name: "Event A", time: "20200130"}
+                            , {name: "Event B", time: "20200131"}
+                            , {name: "TimeSpan C", time: "20200202"}
+                            , {name: "TimeSpan D", time: "20200204"}
+                            , {name: "Event E", time: "20200208"}
+                            , {name: "Event F", time: "20200211"}
+                            ]
                           ]
                         ]
                     | otherwise = []
@@ -201,7 +210,16 @@ index
                           , classes: {paper: props.classes.drawerPaper}
                           , anchor: right
                           }
-                          [ typography {variant: title} [text "Drawer!"]
+                          [ typography {variant: title} [text "Events and TimeSpans"]
+                          , typography {variant: subheading} [text "For Timeline \"A\""]
+                          , list {className: props.classes.rightDrawerList} $ map mkTextItemTime
+                            [ {name: "Event A", time: "20200130"}
+                            , {name: "Event B", time: "20200131"}
+                            , {name: "TimeSpan C", time: "20200202"}
+                            , {name: "TimeSpan D", time: "20200204"}
+                            , {name: "Event E", time: "20200208"}
+                            , {name: "Event F", time: "20200211"}
+                            ]
                           ]
                         ]
                     | otherwise = []
@@ -258,3 +276,6 @@ index
                 , snackbars (Q.readOnly (Q.allowReading snackbarQueue))
                 ]
             }
+
+    mkTextItem t = listItem {button: true} [listItemText' {primary: t}]
+    mkTextItemTime {name,time} = listItem {button: true} [listItemText' {primary: name, secondary: time}]

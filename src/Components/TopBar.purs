@@ -40,7 +40,7 @@ styles theme = -- trace theme \_ ->
   { root:
     { flexGrow: 1
     , zIndex: theme.zIndex.drawer + 1
-    , height: theme.spacing.unit * 6
+    , height: theme.spacing.unit * 6.0
     }
   , center:
     { flexGrow: 1
