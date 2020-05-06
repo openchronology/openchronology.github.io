@@ -27,6 +27,9 @@ jobs:
     - uses: actions/setup-haskell@v1.1
       with:
         enable-stack: true
+    - uses: actions/checkout@v2
+      with:
+        path: openchronology.github.io
 
     - name: Get ltext
       uses: actions/checkout@v2
@@ -36,7 +39,7 @@ jobs:
 
     - name: Install ltext
       run: |
-        cd ltext
+        cd ltext/
         stack install
         cd ../
 
@@ -48,13 +51,13 @@ jobs:
 
     - name: Install graphmod
       run: |
-        cd graphmod
+        cd graphmod/
         stack install
         cd ../
 
     - name: Install Node.js dependencies
-      uses: actions/checkout@v2
       run: |
+        cd openchronology.github.io/
         npm install
         npm install -g purescript spago
 
