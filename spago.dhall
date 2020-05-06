@@ -10,6 +10,7 @@ You can edit this file as you like.
   , "debug"
   , "file-store"
   , "fixed-precision"
+  , "node-fs-aff"
   , "promises"
   , "psci-support"
   , "quickcheck"

@@ -26,21 +26,26 @@
 </g>
 <g id="clust4" class="cluster">
 <title>cluster_3</title>
-<polygon fill="#000000" fill-opacity="0.058824" stroke="#000000" stroke-opacity="0.058824" points="610.7969,-753.3391 610.7969,-942.0878 748.7969,-942.0878 748.7969,-753.3391 610.7969,-753.3391"/>
-<text text-anchor="middle" x="679.7969" y="-926.8878" font-family="Times,serif" font-size="14.00" fill="#000000">Test</text>
+<polygon fill="#000000" fill-opacity="0.058824" stroke="#000000" stroke-opacity="0.058824" points="1158.7969,-766.5846 1158.7969,-890.7614 1268.7969,-890.7614 1268.7969,-766.5846 1158.7969,-766.5846"/>
+<text text-anchor="middle" x="1213.7969" y="-875.5614" font-family="Times,serif" font-size="14.00" fill="#000000">Scripts</text>
 </g>
 <g id="clust5" class="cluster">
 <title>cluster_4</title>
-<polygon fill="#000000" fill-opacity="0.058824" stroke="#000000" stroke-opacity="0.058824" points="618.7969,-766.5846 618.7969,-890.7614 740.7969,-890.7614 740.7969,-766.5846 618.7969,-766.5846"/>
-<text text-anchor="middle" x="679.7969" y="-875.5614" font-family="Times,serif" font-size="14.00" fill="#000000">QuickCheck</text>
+<polygon fill="#000000" fill-opacity="0.058824" stroke="#000000" stroke-opacity="0.058824" points="610.7969,-753.3391 610.7969,-942.0878 748.7969,-942.0878 748.7969,-753.3391 610.7969,-753.3391"/>
+<text text-anchor="middle" x="679.7969" y="-926.8878" font-family="Times,serif" font-size="14.00" fill="#000000">Test</text>
 </g>
 <g id="clust6" class="cluster">
 <title>cluster_5</title>
-<polygon fill="#000000" fill-opacity="0.058824" stroke="#000000" stroke-opacity="0.058824" points="73.7969,-551.3449 73.7969,-740.0936 994.7969,-740.0936 994.7969,-551.3449 73.7969,-551.3449"/>
-<text text-anchor="middle" x="534.2969" y="-724.8936" font-family="Times,serif" font-size="14.00" fill="#000000">Timeline</text>
+<polygon fill="#000000" fill-opacity="0.058824" stroke="#000000" stroke-opacity="0.058824" points="618.7969,-766.5846 618.7969,-890.7614 740.7969,-890.7614 740.7969,-766.5846 618.7969,-766.5846"/>
+<text text-anchor="middle" x="679.7969" y="-875.5614" font-family="Times,serif" font-size="14.00" fill="#000000">QuickCheck</text>
 </g>
 <g id="clust7" class="cluster">
 <title>cluster_6</title>
+<polygon fill="#000000" fill-opacity="0.058824" stroke="#000000" stroke-opacity="0.058824" points="73.7969,-551.3449 73.7969,-740.0936 994.7969,-740.0936 994.7969,-551.3449 73.7969,-551.3449"/>
+<text text-anchor="middle" x="534.2969" y="-724.8936" font-family="Times,serif" font-size="14.00" fill="#000000">Timeline</text>
+</g>
+<g id="clust8" class="cluster">
+<title>cluster_7</title>
 <polygon fill="#000000" fill-opacity="0.058824" stroke="#000000" stroke-opacity="0.058824" points="81.7969,-564.5904 81.7969,-688.7672 986.7969,-688.7672 986.7969,-564.5904 81.7969,-564.5904"/>
 <text text-anchor="middle" x="534.2969" y="-673.5672" font-family="Times,serif" font-size="14.00" fill="#000000">Data</text>
 </g>
@@ -135,9 +140,9 @@
 <polygon fill="#000000" stroke="#000000" points="275.0941,-291.4451 280.759,-282.4919 270.7472,-285.9583 275.0941,-291.4451"/>
 </g>
 <!-- u15 -->
-<g id="node18" class="node">
+<g id="node19" class="node">
 <title>u15</title>
-<ellipse fill="#ffff77" stroke="#000000" stroke-width="0" cx="810.7969" cy="-608" rx="48.9926" ry="18"/>
+<ellipse fill="#7777ff" stroke="#000000" stroke-width="0" cx="810.7969" cy="-608" rx="48.9926" ry="18"/>
 <text text-anchor="middle" x="810.7969" y="-604.3" font-family="Times,serif" font-size="14.00" fill="#000000">TimeScale</text>
 </g>
 <!-- u10&#45;&gt;u15 -->
@@ -147,9 +152,9 @@
 <polygon fill="#000000" stroke="#000000" points="829.9883,-632.3226 821.6312,-625.8103 824.1031,-636.1127 829.9883,-632.3226"/>
 </g>
 <!-- u16 -->
-<g id="node19" class="node">
+<g id="node20" class="node">
 <title>u16</title>
-<ellipse fill="#ffff77" stroke="#000000" stroke-width="0" cx="679.7969" cy="-608" rx="64.189" ry="18"/>
+<ellipse fill="#7777ff" stroke="#000000" stroke-width="0" cx="679.7969" cy="-608" rx="64.189" ry="18"/>
 <text text-anchor="middle" x="679.7969" y="-604.3" font-family="Times,serif" font-size="14.00" fill="#000000">TimelineName</text>
 </g>
 <!-- u10&#45;&gt;u16 -->
@@ -320,10 +325,16 @@
 <path fill="none" stroke="#000000" d="M297.6706,-249.9265C295.399,-230.6178 291.768,-199.7542 289.1187,-177.2356"/>
 <polygon fill="#000000" stroke="#000000" points="292.5877,-176.7662 287.9432,-167.2436 285.6357,-177.5841 292.5877,-176.7662"/>
 </g>
-<!-- u12 -->
+<!-- u24 -->
 <g id="node16" class="node">
+<title>u24</title>
+<ellipse fill="#bbffff" stroke="#000000" stroke-width="0" cx="1213.7969" cy="-810" rx="46.5926" ry="18"/>
+<text text-anchor="middle" x="1213.7969" y="-806.3" font-family="Times,serif" font-size="14.00" fill="#000000">TrimDocs</text>
+</g>
+<!-- u12 -->
+<g id="node17" class="node">
 <title>u12</title>
-<ellipse fill="#ffbbff" stroke="#000000" stroke-width="0" cx="679.7969" cy="-810" rx="53.0913" ry="18"/>
+<ellipse fill="#77ff77" stroke="#000000" stroke-width="0" cx="679.7969" cy="-810" rx="53.0913" ry="18"/>
 <text text-anchor="middle" x="679.7969" y="-806.3" font-family="Times,serif" font-size="14.00" fill="#000000">UTF8String</text>
 </g>
 <!-- u12&#45;&gt;u16 -->
@@ -333,9 +344,9 @@
 <polygon fill="#000000" stroke="#000000" points="683.297,-636.0955 679.7969,-626.0956 676.297,-636.0956 683.297,-636.0955"/>
 </g>
 <!-- u14 -->
-<g id="node17" class="node">
+<g id="node18" class="node">
 <title>u14</title>
-<ellipse fill="#ffff77" stroke="#000000" stroke-width="0" cx="927.7969" cy="-608" rx="50.8918" ry="18"/>
+<ellipse fill="#7777ff" stroke="#000000" stroke-width="0" cx="927.7969" cy="-608" rx="50.8918" ry="18"/>
 <text text-anchor="middle" x="927.7969" y="-604.3" font-family="Times,serif" font-size="14.00" fill="#000000">TimeSpace</text>
 </g>
 <!-- u15&#45;&gt;u0 -->
@@ -387,33 +398,33 @@
 <polygon fill="#000000" stroke="#000000" points="293.4703,-296.3458 293.2328,-285.7536 286.8131,-294.182 293.4703,-296.3458"/>
 </g>
 <!-- u17 -->
-<g id="node20" class="node">
+<g id="node21" class="node">
 <title>u17</title>
-<ellipse fill="#ffff77" stroke="#000000" stroke-width="0" cx="566.7969" cy="-608" rx="30.5947" ry="18"/>
+<ellipse fill="#7777ff" stroke="#000000" stroke-width="0" cx="566.7969" cy="-608" rx="30.5947" ry="18"/>
 <text text-anchor="middle" x="566.7969" y="-604.3" font-family="Times,serif" font-size="14.00" fill="#000000">Index</text>
 </g>
 <!-- u18 -->
-<g id="node21" class="node">
+<g id="node22" class="node">
 <title>u18</title>
-<ellipse fill="#ffff77" stroke="#000000" stroke-width="0" cx="452.7969" cy="-608" rx="65.7887" ry="18"/>
+<ellipse fill="#7777ff" stroke="#000000" stroke-width="0" cx="452.7969" cy="-608" rx="65.7887" ry="18"/>
 <text text-anchor="middle" x="452.7969" y="-604.3" font-family="Times,serif" font-size="14.00" fill="#000000">StoredTimeline</text>
 </g>
 <!-- u19 -->
-<g id="node22" class="node">
+<g id="node23" class="node">
 <title>u19</title>
-<ellipse fill="#ffff77" stroke="#000000" stroke-width="0" cx="337.7969" cy="-608" rx="31.3957" ry="18"/>
+<ellipse fill="#7777ff" stroke="#000000" stroke-width="0" cx="337.7969" cy="-608" rx="31.3957" ry="18"/>
 <text text-anchor="middle" x="337.7969" y="-604.3" font-family="Times,serif" font-size="14.00" fill="#000000">Event</text>
 </g>
 <!-- u20 -->
-<g id="node23" class="node">
+<g id="node24" class="node">
 <title>u20</title>
-<ellipse fill="#ffff77" stroke="#000000" stroke-width="0" cx="240.7969" cy="-608" rx="47.3916" ry="18"/>
+<ellipse fill="#7777ff" stroke="#000000" stroke-width="0" cx="240.7969" cy="-608" rx="47.3916" ry="18"/>
 <text text-anchor="middle" x="240.7969" y="-604.3" font-family="Times,serif" font-size="14.00" fill="#000000">TimeSpan</text>
 </g>
 <!-- u21 -->
-<g id="node24" class="node">
+<g id="node25" class="node">
 <title>u21</title>
-<ellipse fill="#ffff77" stroke="#000000" stroke-width="0" cx="132.7969" cy="-608" rx="42.7926" ry="18"/>
+<ellipse fill="#7777ff" stroke="#000000" stroke-width="0" cx="132.7969" cy="-608" rx="42.7926" ry="18"/>
 <text text-anchor="middle" x="132.7969" y="-604.3" font-family="Times,serif" font-size="14.00" fill="#000000">Timeline</text>
 </g>
 </g>
