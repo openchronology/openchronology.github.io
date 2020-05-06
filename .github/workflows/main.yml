@@ -51,11 +51,22 @@ jobs:
     - name: Install graphviz
       run: sudo apt install graphviz -y
 
-    - name: Install dependencies, build, and commit
+    - name: Install dependencies
       run: |
         npm install
-        npm install -g purescript spago
-        ./build.sh
+        npm install -g purescript spago mocha chromedriver
+
+    - name: Build
+      run: ./build.sh
+
+    - name: Test
+      run: npm test
+
+    - name: Docs
+      run: ./build_all_docs.sh
+
+    - name: Commit
+      run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add . -A
