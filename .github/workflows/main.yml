@@ -63,7 +63,9 @@ jobs:
         npm install -g purescript spago mocha chromedriver
 
     - name: Build
-      run: ./build.sh
+      run: |
+        ./build.sh
+        ./build.sh production
 
     - name: Test
       run: npm test
