@@ -29,6 +29,9 @@ jobs:
         enable-stack: true
     - uses: actions/checkout@v2
 
+    - name: Checkout submodules
+      run: git submodule sync --recursive
+
     - name: Install graphviz
       run: sudo apt install graphviz -y
 
