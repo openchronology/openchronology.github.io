@@ -65,23 +65,12 @@ jobs:
         repository: openchronology/openchronology.github.io
         path: openchronology.github.io
 
-    - name: Install Node.js dependencies
+    - name: Install dependencies, build, and commit
       run: |
         cd openchronology.github.io/
         npm install
         npm install -g purescript spago
-        cd ../
-
-    # Runs a set of commands using the runners shell
-    - name: Build
-      run: |
-        cd openchronology.github.io/
         ./build.sh
-        cd ../
-
-    - name: Commit
-      run: |
-        cd openchronology.github.io/
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add . -A
