@@ -49,7 +49,9 @@ jobs:
         cd ../
 
     - name: Install graphviz
-      run: sudo apt install graphviz -y
+      run: |
+        sudo apt update
+        sudo apt install graphviz -y
 
     - name: Install chrome
       run: |
