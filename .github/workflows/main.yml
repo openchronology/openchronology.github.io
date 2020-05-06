@@ -71,17 +71,18 @@ jobs:
     - name: Docs
       run: ./build_all_docs.sh
 
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+
     - name: Commit
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add . -A
         git commit -m "Auto build"
-
-    - name: Extract branch name
-      shell: bash
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-      id: extract_branch
+        git pull origin ${steps.extract_branch.outputs.branch}
 
     - name: Push changes
       uses: ad-m/github-push-action@master
