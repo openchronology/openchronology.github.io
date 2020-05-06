@@ -35,34 +35,41 @@ u3[label="Logic",style="filled",fillcolor="#ffbbbb",penwidth="0"];
 
 }
 subgraph cluster_3 {
+label="Scripts";
+color="#0000000F";
+style="filled";
+u16[label="TrimDocs",style="filled",fillcolor="#bbffff",penwidth="0"];
+
+}
+subgraph cluster_4 {
 label="Test";
 color="#0000000F";
 style="filled";
-subgraph cluster_4 {
+subgraph cluster_5 {
 label="QuickCheck";
 color="#0000000F";
 style="filled";
-u15[label="UTF8String",style="filled",fillcolor="#ffbbff",penwidth="0"];
+u15[label="UTF8String",style="filled",fillcolor="#77ff77",penwidth="0"];
 
 }
 
 }
-subgraph cluster_5 {
+subgraph cluster_6 {
 label="Timeline";
 color="#0000000F";
 style="filled";
-subgraph cluster_6 {
+subgraph cluster_7 {
 label="Data";
 color="#0000000F";
 style="filled";
-u16[label="Event",style="filled",fillcolor="#ffff77",penwidth="0"];
-u17[label="Index",style="filled",fillcolor="#ffff77",penwidth="0"];
-u18[label="StoredTimeline",style="filled",fillcolor="#ffff77",penwidth="0"];
-u19[label="TimeSpan",style="filled",fillcolor="#ffff77",penwidth="0"];
-u20[label="TimeSpace",style="filled",fillcolor="#ffff77",penwidth="0"];
-u21[label="Timeline",style="filled",fillcolor="#ffff77",penwidth="0"];
-u22[label="TimelineName",style="filled",fillcolor="#ffff77",penwidth="0"];
-u23[label="TimeScale",style="filled",fillcolor="#ffff77",penwidth="0"];
+u17[label="Event",style="filled",fillcolor="#7777ff",penwidth="0"];
+u18[label="Index",style="filled",fillcolor="#7777ff",penwidth="0"];
+u19[label="StoredTimeline",style="filled",fillcolor="#7777ff",penwidth="0"];
+u20[label="TimeSpan",style="filled",fillcolor="#7777ff",penwidth="0"];
+u21[label="TimeSpace",style="filled",fillcolor="#7777ff",penwidth="0"];
+u22[label="Timeline",style="filled",fillcolor="#7777ff",penwidth="0"];
+u23[label="TimelineName",style="filled",fillcolor="#7777ff",penwidth="0"];
+u24[label="TimeScale",style="filled",fillcolor="#7777ff",penwidth="0"];
 
 }
 
@@ -72,16 +79,16 @@ u7 -> u0;
 u8 -> u0;
 u12 -> u0;
 u14 -> u0;
-u22 -> u0;
 u23 -> u0;
+u24 -> u0;
 u0 -> u2;
 u4 -> u2;
 u7 -> u3;
 u8 -> u3;
 u12 -> u3;
 u14 -> u3;
-u22 -> u3;
 u23 -> u3;
+u24 -> u3;
 u0 -> u4;
 u1 -> u4;
 u5 -> u4;
@@ -95,15 +102,15 @@ u12 -> u4;
 u13 -> u4;
 u14 -> u4;
 u14 -> u5;
-u22 -> u5;
+u23 -> u5;
 u14 -> u9;
-u23 -> u9;
+u24 -> u9;
 u14 -> u10;
-u22 -> u10;
+u23 -> u10;
 u14 -> u11;
-u23 -> u13;
-u14 -> u22;
-u15 -> u22;
+u24 -> u13;
 u14 -> u23;
+u15 -> u23;
+u14 -> u24;
 
 }
