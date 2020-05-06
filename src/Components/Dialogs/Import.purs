@@ -77,7 +77,7 @@ importDialog (IOQueues{input,output}) = createLeafElement c {}
             , left: 0
             }
           , loader:
-            { margin: theme.spacing.unit * 2
+            { margin: theme.spacing.unit * 2.0
             }
           , buttons:
             { zIndex: 2

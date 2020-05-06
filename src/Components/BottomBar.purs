@@ -48,6 +48,7 @@ styles theme =
     { flexGrow: 1
     , top: "auto"
     , bottom: 0
+    , zIndex: theme.zIndex.drawer + 1
     }
   , center:
     { flexGrow: 1

@@ -31,17 +31,27 @@ import MaterialUI.Icons.SettingsIcon (settingsIcon)
 import MaterialUI.Icons.AddCircleIcon (addCircleIcon)
 import Zeta.Types (READ) as S
 import IxZeta (IxSignal, get) as IxSig
+import Debug.Trace (trace)
 
 
 -- | This CSS allows the app bar to stretch across the screen
 styles :: _
-styles theme =
+styles theme = -- trace theme \_ ->
   { root:
     { flexGrow: 1
+    , zIndex: theme.zIndex.drawer + 1
+    , height: theme.spacing.unit * 6.0
     }
   , center:
     { flexGrow: 1
     , textAlign: "center"
+    }
+  , breadcrumb:
+    { overflowX: "auto"
+    , whiteSpace: "nowrap"
+    }
+  , appBarButton:
+    { whiteSpace: "nowrap"
     }
   }
 
@@ -83,7 +93,14 @@ topBar
     c' :: ReactClass {}
     c' = withStyles styles c
       where
-        c :: ReactClass {classes :: {root :: String, center :: String}}
+        c :: ReactClass
+             { classes ::
+               { root :: String
+               , center :: String
+               , breadcrumb :: String
+               , appBarButton :: String
+               }
+             }
         c = component "TopBar" constructor'
     constructor' :: ReactClassConstructor _ State _
     constructor' =
@@ -103,18 +120,13 @@ topBar
                 {title: titleValue, isEditable} <- getState this
                 pure $ appBar {position: absolute, className: props.classes.root} $
                   [ toolbar {variant: dense} $
-                    let branding :: ReactElement
-                        branding = icon_
-                          [ img [RP.src "images/logo-white.svg", RP.style {width: "24px", height: "24px"}]
-                          ]
-                        breadcrumb :: Array ReactElement
-                        breadcrumb =
-                          [ button
-                            { color: inherit
-                            , onClick: mkEffectFn1 (const onTimelineNameEdit)
-                            , title: "Timeline Name and Description"
-                            } [text titleValue]
-                          ]
+                    let timeSpaceButton :: ReactElement
+                        timeSpaceButton = button
+                          { color: inherit
+                          , onClick: mkEffectFn1 (const onTimelineNameEdit)
+                          , title: "TimeSpace Name and Description"
+                          , className: props.classes.appBarButton
+                          } [text titleValue]
                         divider :: ReactElement
                         divider = div [RP.className props.classes.center] []
                         -- createEvent :: Array ReactElement
@@ -130,20 +142,18 @@ topBar
                         --     else []
                         standardButtons :: Array ReactElement
                         standardButtons =
-                          newTimeline <>
-                            [ button {color: inherit, onClick: mkEffectFn1 (const onImport)} [text "Import"]
-                            , button {color: inherit, onClick: mkEffectFn1 (const onExport)} [text "Export"]
+                          ( if isEditable
+                              then [button {color: inherit, onClick: mkEffectFn1 (const onNew), className: props.classes.appBarButton} [text "New Timeline"]]
+                              else []
+                          ) <>
+                            [ button {color: inherit, onClick: mkEffectFn1 (const onImport), className: props.classes.appBarButton} [text "Import"]
+                            , button {color: inherit, onClick: mkEffectFn1 (const onExport), className: props.classes.appBarButton} [text "Export"]
                             , iconButton
                                 { color: inherit
                                 , title: "Settings"
                                 , onClick: mkEffectFn1 (const onSettingsEdit)
                                 } [settingsIcon]
                             ]
-                          where
-                            newTimeline =
-                              if isEditable
-                                then [button {color: inherit, onClick: mkEffectFn1 (const onNew)} [text "New Timeline"]]
-                                else []
-                    in  [branding] <> breadcrumb <> [divider] {-<> createEvent-} <> standardButtons
+                    in  [timeSpaceButton, divider] <> standardButtons
                   ]
             }
