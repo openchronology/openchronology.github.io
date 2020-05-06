@@ -16,6 +16,7 @@ Eq TimelineName
 Show TimelineName
 EncodeJson TimelineName
 DecodeJson TimelineName
+Arbitrary TimelineName
 ```
 
 #### `localstorageSignalKey`

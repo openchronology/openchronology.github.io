@@ -39,6 +39,7 @@ type LogicFunctions = { onClickedExport :: Effect Unit, onExport :: Effect Unit,
 ```
 
 Functions given to the React.js components, to interact with the async devices.
+They're the same functions as `Plumbing.Logic`, but with parameters applied.
 
 #### `logic`
 
