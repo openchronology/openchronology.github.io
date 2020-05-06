@@ -20,19 +20,34 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
-    - uses: actions/setup-haskell@v1.1
-      with:
-        enable-stack: true
+
     - uses: actions/setup-node@v1.4.2
       with:
         node-version: v12.x
 
-    - name: Install dependencies
+    - name: Install ltext
+      uses: actions/setup-haskell@v1.1
+      with:
+        enable-stack: true
+      uses: actions/checkout@v2
+      with:
+        repository: ltext/ltext
+      run: stack install
+
+    - name: Install graphmod
+      uses: actions/setup-haskell@v1.1
+      with:
+        enable-stack: true
+      uses: actions/checkout@v2
+      with:
+        repository: athanclark/graphmod
+      run: stack install
+
+    - name: Install Node.js dependencies
+      uses: actions/checkout@v2
       run: |
         npm install
         npm install -g purescript spago
-        stack install ltext
 
     # Runs a set of commands using the runners shell
     - name: Build
