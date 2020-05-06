@@ -94,32 +94,36 @@ digraph SignalsAndQueues {
   // Logic Functions - destination is the user
   importQueues -> onImport;
   timelineNameSignal -> onImport[color="#00FF00"];
-  settingsSignal -> onImport[color="#0000FF"];
+  onImport -> settingsSignal[color="#FF0000"];
+  settingsSignal -> onImport[color="#00FF00"];
 
-  exportQueue -> onExport[color="#FF0000"];
+  onExport -> exportQueue[color="#FF0000"];
 
-  snackbarQueue -> onClickedExport[color="#FF0000"];
-  timelineNameSignal -> onClickedExport[color="#FF0000"];
-  timeScaleSignal -> onClickedExport[color="#FF0000"];
+  onClickedExport -> snackbarQueue[color="#FF0000"];
+  onClickedExport -> timelineNameSignal[color="#FF0000"];
+  onClickedExport -> timeScaleSignal[color="#FF0000"];
 
   newQueues -> onNew;
-  timeScaleSignal -> onNew[color="#FF0000"];
-  timelineNameSignal -> onNew[color="#FF0000"];
+  onNew -> timeScaleSignal[color="#FF0000"];
+  onNew -> timelineNameSignal[color="#FF0000"];
 
   timelineNameEditQueues -> onTimelineNameEdit;
-  timelineNameSignal -> onTimelineNameEdit[color="#0000FF"];
+  onTimelineNameEdit -> timelineNameSignal[color="#FF0000"];
+  timelineNameSignal -> onTimelineNameEdit[color="#00FF00"];
 
   timeScaleEditQueues -> onTimeScaleEdit;
-  timeScaleSignal -> onTimeScaleEdit[color="#0000FF"];
+  onTimeScaleEdit -> timeScaleSignal[color="#FF0000"];
+  timeScaleSignal -> onTimeScaleEdit[color="#00FF00"];
 
   settingsEditQueues -> onSettingsEdit;
-  settingsSignal -> onSettingsEdit[color="#0000FF"];
+  onSettingsEdit -> settingsSignal[color="#FF0000"];
+  settingsSignal -> onSettingsEdit[color="#00FF00"];
 
   // Components - destination is the user
   importQueues -> compDialImport[color="#00FF00"];
   compDialImport -> importQueues[color="#FF0000"];
 
-  onClickedExport -> compDialExport[color="#FFFF00"];
+  onClickedExport -> compDialExport[color="#0000FF"];
   exportQueue -> compDialExport[color="#00FF00"];
 
   newQueues -> compDialNew[color="#00FF00"];
@@ -139,16 +143,17 @@ digraph SignalsAndQueues {
   timelineNameEditQueues -> compDialTimelineNameEdit[color="#00FF00"];
   compDialTimelineNameEdit -> timelineNameEditQueues[color="#FF0000"];
 
-  onImport -> compTopBar[color="#FFFF00"];
-  onExport -> compTopBar[color="#FFFF00"];
-  onNew -> compTopBar[color="#FFFF00"];
-  onTimelineNameEdit -> compTopBar[color="#FFFF00"];
-  onSettingsEdit -> compTopBar[color="#FFFF00"];
+  onImport -> compTopBar[color="#0000FF"];
+  onExport -> compTopBar[color="#0000FF"];
+  onNew -> compTopBar[color="#0000FF"];
+  onTimelineNameEdit -> compTopBar[color="#0000FF"];
+  onSettingsEdit -> compTopBar[color="#0000FF"];
   timelineNameSignal -> compTopBar[color="#00FF00"];
   settingsSignal -> compTopBar[color="#00FF00"];
 
-  onTimeScaleEdit -> compBottomBar[color="#FFFF00"];
-  zoomSignal -> compBottomBar[color="#0000FF"];
+  onTimeScaleEdit -> compBottomBar[color="#0000FF"];
+  compBottomBar -> zoomSignal[color="#FF0000"];
+  zoomSignal -> compBottomBar[color="#00FF00"];
   timeScaleSignal -> compBottomBar[color="#00FF00"];
 
   snackbarQueue -> compSnackbar[color="#00FF00"];
