@@ -21,14 +21,15 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
 
-    - uses: kamiazya/setup-graphviz@master
-
     - uses: actions/setup-node@v1.4.2
       with:
         node-version: v12.x
     - uses: actions/setup-haskell@v1.1
       with:
         enable-stack: true
+
+    - name: Install graphviz
+      run: sudo apt install graphviz -y
 
     - name: Add local bin to PATH
       shell: bash
