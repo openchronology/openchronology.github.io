@@ -77,12 +77,14 @@ jobs:
       id: extract_branch
 
     - name: Commit
+      env:
+        BRANCH: ${{ steps.extract_branch.outputs.branch }}
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add . -A
         git commit -m "Auto build"
-        git pull origin ${steps.extract_branch.outputs.branch}
+        git pull origin $BRANCH
 
     - name: Push changes
       uses: ad-m/github-push-action@master
