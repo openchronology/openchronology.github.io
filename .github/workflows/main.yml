@@ -32,9 +32,6 @@ jobs:
     - name: Checkout submodules
       run: git submodule update --init --recursive
 
-    - name: Install graphviz
-      run: sudo apt install graphviz -y
-
       # - name: Add local bin to PATH
       # - shell: bash
       # - run: echo "##[add-path;]$(stack path --local-bin)"
@@ -50,6 +47,9 @@ jobs:
         cd graphmod/
         stack install
         cd ../
+
+    - name: Install graphviz
+      run: sudo apt install graphviz -y
 
     - name: Install dependencies, build, and commit
       run: |
