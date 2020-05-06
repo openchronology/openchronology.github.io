@@ -1,7 +1,9 @@
 #! /bin/bash
 
+GRAPHMOD=./graphmod/.stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/graphmod/graphmod
+
 # build graph
-find src -name '*.purs' | xargs graphmod -q \
+find src -name '*.purs' | xargs $GRAPHMOD -q \
   -R 'MaterialUI' -R 'React' -d 12,8 > modules.dot
 # rename graph
 sed -i 's/digraph G/digraph Modules/' modules.dot

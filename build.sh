@@ -24,6 +24,8 @@ STATICSTYLES=./build/staticstyles.html
 STATICSCRIPTS=./build/staticscripts.html
 DYNAMICSTYLES=./build/dynamicstyles.html
 
+LTEXT=./ltext/.stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/ltext/ltext
+
 # Dynamic scripts will use external CDN sources when in production,
 # but local ones when built statically
 
@@ -81,18 +83,18 @@ echo "Browserified"
 # ---------- templates
 
 # static
-ltext "$TEMPLATESTYLES $CSSROBOTO $CSSMATERIALICONS $CSSFONTAWESOME $CSSFONTAWESOMEBRANDS" \
+$LTEXT "$TEMPLATESTYLES $CSSROBOTO $CSSMATERIALICONS $CSSFONTAWESOME $CSSFONTAWESOMEBRANDS" \
       --raw $CSSROBOTO --raw $CSSMATERIALICONS --raw $CSSFONTAWESOME --raw $CSSFONTAWESOMEBRANDS \
       > $STATICSTYLES || { exit 1; }
-ltext "$TEMPLATESCRIPTS $JSOUT" \
+$LTEXT "$TEMPLATESCRIPTS $JSOUT" \
       --raw $JSOUT \
       > $STATICSCRIPTS || { exit 1; }
 
 # final
-ltext "$TEMPLATE $STATICSTYLES $STATICSCRIPTS" \
+$LTEXT "$TEMPLATE $STATICSTYLES $STATICSCRIPTS" \
       --raw $STATICSTYLES --raw $STATICSCRIPTS \
       > $OUTPUTSTATIC || { exit 1; }
-ltext "$TEMPLATE $DYNAMICSTYLES $DYNAMICSCRIPTS" \
+$LTEXT "$TEMPLATE $DYNAMICSTYLES $DYNAMICSCRIPTS" \
       --raw $DYNAMICSTYLES --raw $DYNAMICSCRIPTS \
       > $OUTPUTDYNAMIC || { exit 1; }
 echo "Templated"

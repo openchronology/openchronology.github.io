@@ -27,6 +27,7 @@ jobs:
     - uses: actions/setup-haskell@v1.1
       with:
         enable-stack: true
+    - uses: actions/checkout@v2
 
     - name: Install graphviz
       run: sudo apt install graphviz -y
@@ -35,23 +36,11 @@ jobs:
       shell: bash
       run: echo "##[add-path;]$(stack path --local-bin)"
 
-    - name: Get ltext
-      uses: actions/checkout@v2
-      with:
-        repository: ltext/ltext
-        path: ltext
-
     - name: Install ltext
       run: |
         cd ltext/
         stack install
         cd ../
-
-    - name: Get graphmod
-      uses: actions/checkout@v2
-      with:
-        repository: athanclark/graphmod
-        path: graphmod
 
     - name: Install graphmod
       run: |
@@ -59,15 +48,8 @@ jobs:
         stack install
         cd ../
 
-    - name: Get OpenChronology
-      uses: actions/checkout@v2
-      with:
-        repository: openchronology/openchronology.github.io
-        path: openchronology.github.io
-
     - name: Install dependencies, build, and commit
       run: |
-        cd openchronology.github.io/
         npm install
         npm install -g purescript spago
         ./build.sh
