@@ -1,6 +1,6 @@
 digraph SignalsAndQueues {
-  size="24,16";
-  ratio="fill";
+  ratio="0.5";
+  rankdir="LR";
 
   subgraph cluster_1 {
     label="Signals";
@@ -72,8 +72,8 @@ digraph SignalsAndQueues {
 
   // Signal creation - destination is end of creation
   newSettingsSignal -> settingsSignal;
-  settingsSignal -> newTimelineNameSignal[label="READ",color="#00FF00"];
-  settingsSignal -> newTimeScaleSignal[label="READ",color="#00FF00"];
+  settingsSignal -> newTimelineNameSignal[color="#00FF00"];
+  settingsSignal -> newTimeScaleSignal[color="#00FF00"];
   newTimelineNameSignal -> timelineNameSignal;
   newTimeScaleSignal -> timeScaleSignal;
 
@@ -93,67 +93,67 @@ digraph SignalsAndQueues {
 
   // Logic Functions - destination is the user
   importQueues -> onImport;
-  timelineNameSignal -> onImport[label="READ",color="#00FF00"];
-  settingsSignal -> onImport[label="READ/WRITE",color="#0000FF"];
+  timelineNameSignal -> onImport[color="#00FF00"];
+  settingsSignal -> onImport[color="#0000FF"];
 
-  exportQueue -> onExport[label="WRITE",color="#FF0000"];
+  exportQueue -> onExport[color="#FF0000"];
 
-  snackbarQueue -> onClickedExport[label="WRITE",color="#FF0000"];
-  timelineNameSignal -> onClickedExport[label="Clear Cache"];
-  timeScaleSignal -> onClickedExport[label="Clear Cache"];
+  snackbarQueue -> onClickedExport[color="#FF0000"];
+  timelineNameSignal -> onClickedExport[color="#FF0000"];
+  timeScaleSignal -> onClickedExport[color="#FF0000"];
 
   newQueues -> onNew;
-  timeScaleSignal -> onNew[label="WRITE - Reset",color="#FF0000"];
-  timelineNameSignal -> onNew[label="WRITE - Reset",color="#FF0000"];
+  timeScaleSignal -> onNew[color="#FF0000"];
+  timelineNameSignal -> onNew[color="#FF0000"];
 
   timelineNameEditQueues -> onTimelineNameEdit;
-  timelineNameSignal -> onTimelineNameEdit[label="READ/WRITE",color="#0000FF"];
+  timelineNameSignal -> onTimelineNameEdit[color="#0000FF"];
 
   timeScaleEditQueues -> onTimeScaleEdit;
-  timeScaleSignal -> onTimeScaleEdit[label="READ/WRITE",color="#0000FF"];
+  timeScaleSignal -> onTimeScaleEdit[color="#0000FF"];
 
   settingsEditQueues -> onSettingsEdit;
-  settingsSignal -> onSettingsEdit[label="READ/WRITE",color="#0000FF"];
+  settingsSignal -> onSettingsEdit[color="#0000FF"];
 
   // Components - destination is the user
-  importQueues -> compDialImport[label="READ",color="#00FF00"];
-  compDialImport -> importQueues[label="WRITE",color="#FF0000"];
+  importQueues -> compDialImport[color="#00FF00"];
+  compDialImport -> importQueues[color="#FF0000"];
 
   onClickedExport -> compDialExport[color="#FFFF00"];
-  exportQueue -> compDialExport[label="READ",color="#00FF00"];
+  exportQueue -> compDialExport[color="#00FF00"];
 
-  newQueues -> compDialNew[label="READ",color="#00FF00"];
-  compDialNew -> newQueues[label="WRITE",color="#FF0000"];
+  newQueues -> compDialNew[color="#00FF00"];
+  compDialNew -> newQueues[color="#FF0000"];
 
-  settingsSignal -> compDialSettingsEdit[label="READ",color="#00FF00"];
-  settingsEditQueues -> compDialSettingsEdit[label="READ",color="#00FF00"];
-  compDialSettingsEdit -> settingsEditQueues[label="WRITE",color="#FF0000"];
+  settingsSignal -> compDialSettingsEdit[color="#00FF00"];
+  settingsEditQueues -> compDialSettingsEdit[color="#00FF00"];
+  compDialSettingsEdit -> settingsEditQueues[color="#FF0000"];
 
-  timeScaleSignal -> compDialTimeScaleEdit[label="READ",color="#00FF00"];
-  settingsSignal -> compDialTimeScaleEdit[label="READ",color="#00FF00"];
-  timeScaleEditQueues -> compDialTimeScaleEdit[label="READ",color="#00FF00"];
-  compDialTimeScaleEdit -> timeScaleEditQueues[label="WRITE",color="#FF0000"];
+  timeScaleSignal -> compDialTimeScaleEdit[color="#00FF00"];
+  settingsSignal -> compDialTimeScaleEdit[color="#00FF00"];
+  timeScaleEditQueues -> compDialTimeScaleEdit[color="#00FF00"];
+  compDialTimeScaleEdit -> timeScaleEditQueues[color="#FF0000"];
 
-  timelineNameSignal -> compDialTimelineNameEdit[label="READ",color="#00FF00"];
-  settingsSignal -> compDialTimelineNameEdit[label="READ",color="#00FF00"];
-  timelineNameEditQueues -> compDialTimelineNameEdit[label="READ",color="#00FF00"];
-  compDialTimelineNameEdit -> timelineNameEditQueues[label="WRITE",color="#FF0000"];
+  timelineNameSignal -> compDialTimelineNameEdit[color="#00FF00"];
+  settingsSignal -> compDialTimelineNameEdit[color="#00FF00"];
+  timelineNameEditQueues -> compDialTimelineNameEdit[color="#00FF00"];
+  compDialTimelineNameEdit -> timelineNameEditQueues[color="#FF0000"];
 
   onImport -> compTopBar[color="#FFFF00"];
   onExport -> compTopBar[color="#FFFF00"];
   onNew -> compTopBar[color="#FFFF00"];
   onTimelineNameEdit -> compTopBar[color="#FFFF00"];
   onSettingsEdit -> compTopBar[color="#FFFF00"];
-  timelineNameSignal -> compTopBar[label="READ",color="#00FF00"];
-  settingsSignal -> compTopBar[label="READ",color="#00FF00"];
+  timelineNameSignal -> compTopBar[color="#00FF00"];
+  settingsSignal -> compTopBar[color="#00FF00"];
 
   onTimeScaleEdit -> compBottomBar[color="#FFFF00"];
-  zoomSignal -> compBottomBar[label="READ/WRITE",color="#0000FF"];
-  timeScaleSignal -> compBottomBar[label="READ",color="#00FF00"];
+  zoomSignal -> compBottomBar[color="#0000FF"];
+  timeScaleSignal -> compBottomBar[color="#00FF00"];
 
-  snackbarQueue -> compSnackbar[label="READ",color="#00FF00"];
+  snackbarQueue -> compSnackbar[color="#00FF00"];
 
-  settingsSignal -> compIndex[label="READ",color="#00FF00"];
+  settingsSignal -> compIndex[color="#00FF00"];
   compTopBar -> compIndex;
   compBottomBar -> compIndex;
   compSnackbar -> compIndex;

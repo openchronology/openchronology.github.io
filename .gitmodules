@@ -1,0 +1,6 @@
+[submodule "ltext"]
+	path = ltext
+	url = https://github.com/ltext/ltext
+[submodule "graphmod"]
+	path = graphmod
+	url = https://github.com/athanclark/graphmod

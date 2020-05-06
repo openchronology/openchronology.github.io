@@ -7,6 +7,7 @@ const chrome = require('selenium-webdriver/chrome');
 const chromeOptions = new chrome.Options();
 chromeOptions.addArguments('--headless');
 chromeOptions.addArguments('--no-sandbox');
+// chromeOptions.setChromeBinaryPath('/usr/bin/chromium-browser');
 //   {
 //   'args': ['--headless', '--no-sandbox', '--disable-dev-shm-usage']
 // };

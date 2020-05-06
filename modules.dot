@@ -1,27 +1,27 @@
 digraph Modules {
 size="12,8";
 ratio="fill";
-u10[label="Settings",style="filled",fillcolor="#bbffbb",penwidth="0"];
-u13[label="Main",style="filled",fillcolor="#bbffbb",penwidth="0"];
-u23[label="WithRoot",style="filled",fillcolor="#bbffbb",penwidth="0"];
+u0[label="Main",style="filled",fillcolor="#bbffbb",penwidth="0"];
+u21[label="WithRoot",style="filled",fillcolor="#bbffbb",penwidth="0"];
+u22[label="Settings",style="filled",fillcolor="#bbffbb",penwidth="0"];
 subgraph cluster_0 {
 label="Components";
 color="#0000000F";
 style="filled";
-u0[label="BottomBar",style="filled",fillcolor="#ffffbb",penwidth="0"];
-u7[label="TopBar",style="filled",fillcolor="#ffffbb",penwidth="0"];
-u8[label="Index",style="filled",fillcolor="#ffffbb",penwidth="0"];
-u9[label="Snackbar",style="filled",fillcolor="#ffffbb",penwidth="0"];
+u17[label="Index",style="filled",fillcolor="#ffffbb",penwidth="0"];
+u18[label="TopBar",style="filled",fillcolor="#ffffbb",penwidth="0"];
+u19[label="BottomBar",style="filled",fillcolor="#ffffbb",penwidth="0"];
+u20[label="Snackbar",style="filled",fillcolor="#ffffbb",penwidth="0"];
 subgraph cluster_1 {
 label="Dialogs";
 color="#0000000F";
 style="filled";
-u1[label="Import",style="filled",fillcolor="#bbbbff",penwidth="0"];
-u2[label="SettingsEdit",style="filled",fillcolor="#bbbbff",penwidth="0"];
-u3[label="TimelineNameEdit",style="filled",fillcolor="#bbbbff",penwidth="0"];
-u4[label="TimeScaleEdit",style="filled",fillcolor="#bbbbff",penwidth="0"];
-u5[label="Export",style="filled",fillcolor="#bbbbff",penwidth="0"];
-u6[label="New",style="filled",fillcolor="#bbbbff",penwidth="0"];
+u11[label="TimelineNameEdit",style="filled",fillcolor="#bbbbff",penwidth="0"];
+u12[label="SettingsEdit",style="filled",fillcolor="#bbbbff",penwidth="0"];
+u13[label="New",style="filled",fillcolor="#bbbbff",penwidth="0"];
+u14[label="Export",style="filled",fillcolor="#bbbbff",penwidth="0"];
+u15[label="Import",style="filled",fillcolor="#bbbbff",penwidth="0"];
+u16[label="TimeScaleEdit",style="filled",fillcolor="#bbbbff",penwidth="0"];
 
 }
 
@@ -30,8 +30,8 @@ subgraph cluster_2 {
 label="Plumbing";
 color="#0000000F";
 style="filled";
-u11[label="Plumbing",style="filled,bold",fillcolor="#bbffbb"];
-u22[label="Logic",style="filled",fillcolor="#ffbbbb",penwidth="0"];
+u10[label="Plumbing",style="filled,bold",fillcolor="#bbffbb"];
+u1[label="Logic",style="filled",fillcolor="#ffbbbb",penwidth="0"];
 
 }
 subgraph cluster_3 {
@@ -42,7 +42,7 @@ subgraph cluster_4 {
 label="QuickCheck";
 color="#0000000F";
 style="filled";
-u12[label="UTF8String",style="filled",fillcolor="#ffbbff",penwidth="0"];
+u23[label="UTF8String",style="filled",fillcolor="#ffbbff",penwidth="0"];
 
 }
 
@@ -55,55 +55,55 @@ subgraph cluster_6 {
 label="Data";
 color="#0000000F";
 style="filled";
-u14[label="TimeSpace",style="filled",fillcolor="#ffff77",penwidth="0"];
-u15[label="TimeScale",style="filled",fillcolor="#ffff77",penwidth="0"];
-u16[label="TimelineName",style="filled",fillcolor="#ffff77",penwidth="0"];
-u17[label="Index",style="filled",fillcolor="#ffff77",penwidth="0"];
-u18[label="StoredTimeline",style="filled",fillcolor="#ffff77",penwidth="0"];
-u19[label="Event",style="filled",fillcolor="#ffff77",penwidth="0"];
-u20[label="TimeSpan",style="filled",fillcolor="#ffff77",penwidth="0"];
-u21[label="Timeline",style="filled",fillcolor="#ffff77",penwidth="0"];
+u2[label="TimeScale",style="filled",fillcolor="#ffff77",penwidth="0"];
+u3[label="Event",style="filled",fillcolor="#ffff77",penwidth="0"];
+u4[label="TimelineName",style="filled",fillcolor="#ffff77",penwidth="0"];
+u5[label="Index",style="filled",fillcolor="#ffff77",penwidth="0"];
+u6[label="TimeSpan",style="filled",fillcolor="#ffff77",penwidth="0"];
+u7[label="Timeline",style="filled",fillcolor="#ffff77",penwidth="0"];
+u8[label="StoredTimeline",style="filled",fillcolor="#ffff77",penwidth="0"];
+u9[label="TimeSpace",style="filled",fillcolor="#ffff77",penwidth="0"];
 
 }
 
 }
-u15 -> u0;
-u10 -> u2;
-u10 -> u3;
-u16 -> u3;
-u10 -> u4;
-u15 -> u4;
-u10 -> u7;
-u16 -> u7;
-u0 -> u8;
-u1 -> u8;
-u2 -> u8;
-u3 -> u8;
-u4 -> u8;
-u5 -> u8;
-u6 -> u8;
-u7 -> u8;
-u9 -> u8;
-u10 -> u8;
-u11 -> u8;
-u23 -> u8;
-u1 -> u11;
-u5 -> u11;
-u9 -> u11;
-u10 -> u11;
-u15 -> u11;
-u16 -> u11;
+u10 -> u0;
+u17 -> u0;
+u2 -> u1;
+u4 -> u1;
+u14 -> u1;
+u15 -> u1;
+u20 -> u1;
+u22 -> u1;
+u22 -> u2;
+u22 -> u4;
+u23 -> u4;
+u1 -> u10;
+u2 -> u10;
+u4 -> u10;
+u14 -> u10;
+u15 -> u10;
+u20 -> u10;
+u22 -> u10;
+u4 -> u11;
 u22 -> u11;
-u8 -> u13;
-u11 -> u13;
-u10 -> u15;
-u10 -> u16;
-u12 -> u16;
-u1 -> u22;
-u5 -> u22;
-u9 -> u22;
-u10 -> u22;
-u15 -> u22;
-u16 -> u22;
+u22 -> u12;
+u2 -> u16;
+u22 -> u16;
+u10 -> u17;
+u11 -> u17;
+u12 -> u17;
+u13 -> u17;
+u14 -> u17;
+u15 -> u17;
+u16 -> u17;
+u18 -> u17;
+u19 -> u17;
+u20 -> u17;
+u21 -> u17;
+u22 -> u17;
+u4 -> u18;
+u22 -> u18;
+u2 -> u19;
 
 }
