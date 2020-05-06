@@ -15,3 +15,6 @@ find src -name '*.purs' \
 
 # remove other docs
 rm -r generated-docs/html/
+
+# process html, removing modules not in this package
+spago run -m Scripts.TrimDocs
