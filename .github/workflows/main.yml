@@ -55,8 +55,7 @@ jobs:
 
     - name: Install chrome
       run: |
-        sudo apt remove google-chrome-stable -y
-        sudo apt install chromium-browser -y
+        sudo apt install google-chrome-stable -y
 
     - name: Install dependencies
       run: |
