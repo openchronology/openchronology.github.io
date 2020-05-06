@@ -51,6 +51,11 @@ jobs:
     - name: Install graphviz
       run: sudo apt install graphviz -y
 
+    - name: Install chrome
+      run: |
+        sudo apt install google-chrome-stable -y
+        sudo apt upgrade google-chrome-stable -y
+
     - name: Install dependencies
       run: |
         npm install
