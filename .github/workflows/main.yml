@@ -64,14 +64,14 @@ jobs:
 
     - name: Build
       run: |
-        ./build.sh
-        ./build.sh production
+        ./scripts/build.sh
+        ./scripts/build.sh production
 
     - name: Test
       run: npm test
 
     - name: Docs
-      run: ./build_all_docs.sh
+      run: ./scripts/build_all_docs.sh
 
     - name: Extract branch name
       shell: bash
