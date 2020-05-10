@@ -1,20 +1,27 @@
 module Components.Drawers.Timelines where
 
 import Prelude
-import Data.Maybe (Maybe (..))
+import Data.Maybe (Maybe (..), isJust)
 import Data.Array (mapWithIndex) as Array
+import Data.Nullable (toNullable)
 import Effect (Effect)
 import Effect.Uncurried (mkEffectFn1)
 import React
   ( ReactElement, ReactClass, ReactClassConstructor
   , toElement, component, setState, getState, getProps, createLeafElement)
 import React.DOM (text)
+import React.SyntheticEvent (currentTarget, NativeEventTarget)
 import MaterialUI.Styles (withStyles)
 import MaterialUI.Typography (typography)
 import MaterialUI.List (list_, list)
 import MaterialUI.ListItem (listItem)
 import MaterialUI.ListItemText (listItemText')
+import MaterialUI.ListItemSecondaryAction (listItemSecondaryAction_)
+import MaterialUI.IconButton (iconButton)
+import MaterialUI.Icons.MoreHorizIcon (moreHorizIcon)
 import MaterialUI.Button (button)
+import MaterialUI.Menu (menu)
+import MaterialUI.MenuItem (menuItem)
 import MaterialUI.Enums (title, subheading, permanent, right, small, raised, primary)
 
 
@@ -22,6 +29,7 @@ import MaterialUI.Enums (title, subheading, permanent, right, small, raised, pri
 type State =
   { elements :: Array String -- FIXME time-sorted mapping?
   , selected :: Maybe Int
+  , menuAnchor :: Maybe NativeEventTarget
   }
 
 
@@ -37,6 +45,7 @@ initialState = pure
     , "Timeline G"
     ]
   , selected: Nothing
+  , menuAnchor: Nothing
   }
 
 
@@ -74,13 +83,25 @@ timelinesDrawer = createLeafElement c {}
             , componentWillUnmount: pure unit
             , render: do
               props <- getProps this
-              {elements,selected} <- getState this
-              let mkTextItem i t =
+              {elements,selected,menuAnchor} <- getState this
+              let handleMenuClick e = do
+                    anchor <- currentTarget e
+                    setState this {menuAnchor: Just anchor}
+                  handleClose = setState this {menuAnchor: Nothing}
+                  mkTextItem i t =
                     listItem
                       { button: true
                       , selected: isSelected
                       , onClick: mkEffectFn1 (const select)
-                      } [listItemText' {primary: t}]
+                      }
+                      [ listItemText' {primary: t}
+                      , listItemSecondaryAction_
+                        [ iconButton
+                          { onClick: mkEffectFn1 handleMenuClick
+                          }
+                          [moreHorizIcon]
+                        ]
+                      ]
                     where
                       isSelected = Just i == selected
                       select = setState this {selected: if isSelected then Nothing else Just i}
@@ -88,5 +109,21 @@ timelinesDrawer = createLeafElement c {}
                 [ typography {variant: title} [text "Timelines"]
                 , button {size: small, variant: raised, color: primary} [text "Add"]
                 , list {className: props.classes.leftDrawerList} (Array.mapWithIndex mkTextItem elements)
+                , menu
+                  { id: "timelines-menu"
+                  , anchorEl: toNullable menuAnchor
+                  , open: isJust menuAnchor
+                  , onClose: mkEffectFn1 (const handleClose)
+                  }
+                  [ menuItem
+                    { onClick: mkEffectFn1 (const handleClose)
+                    } [text "Edit"]
+                  , menuItem
+                    { onClick: mkEffectFn1 (const handleClose)
+                    } [text "Move"]
+                  , menuItem
+                    { onClick: mkEffectFn1 (const handleClose)
+                    } [text "Delete"]
+                  ]
                 ]
             }

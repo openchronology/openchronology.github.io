@@ -13076,19 +13076,26 @@ var PS = {};
   var Data_Eq = $PS["Data.Eq"];
   var Data_Function = $PS["Data.Function"];
   var Data_Maybe = $PS["Data.Maybe"];
+  var Data_Nullable = $PS["Data.Nullable"];
   var Data_Show = $PS["Data.Show"];
   var Data_Unit = $PS["Data.Unit"];
   var Effect = $PS["Effect"];
   var Effect_Uncurried = $PS["Effect.Uncurried"];
   var MaterialUI_Button = $PS["MaterialUI.Button"];
   var MaterialUI_Enums = $PS["MaterialUI.Enums"];
+  var MaterialUI_IconButton = $PS["MaterialUI.IconButton"];
+  var MaterialUI_Icons_MoreHorizIcon = $PS["MaterialUI.Icons.MoreHorizIcon"];
   var MaterialUI_List = $PS["MaterialUI.List"];
   var MaterialUI_ListItem = $PS["MaterialUI.ListItem"];
+  var MaterialUI_ListItemSecondaryAction = $PS["MaterialUI.ListItemSecondaryAction"];
   var MaterialUI_ListItemText = $PS["MaterialUI.ListItemText"];
+  var MaterialUI_Menu = $PS["MaterialUI.Menu"];
+  var MaterialUI_MenuItem = $PS["MaterialUI.MenuItem"];
   var MaterialUI_Styles = $PS["MaterialUI.Styles"];
   var MaterialUI_Typography = $PS["MaterialUI.Typography"];
   var React = $PS["React"];
   var React_DOM = $PS["React.DOM"];
+  var React_SyntheticEvent = $PS["React.SyntheticEvent"];
 
   var styles = function styles(theme) {
     return {
@@ -13119,7 +13126,8 @@ var PS = {};
       name: "Event F",
       time: "20200211"
     }],
-    selected: Data_Maybe.Nothing.value
+    selected: Data_Maybe.Nothing.value,
+    menuAnchor: Data_Maybe.Nothing.value
   });
 
   var siblingsDrawer = function () {
@@ -13134,6 +13142,15 @@ var PS = {};
             render: function __do() {
               var props = React.getProps($$this)();
               var v = React.getState($$this)();
+
+              var handleMenuClick = function handleMenuClick(e) {
+                return function __do() {
+                  var anchor = React_SyntheticEvent.currentTarget(e)();
+                  return React.setState()($$this)({
+                    menuAnchor: new Data_Maybe.Just(anchor)
+                  })();
+                };
+              };
 
               var mkTextItemTime = function mkTextItemTime(i) {
                 return function (v1) {
@@ -13155,10 +13172,15 @@ var PS = {};
                   })([MaterialUI_ListItemText["listItemText'"]()({
                     primary: v1.name,
                     secondary: v1.time
-                  })]);
+                  }), MaterialUI_ListItemSecondaryAction.listItemSecondaryAction_([MaterialUI_IconButton.iconButton()({
+                    onClick: Effect_Uncurried.mkEffectFn1(handleMenuClick)
+                  })([MaterialUI_Icons_MoreHorizIcon.moreHorizIcon])])]);
                 };
               };
 
+              var handleClose = React.setState()($$this)({
+                menuAnchor: Data_Maybe.Nothing.value
+              });
               return React.toElement(React.isReactElementArray)([MaterialUI_Typography.typography()({
                 variant: MaterialUI_Enums.title
               })([React_DOM.text("Events and TimeSpans")]), MaterialUI_Typography.typography()({
@@ -13169,7 +13191,18 @@ var PS = {};
                 color: MaterialUI_Enums.primary
               })([React_DOM.text("Add")]), MaterialUI_List.list()({
                 className: props.classes.leftDrawerList
-              })(Data_Array.mapWithIndex(mkTextItemTime)(v.elements))]);
+              })(Data_Array.mapWithIndex(mkTextItemTime)(v.elements)), MaterialUI_Menu.menu()({
+                id: "siblings-item-menu",
+                anchorEl: Data_Nullable.toNullable(v.menuAnchor),
+                open: Data_Maybe.isJust(v.menuAnchor),
+                onClose: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
+              })([MaterialUI_MenuItem.menuItem()({
+                onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
+              })([React_DOM.text("Edit")]), MaterialUI_MenuItem.menuItem()({
+                onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
+              })([React_DOM.text("Move")]), MaterialUI_MenuItem.menuItem()({
+                onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
+              })([React_DOM.text("Delete")])])]);
             }
           };
         };
@@ -13200,19 +13233,26 @@ var PS = {};
   var Data_Eq = $PS["Data.Eq"];
   var Data_Function = $PS["Data.Function"];
   var Data_Maybe = $PS["Data.Maybe"];
+  var Data_Nullable = $PS["Data.Nullable"];
   var Data_Show = $PS["Data.Show"];
   var Data_Unit = $PS["Data.Unit"];
   var Effect = $PS["Effect"];
   var Effect_Uncurried = $PS["Effect.Uncurried"];
   var MaterialUI_Button = $PS["MaterialUI.Button"];
   var MaterialUI_Enums = $PS["MaterialUI.Enums"];
+  var MaterialUI_IconButton = $PS["MaterialUI.IconButton"];
+  var MaterialUI_Icons_MoreHorizIcon = $PS["MaterialUI.Icons.MoreHorizIcon"];
   var MaterialUI_List = $PS["MaterialUI.List"];
   var MaterialUI_ListItem = $PS["MaterialUI.ListItem"];
+  var MaterialUI_ListItemSecondaryAction = $PS["MaterialUI.ListItemSecondaryAction"];
   var MaterialUI_ListItemText = $PS["MaterialUI.ListItemText"];
+  var MaterialUI_Menu = $PS["MaterialUI.Menu"];
+  var MaterialUI_MenuItem = $PS["MaterialUI.MenuItem"];
   var MaterialUI_Styles = $PS["MaterialUI.Styles"];
   var MaterialUI_Typography = $PS["MaterialUI.Typography"];
   var React = $PS["React"];
   var React_DOM = $PS["React.DOM"];
+  var React_SyntheticEvent = $PS["React.SyntheticEvent"];
 
   var styles = function styles(theme) {
     return {
@@ -13225,7 +13265,8 @@ var PS = {};
 
   var initialState = Control_Applicative.pure(Effect.applicativeEffect)({
     elements: ["Timeline A", "Timeline B", "Timeline C", "Timeline D", "Timeline E", "Timeline F", "Timeline G"],
-    selected: Data_Maybe.Nothing.value
+    selected: Data_Maybe.Nothing.value,
+    menuAnchor: Data_Maybe.Nothing.value
   });
 
   var timelinesDrawer = function () {
@@ -13240,6 +13281,15 @@ var PS = {};
             render: function __do() {
               var props = React.getProps($$this)();
               var v = React.getState($$this)();
+
+              var handleMenuClick = function handleMenuClick(e) {
+                return function __do() {
+                  var anchor = React_SyntheticEvent.currentTarget(e)();
+                  return React.setState()($$this)({
+                    menuAnchor: new Data_Maybe.Just(anchor)
+                  })();
+                };
+              };
 
               var mkTextItem = function mkTextItem(i) {
                 return function (t) {
@@ -13260,10 +13310,15 @@ var PS = {};
                     onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](select))
                   })([MaterialUI_ListItemText["listItemText'"]()({
                     primary: t
-                  })]);
+                  }), MaterialUI_ListItemSecondaryAction.listItemSecondaryAction_([MaterialUI_IconButton.iconButton()({
+                    onClick: Effect_Uncurried.mkEffectFn1(handleMenuClick)
+                  })([MaterialUI_Icons_MoreHorizIcon.moreHorizIcon])])]);
                 };
               };
 
+              var handleClose = React.setState()($$this)({
+                menuAnchor: Data_Maybe.Nothing.value
+              });
               return React.toElement(React.isReactElementArray)([MaterialUI_Typography.typography()({
                 variant: MaterialUI_Enums.title
               })([React_DOM.text("Timelines")]), MaterialUI_Button.button()({
@@ -13272,7 +13327,18 @@ var PS = {};
                 color: MaterialUI_Enums.primary
               })([React_DOM.text("Add")]), MaterialUI_List.list()({
                 className: props.classes.leftDrawerList
-              })(Data_Array.mapWithIndex(mkTextItem)(v.elements))]);
+              })(Data_Array.mapWithIndex(mkTextItem)(v.elements)), MaterialUI_Menu.menu()({
+                id: "timelines-menu",
+                anchorEl: Data_Nullable.toNullable(v.menuAnchor),
+                open: Data_Maybe.isJust(v.menuAnchor),
+                onClose: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
+              })([MaterialUI_MenuItem.menuItem()({
+                onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
+              })([React_DOM.text("Edit")]), MaterialUI_MenuItem.menuItem()({
+                onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
+              })([React_DOM.text("Move")]), MaterialUI_MenuItem.menuItem()({
+                onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
+              })([React_DOM.text("Delete")])])]);
             }
           };
         };
