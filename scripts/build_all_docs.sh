@@ -1,6 +1,6 @@
 #! /bin/bash
 
-./build_all_graphs.sh
+./scripts/build_all_graphs.sh
 
 # takes forever
 spago docs -f html

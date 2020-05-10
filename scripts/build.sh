@@ -50,14 +50,14 @@ fi
 
 # ----------- compiling
 
-# spago build || { exit 1; }
 spago bundle-app -m Main --to $JSTMP \
      || { echo "Bundle Failed"; exit 1; }
+
 echo "Bundled"
 
 # ----------- update module graph
 
-./build_modules.sh
+./scripts/build_modules.sh
 echo "Module Graph Built"
 
 
@@ -76,7 +76,10 @@ rm $JSTMP
 
 # uglify only in production, first through browserify
 if [ $# -eq 1 ] && [ $1 == "production" ]; then
-    ./node_modules/.bin/browserify $JS -g [ envify --NODE_ENV production ] -g uglifyify | ./node_modules/.bin/uglifyjs --compress --mangle > $JSMIN || { exit 1; }
+    ./node_modules/.bin/browserify $JS -g \
+      [ envify --NODE_ENV production ] -g uglifyify | \
+      ./node_modules/.bin/uglifyjs --compress --mangle > $JSMIN || \
+      { exit 1; }
 fi
 echo "Browserified"
 
@@ -108,16 +111,16 @@ rm $STATICSCRIPTS
 # --------- finalization
 
 # static distribuition
-mkdir static/
-cp $OUTPUTSTATIC static/index.html
-cp -r fonts/ static/fonts/
-cp -r images/ static/images/
+mkdir ./static/
+cp $OUTPUTSTATIC ./static/index.html
+cp -r ./fonts/ ./static/fonts/
+cp -r ./images/ ./static/images/
 
-cd static/
+cd ./static/
 zip -q -r ../openchronology-static.zip index.html fonts/ || { exit 1; }
 cd ../
 
 # clean up static dir
-rm -r static/
+rm -r ./static/
 
 echo "Finished"
