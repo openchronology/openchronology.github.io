@@ -11,6 +11,9 @@ import Settings (Settings (..))
 
 import Components.TopBar (topBar)
 import Components.BottomBar (bottomBar)
+import Components.Drawers.Timelines (timelinesDrawer)
+import Components.Drawers.Siblings (siblingsDrawer)
+import Components.Drawers.Children (childrenDrawer)
 import Components.Dialogs.Import (importDialog)
 import Components.Dialogs.Export (exportDialog)
 import Components.Dialogs.New (newDialog)
@@ -85,10 +88,6 @@ styles theme =
     { height: "calc(100vh - " <> show ((theme.spacing.unit * 12.0) + (24.5 * 2.0)) <> "px)"
     , overflowY: "auto"
     }
-  , leftDrawerList:
-    { height: "calc(100vh - " <> show ((theme.spacing.unit * 12.0) + (24.5 * 3.0)) <> "px)"
-    , overflowY: "auto"
-    }
   }
 
 
@@ -152,7 +151,6 @@ index
                 , content :: String
                 , contentEditMode :: String
                 , rightDrawerList :: String
-                , leftDrawerList :: String
                 }
               }
         c' = component "Index" constructor'
@@ -178,27 +176,9 @@ index
                           , variant: permanent
                           , classes: {paper: props.classes.drawerPaper}
                           }
-                          [ typography {variant: title} [text "Timelines"]
-                          , list {className: props.classes.leftDrawerList} $ map mkTextItem
-                              [ "Timeline A"
-                              , "Timeline B"
-                              , "Timeline C"
-                              , "Timeline D"
-                              , "Timeline E"
-                              , "Timeline F"
-                              , "Timeline G"
-                              ]
+                          [ timelinesDrawer
                           , divider_ []
-                          , typography {variant: title} [text "Events and TimeSpans"]
-                          , typography {variant: subheading} [text "For Multiple Timelines"]
-                          , list {className: props.classes.leftDrawerList} $ map mkTextItemTime
-                            [ {name: "Event A", time: "20200130"}
-                            , {name: "Event B", time: "20200131"}
-                            , {name: "TimeSpan C", time: "20200202"}
-                            , {name: "TimeSpan D", time: "20200204"}
-                            , {name: "Event E", time: "20200208"}
-                            , {name: "Event F", time: "20200211"}
-                            ]
+                          , siblingsDrawer
                           ]
                         ]
                     | otherwise = []
@@ -209,18 +189,7 @@ index
                           , variant: permanent
                           , classes: {paper: props.classes.drawerPaper}
                           , anchor: right
-                          }
-                          [ typography {variant: title} [text "Events and TimeSpans"]
-                          , typography {variant: subheading} [text "For Timeline \"A\""]
-                          , list {className: props.classes.rightDrawerList} $ map mkTextItemTime
-                            [ {name: "Event A", time: "20200130"}
-                            , {name: "Event B", time: "20200131"}
-                            , {name: "TimeSpan C", time: "20200202"}
-                            , {name: "TimeSpan D", time: "20200204"}
-                            , {name: "Event E", time: "20200208"}
-                            , {name: "Event F", time: "20200211"}
-                            ]
-                          ]
+                          } [childrenDrawer]
                         ]
                     | otherwise = []
               pure $ toElement $
@@ -276,6 +245,3 @@ index
                 , snackbars (Q.readOnly (Q.allowReading snackbarQueue))
                 ]
             }
-
-    mkTextItem t = listItem {button: true} [listItemText' {primary: t}]
-    mkTextItemTime {name,time} = listItem {button: true} [listItemText' {primary: name, secondary: time}]
