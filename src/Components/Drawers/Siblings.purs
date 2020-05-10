@@ -14,7 +14,8 @@ import MaterialUI.Typography (typography)
 import MaterialUI.List (list_, list)
 import MaterialUI.ListItem (listItem)
 import MaterialUI.ListItemText (listItemText')
-import MaterialUI.Enums (title, subheading, permanent, right)
+import MaterialUI.Button (button)
+import MaterialUI.Enums (title, subheading, permanent, right, small, raised, primary)
 
 
 
@@ -42,7 +43,7 @@ initialState = pure
 styles :: _
 styles theme =
   { leftDrawerList:
-    { height: "calc(100vh - " <> show ((theme.spacing.unit * 12.0) + (24.5 * 3.0)) <> "px)"
+    { height: "calc(100vh - " <> show ((theme.spacing.unit * 12.0) + (24.5 * 3.0) + (30.75 * 2.0)) <> "px)"
     , overflowY: "auto"
     }
   }
@@ -85,6 +86,7 @@ siblingsDrawer = createLeafElement c {}
               pure $ toElement
                 [ typography {variant: title} [text "Events and TimeSpans"]
                 , typography {variant: subheading} [text "For Multiple Timelines"]
+                , button {size: small, variant: raised, color: primary} [text "Add"]
                 , list {className: props.classes.leftDrawerList} (Array.mapWithIndex mkTextItemTime elements)
                 ]
             }

@@ -84,10 +84,6 @@ styles theme =
     , marginBottom: theme.spacing.unit * 6.0
     , height: "calc(100vh - " <> show (theme.spacing.unit * 12.0) <> "px)"
     }
-  , rightDrawerList:
-    { height: "calc(100vh - " <> show ((theme.spacing.unit * 12.0) + (24.5 * 2.0)) <> "px)"
-    , overflowY: "auto"
-    }
   }
 
 
@@ -150,7 +146,6 @@ index
                 , drawerPaper :: String
                 , content :: String
                 , contentEditMode :: String
-                , rightDrawerList :: String
                 }
               }
         c' = component "Index" constructor'
