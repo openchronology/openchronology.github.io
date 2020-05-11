@@ -8658,7 +8658,7 @@ var PS = {};
     }
 
     ;
-    throw new Error("Failed pattern match at Components.BottomBar (line 160, column 3 - line 162, column 66): " + [v.constructor.name]);
+    throw new Error("Failed pattern match at Components.BottomBar (line 158, column 3 - line 160, column 66): " + [v.constructor.name]);
   };
 
   var initialState = function initialState(zoomSignal) {
@@ -8696,7 +8696,7 @@ var PS = {};
               }
 
               ;
-              throw new Error("Failed pattern match at Components.BottomBar (line 103, column 21 - line 104, column 46): " + []);
+              throw new Error("Failed pattern match at Components.BottomBar (line 101, column 21 - line 102, column 46): " + []);
             }();
 
             return IxZeta.set(z$prime)(v.zoomSignal)();
@@ -8747,7 +8747,7 @@ var PS = {};
                   }
 
                   ;
-                  throw new Error("Failed pattern match at Components.BottomBar (line 127, column 27 - line 130, column 55): " + [y.constructor.name]);
+                  throw new Error("Failed pattern match at Components.BottomBar (line 125, column 27 - line 128, column 55): " + [y.constructor.name]);
                 }
               })([React_DOM.text("Zoom"), React_DOM_NonBlockingSpace.nbsp, React_DOM.text(zoomShown + "%")]), MaterialUI_IconButton.iconButton()({
                 color: MaterialUI_Enums.inherit,
@@ -12948,10 +12948,12 @@ var PS = {};
   var Data_Function = $PS["Data.Function"];
   var Data_Maybe = $PS["Data.Maybe"];
   var Data_Nullable = $PS["Data.Nullable"];
+  var Data_Semigroup = $PS["Data.Semigroup"];
   var Data_Show = $PS["Data.Show"];
   var Data_Unit = $PS["Data.Unit"];
   var Effect = $PS["Effect"];
   var Effect_Uncurried = $PS["Effect.Uncurried"];
+  var IxZeta = $PS["IxZeta"];
   var MaterialUI_Button = $PS["MaterialUI.Button"];
   var MaterialUI_Enums = $PS["MaterialUI.Enums"];
   var MaterialUI_IconButton = $PS["MaterialUI.IconButton"];
@@ -12966,6 +12968,7 @@ var PS = {};
   var MaterialUI_Typography = $PS["MaterialUI.Typography"];
   var React = $PS["React"];
   var React_DOM = $PS["React.DOM"];
+  var React_Signal_WhileMounted = $PS["React.Signal.WhileMounted"];
   var React_SyntheticEvent = $PS["React.SyntheticEvent"];
 
   var styles = function styles(theme) {
@@ -12977,42 +12980,48 @@ var PS = {};
     };
   };
 
-  var initialState = Control_Applicative.pure(Effect.applicativeEffect)({
-    elements: [{
-      name: "Event A",
-      time: "20200130"
-    }, {
-      name: "Event B",
-      time: "20200131"
-    }, {
-      name: "TimeSpan C",
-      time: "20200202"
-    }, {
-      name: "TimeSpan D",
-      time: "20200204"
-    }, {
-      name: "Event E",
-      time: "20200208"
-    }, {
-      name: "Event F",
-      time: "20200211"
-    }],
-    selected: Data_Maybe.Nothing.value,
-    menuAnchor: Data_Maybe.Nothing.value
-  });
+  var initialState = function initialState(settingsSignal) {
+    return function __do() {
+      var v = IxZeta.get(settingsSignal)();
+      return {
+        elements: [{
+          name: "Event A",
+          time: "20200130"
+        }, {
+          name: "Event B",
+          time: "20200131"
+        }, {
+          name: "TimeSpan C",
+          time: "20200202"
+        }, {
+          name: "TimeSpan D",
+          time: "20200204"
+        }, {
+          name: "Event E",
+          time: "20200208"
+        }, {
+          name: "Event F",
+          time: "20200211"
+        }],
+        selected: Data_Maybe.Nothing.value,
+        menuAnchor: Data_Maybe.Nothing.value,
+        isEditable: v.isEditable
+      };
+    };
+  };
 
-  var childrenDrawer = function () {
+  var childrenDrawer = function childrenDrawer(v) {
     var constructor = function () {
       var constructor$prime = function constructor$prime($$this) {
         return function __do() {
-          var state = initialState();
+          var state = initialState(v.settingsSignal)();
           return {
             state: state,
             componentDidMount: Control_Applicative.pure(Effect.applicativeEffect)(Data_Unit.unit),
             componentWillUnmount: Control_Applicative.pure(Effect.applicativeEffect)(Data_Unit.unit),
             render: function __do() {
               var props = React.getProps($$this)();
-              var v = React.getState($$this)();
+              var v1 = React.getState($$this)();
 
               var handleMenuClick = function handleMenuClick(e) {
                 return function __do() {
@@ -13024,8 +13033,8 @@ var PS = {};
               };
 
               var mkTextItemTime = function mkTextItemTime(i) {
-                return function (v1) {
-                  var isSelected = Data_Eq.eq(Data_Maybe.eqMaybe(Data_Eq.eqInt))(new Data_Maybe.Just(i))(v.selected);
+                return function (v2) {
+                  var isSelected = Data_Eq.eq(Data_Maybe.eqMaybe(Data_Eq.eqInt))(new Data_Maybe.Just(i))(v1.selected);
                   var select = React.setState()($$this)({
                     selected: function () {
                       if (isSelected) {
@@ -13040,32 +13049,46 @@ var PS = {};
                     button: true,
                     selected: isSelected,
                     onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](select))
-                  })([MaterialUI_ListItemText["listItemText'"]()({
-                    primary: v1.name,
-                    secondary: v1.time
-                  }), MaterialUI_ListItemSecondaryAction.listItemSecondaryAction_([MaterialUI_IconButton.iconButton()({
-                    onClick: Effect_Uncurried.mkEffectFn1(handleMenuClick)
-                  })([MaterialUI_Icons_MoreHorizIcon.moreHorizIcon])])]);
+                  })(Data_Semigroup.append(Data_Semigroup.semigroupArray)([MaterialUI_ListItemText["listItemText'"]()({
+                    primary: v2.name,
+                    secondary: v2.time
+                  })])(function () {
+                    if (v1.isEditable) {
+                      return [MaterialUI_ListItemSecondaryAction.listItemSecondaryAction_([MaterialUI_IconButton.iconButton()({
+                        onClick: Effect_Uncurried.mkEffectFn1(handleMenuClick)
+                      })([MaterialUI_Icons_MoreHorizIcon.moreHorizIcon])])];
+                    }
+
+                    ;
+                    return [];
+                  }()));
                 };
               };
 
               var handleClose = React.setState()($$this)({
                 menuAnchor: Data_Maybe.Nothing.value
               });
-              return React.toElement(React.isReactElementArray)([MaterialUI_Typography.typography()({
+              return React.toElement(React.isReactElementArray)(Data_Semigroup.append(Data_Semigroup.semigroupArray)([MaterialUI_Typography.typography()({
                 variant: MaterialUI_Enums.title
               })([React_DOM.text("Events and TimeSpans")]), MaterialUI_Typography.typography()({
                 variant: MaterialUI_Enums.subheading
-              })([React_DOM.text("For Timeline \"A\"")]), MaterialUI_Button.button()({
-                size: MaterialUI_Enums.small,
-                variant: MaterialUI_Enums.raised,
-                color: MaterialUI_Enums.primary
-              })([React_DOM.text("Add")]), MaterialUI_List.list()({
+              })([React_DOM.text("For Timeline \"A\"")])])(Data_Semigroup.append(Data_Semigroup.semigroupArray)(function () {
+                if (v1.isEditable) {
+                  return [MaterialUI_Button.button()({
+                    size: MaterialUI_Enums.small,
+                    variant: MaterialUI_Enums.raised,
+                    color: MaterialUI_Enums.primary
+                  })([React_DOM.text("Add")])];
+                }
+
+                ;
+                return [];
+              }())([MaterialUI_List.list()({
                 className: props.classes.rightDrawerList
-              })(Data_Array.mapWithIndex(mkTextItemTime)(v.elements)), MaterialUI_Menu.menu()({
+              })(Data_Array.mapWithIndex(mkTextItemTime)(v1.elements)), MaterialUI_Menu.menu()({
                 id: "children-item-menu",
-                anchorEl: Data_Nullable.toNullable(v.menuAnchor),
-                open: Data_Maybe.isJust(v.menuAnchor),
+                anchorEl: Data_Nullable.toNullable(v1.menuAnchor),
+                open: Data_Maybe.isJust(v1.menuAnchor),
                 onClose: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
               })([MaterialUI_MenuItem.menuItem()({
                 onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
@@ -13073,13 +13096,21 @@ var PS = {};
                 onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
               })([React_DOM.text("Move")]), MaterialUI_MenuItem.menuItem()({
                 onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
-              })([React_DOM.text("Delete")])])]);
+              })([React_DOM.text("Delete")])])])));
             }
           };
         };
       };
 
-      return constructor$prime;
+      var handleChangeEdit = function handleChangeEdit($$this) {
+        return function (v1) {
+          return React.setState()($$this)({
+            isEditable: v1.isEditable
+          });
+        };
+      };
+
+      return React_Signal_WhileMounted.whileMountedIx(v.settingsSignal)("ChildrenDrawer")(handleChangeEdit)(constructor$prime);
     }();
 
     var c = function () {
@@ -13088,7 +13119,7 @@ var PS = {};
     }();
 
     return React.createLeafElement()(c)({});
-  }();
+  };
 
   exports["childrenDrawer"] = childrenDrawer;
 })(PS);
@@ -13105,10 +13136,12 @@ var PS = {};
   var Data_Function = $PS["Data.Function"];
   var Data_Maybe = $PS["Data.Maybe"];
   var Data_Nullable = $PS["Data.Nullable"];
+  var Data_Semigroup = $PS["Data.Semigroup"];
   var Data_Show = $PS["Data.Show"];
   var Data_Unit = $PS["Data.Unit"];
   var Effect = $PS["Effect"];
   var Effect_Uncurried = $PS["Effect.Uncurried"];
+  var IxZeta = $PS["IxZeta"];
   var MaterialUI_Button = $PS["MaterialUI.Button"];
   var MaterialUI_Enums = $PS["MaterialUI.Enums"];
   var MaterialUI_IconButton = $PS["MaterialUI.IconButton"];
@@ -13123,6 +13156,7 @@ var PS = {};
   var MaterialUI_Typography = $PS["MaterialUI.Typography"];
   var React = $PS["React"];
   var React_DOM = $PS["React.DOM"];
+  var React_Signal_WhileMounted = $PS["React.Signal.WhileMounted"];
   var React_SyntheticEvent = $PS["React.SyntheticEvent"];
 
   var styles = function styles(theme) {
@@ -13134,42 +13168,48 @@ var PS = {};
     };
   };
 
-  var initialState = Control_Applicative.pure(Effect.applicativeEffect)({
-    elements: [{
-      name: "Event A",
-      time: "20200130"
-    }, {
-      name: "Event B",
-      time: "20200131"
-    }, {
-      name: "TimeSpan C",
-      time: "20200202"
-    }, {
-      name: "TimeSpan D",
-      time: "20200204"
-    }, {
-      name: "Event E",
-      time: "20200208"
-    }, {
-      name: "Event F",
-      time: "20200211"
-    }],
-    selected: Data_Maybe.Nothing.value,
-    menuAnchor: Data_Maybe.Nothing.value
-  });
+  var initialState = function initialState(settingsSignal) {
+    return function __do() {
+      var v = IxZeta.get(settingsSignal)();
+      return {
+        elements: [{
+          name: "Event A",
+          time: "20200130"
+        }, {
+          name: "Event B",
+          time: "20200131"
+        }, {
+          name: "TimeSpan C",
+          time: "20200202"
+        }, {
+          name: "TimeSpan D",
+          time: "20200204"
+        }, {
+          name: "Event E",
+          time: "20200208"
+        }, {
+          name: "Event F",
+          time: "20200211"
+        }],
+        selected: Data_Maybe.Nothing.value,
+        menuAnchor: Data_Maybe.Nothing.value,
+        isEditable: v.isEditable
+      };
+    };
+  };
 
-  var siblingsDrawer = function () {
+  var siblingsDrawer = function siblingsDrawer(v) {
     var constructor = function () {
       var constructor$prime = function constructor$prime($$this) {
         return function __do() {
-          var state = initialState();
+          var state = initialState(v.settingsSignal)();
           return {
             state: state,
             componentDidMount: Control_Applicative.pure(Effect.applicativeEffect)(Data_Unit.unit),
             componentWillUnmount: Control_Applicative.pure(Effect.applicativeEffect)(Data_Unit.unit),
             render: function __do() {
               var props = React.getProps($$this)();
-              var v = React.getState($$this)();
+              var v1 = React.getState($$this)();
 
               var handleMenuClick = function handleMenuClick(e) {
                 return function __do() {
@@ -13181,8 +13221,8 @@ var PS = {};
               };
 
               var mkTextItemTime = function mkTextItemTime(i) {
-                return function (v1) {
-                  var isSelected = Data_Eq.eq(Data_Maybe.eqMaybe(Data_Eq.eqInt))(new Data_Maybe.Just(i))(v.selected);
+                return function (v2) {
+                  var isSelected = Data_Eq.eq(Data_Maybe.eqMaybe(Data_Eq.eqInt))(new Data_Maybe.Just(i))(v1.selected);
                   var select = React.setState()($$this)({
                     selected: function () {
                       if (isSelected) {
@@ -13197,32 +13237,46 @@ var PS = {};
                     button: true,
                     selected: isSelected,
                     onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](select))
-                  })([MaterialUI_ListItemText["listItemText'"]()({
-                    primary: v1.name,
-                    secondary: v1.time
-                  }), MaterialUI_ListItemSecondaryAction.listItemSecondaryAction_([MaterialUI_IconButton.iconButton()({
-                    onClick: Effect_Uncurried.mkEffectFn1(handleMenuClick)
-                  })([MaterialUI_Icons_MoreHorizIcon.moreHorizIcon])])]);
+                  })(Data_Semigroup.append(Data_Semigroup.semigroupArray)([MaterialUI_ListItemText["listItemText'"]()({
+                    primary: v2.name,
+                    secondary: v2.time
+                  })])(function () {
+                    if (v1.isEditable) {
+                      return [MaterialUI_ListItemSecondaryAction.listItemSecondaryAction_([MaterialUI_IconButton.iconButton()({
+                        onClick: Effect_Uncurried.mkEffectFn1(handleMenuClick)
+                      })([MaterialUI_Icons_MoreHorizIcon.moreHorizIcon])])];
+                    }
+
+                    ;
+                    return [];
+                  }()));
                 };
               };
 
               var handleClose = React.setState()($$this)({
                 menuAnchor: Data_Maybe.Nothing.value
               });
-              return React.toElement(React.isReactElementArray)([MaterialUI_Typography.typography()({
+              return React.toElement(React.isReactElementArray)(Data_Semigroup.append(Data_Semigroup.semigroupArray)([MaterialUI_Typography.typography()({
                 variant: MaterialUI_Enums.title
               })([React_DOM.text("Events and TimeSpans")]), MaterialUI_Typography.typography()({
                 variant: MaterialUI_Enums.subheading
-              })([React_DOM.text("For Multiple Timelines")]), MaterialUI_Button.button()({
-                size: MaterialUI_Enums.small,
-                variant: MaterialUI_Enums.raised,
-                color: MaterialUI_Enums.primary
-              })([React_DOM.text("Add")]), MaterialUI_List.list()({
+              })([React_DOM.text("For Multiple Timelines")])])(Data_Semigroup.append(Data_Semigroup.semigroupArray)(function () {
+                if (v1.isEditable) {
+                  return [MaterialUI_Button.button()({
+                    size: MaterialUI_Enums.small,
+                    variant: MaterialUI_Enums.raised,
+                    color: MaterialUI_Enums.primary
+                  })([React_DOM.text("Add")])];
+                }
+
+                ;
+                return [];
+              }())([MaterialUI_List.list()({
                 className: props.classes.leftDrawerList
-              })(Data_Array.mapWithIndex(mkTextItemTime)(v.elements)), MaterialUI_Menu.menu()({
+              })(Data_Array.mapWithIndex(mkTextItemTime)(v1.elements)), MaterialUI_Menu.menu()({
                 id: "siblings-item-menu",
-                anchorEl: Data_Nullable.toNullable(v.menuAnchor),
-                open: Data_Maybe.isJust(v.menuAnchor),
+                anchorEl: Data_Nullable.toNullable(v1.menuAnchor),
+                open: Data_Maybe.isJust(v1.menuAnchor),
                 onClose: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
               })([MaterialUI_MenuItem.menuItem()({
                 onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
@@ -13230,13 +13284,21 @@ var PS = {};
                 onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
               })([React_DOM.text("Move")]), MaterialUI_MenuItem.menuItem()({
                 onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
-              })([React_DOM.text("Delete")])])]);
+              })([React_DOM.text("Delete")])])])));
             }
           };
         };
       };
 
-      return constructor$prime;
+      var handleChangeEdit = function handleChangeEdit($$this) {
+        return function (v1) {
+          return React.setState()($$this)({
+            isEditable: v1.isEditable
+          });
+        };
+      };
+
+      return React_Signal_WhileMounted.whileMountedIx(v.settingsSignal)("SiblingsDrawer")(handleChangeEdit)(constructor$prime);
     }();
 
     var c = function () {
@@ -13245,7 +13307,7 @@ var PS = {};
     }();
 
     return React.createLeafElement()(c)({});
-  }();
+  };
 
   exports["siblingsDrawer"] = siblingsDrawer;
 })(PS);
@@ -13262,10 +13324,12 @@ var PS = {};
   var Data_Function = $PS["Data.Function"];
   var Data_Maybe = $PS["Data.Maybe"];
   var Data_Nullable = $PS["Data.Nullable"];
+  var Data_Semigroup = $PS["Data.Semigroup"];
   var Data_Show = $PS["Data.Show"];
   var Data_Unit = $PS["Data.Unit"];
   var Effect = $PS["Effect"];
   var Effect_Uncurried = $PS["Effect.Uncurried"];
+  var IxZeta = $PS["IxZeta"];
   var MaterialUI_Button = $PS["MaterialUI.Button"];
   var MaterialUI_Enums = $PS["MaterialUI.Enums"];
   var MaterialUI_IconButton = $PS["MaterialUI.IconButton"];
@@ -13280,6 +13344,7 @@ var PS = {};
   var MaterialUI_Typography = $PS["MaterialUI.Typography"];
   var React = $PS["React"];
   var React_DOM = $PS["React.DOM"];
+  var React_Signal_WhileMounted = $PS["React.Signal.WhileMounted"];
   var React_SyntheticEvent = $PS["React.SyntheticEvent"];
 
   var styles = function styles(theme) {
@@ -13291,24 +13356,30 @@ var PS = {};
     };
   };
 
-  var initialState = Control_Applicative.pure(Effect.applicativeEffect)({
-    elements: ["Timeline A", "Timeline B", "Timeline C", "Timeline D", "Timeline E", "Timeline F", "Timeline G"],
-    selected: Data_Maybe.Nothing.value,
-    menuAnchor: Data_Maybe.Nothing.value
-  });
+  var initialState = function initialState(settingsSignal) {
+    return function __do() {
+      var v = IxZeta.get(settingsSignal)();
+      return {
+        elements: ["Timeline A", "Timeline B", "Timeline C", "Timeline D", "Timeline E", "Timeline F", "Timeline G"],
+        selected: Data_Maybe.Nothing.value,
+        menuAnchor: Data_Maybe.Nothing.value,
+        isEditable: v.isEditable
+      };
+    };
+  };
 
-  var timelinesDrawer = function () {
+  var timelinesDrawer = function timelinesDrawer(v) {
     var constructor = function () {
       var constructor$prime = function constructor$prime($$this) {
         return function __do() {
-          var state = initialState();
+          var state = initialState(v.settingsSignal)();
           return {
             state: state,
             componentDidMount: Control_Applicative.pure(Effect.applicativeEffect)(Data_Unit.unit),
             componentWillUnmount: Control_Applicative.pure(Effect.applicativeEffect)(Data_Unit.unit),
             render: function __do() {
               var props = React.getProps($$this)();
-              var v = React.getState($$this)();
+              var v1 = React.getState($$this)();
 
               var handleMenuClick = function handleMenuClick(e) {
                 return function __do() {
@@ -13321,7 +13392,7 @@ var PS = {};
 
               var mkTextItem = function mkTextItem(i) {
                 return function (t) {
-                  var isSelected = Data_Eq.eq(Data_Maybe.eqMaybe(Data_Eq.eqInt))(new Data_Maybe.Just(i))(v.selected);
+                  var isSelected = Data_Eq.eq(Data_Maybe.eqMaybe(Data_Eq.eqInt))(new Data_Maybe.Just(i))(v1.selected);
                   var select = React.setState()($$this)({
                     selected: function () {
                       if (isSelected) {
@@ -13336,29 +13407,43 @@ var PS = {};
                     button: true,
                     selected: isSelected,
                     onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](select))
-                  })([MaterialUI_ListItemText["listItemText'"]()({
+                  })(Data_Semigroup.append(Data_Semigroup.semigroupArray)([MaterialUI_ListItemText["listItemText'"]()({
                     primary: t
-                  }), MaterialUI_ListItemSecondaryAction.listItemSecondaryAction_([MaterialUI_IconButton.iconButton()({
-                    onClick: Effect_Uncurried.mkEffectFn1(handleMenuClick)
-                  })([MaterialUI_Icons_MoreHorizIcon.moreHorizIcon])])]);
+                  })])(function () {
+                    if (v1.isEditable) {
+                      return [MaterialUI_ListItemSecondaryAction.listItemSecondaryAction_([MaterialUI_IconButton.iconButton()({
+                        onClick: Effect_Uncurried.mkEffectFn1(handleMenuClick)
+                      })([MaterialUI_Icons_MoreHorizIcon.moreHorizIcon])])];
+                    }
+
+                    ;
+                    return [];
+                  }()));
                 };
               };
 
               var handleClose = React.setState()($$this)({
                 menuAnchor: Data_Maybe.Nothing.value
               });
-              return React.toElement(React.isReactElementArray)([MaterialUI_Typography.typography()({
+              return React.toElement(React.isReactElementArray)(Data_Semigroup.append(Data_Semigroup.semigroupArray)([MaterialUI_Typography.typography()({
                 variant: MaterialUI_Enums.title
-              })([React_DOM.text("Timelines")]), MaterialUI_Button.button()({
-                size: MaterialUI_Enums.small,
-                variant: MaterialUI_Enums.raised,
-                color: MaterialUI_Enums.primary
-              })([React_DOM.text("Add")]), MaterialUI_List.list()({
+              })([React_DOM.text("Timelines")])])(Data_Semigroup.append(Data_Semigroup.semigroupArray)(function () {
+                if (v1.isEditable) {
+                  return [MaterialUI_Button.button()({
+                    size: MaterialUI_Enums.small,
+                    variant: MaterialUI_Enums.raised,
+                    color: MaterialUI_Enums.primary
+                  })([React_DOM.text("Add")])];
+                }
+
+                ;
+                return [];
+              }())([MaterialUI_List.list()({
                 className: props.classes.leftDrawerList
-              })(Data_Array.mapWithIndex(mkTextItem)(v.elements)), MaterialUI_Menu.menu()({
+              })(Data_Array.mapWithIndex(mkTextItem)(v1.elements)), MaterialUI_Menu.menu()({
                 id: "timelines-menu",
-                anchorEl: Data_Nullable.toNullable(v.menuAnchor),
-                open: Data_Maybe.isJust(v.menuAnchor),
+                anchorEl: Data_Nullable.toNullable(v1.menuAnchor),
+                open: Data_Maybe.isJust(v1.menuAnchor),
                 onClose: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
               })([MaterialUI_MenuItem.menuItem()({
                 onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
@@ -13366,13 +13451,21 @@ var PS = {};
                 onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
               })([React_DOM.text("Move")]), MaterialUI_MenuItem.menuItem()({
                 onClick: Effect_Uncurried.mkEffectFn1(Data_Function["const"](handleClose))
-              })([React_DOM.text("Delete")])])]);
+              })([React_DOM.text("Delete")])])])));
             }
           };
         };
       };
 
-      return constructor$prime;
+      var handleChangeEdit = function handleChangeEdit($$this) {
+        return function (v1) {
+          return React.setState()($$this)({
+            isEditable: v1.isEditable
+          });
+        };
+      };
+
+      return React_Signal_WhileMounted.whileMountedIx(v.settingsSignal)("TimelinesDrawer")(handleChangeEdit)(constructor$prime);
     }();
 
     var c = function () {
@@ -13381,7 +13474,7 @@ var PS = {};
     }();
 
     return React.createLeafElement()(c)({});
-  }();
+  };
 
   exports["timelinesDrawer"] = timelinesDrawer;
 })(PS);
@@ -13807,7 +13900,7 @@ var PS = {};
                   }
 
                   ;
-                  throw new Error("Failed pattern match at Components.TopBar (line 131, column 25 - line 135, column 50): " + [e.constructor.name]);
+                  throw new Error("Failed pattern match at Components.TopBar (line 129, column 25 - line 133, column 50): " + [e.constructor.name]);
                 };
 
                 return [MaterialUI_Button.button()({
@@ -14061,7 +14154,9 @@ var PS = {};
                       paper: props.classes.drawerPaper
                     },
                     anchor: MaterialUI_Enums.right
-                  })([Components_Drawers_Children.childrenDrawer])];
+                  })([Components_Drawers_Children.childrenDrawer({
+                    settingsSignal: Zeta_Types.readOnly(IxZeta.signalScopeIxSignal)(v.primarySignals.settingsSignal)
+                  })])];
                 }
 
                 ;
@@ -14071,7 +14166,7 @@ var PS = {};
                 }
 
                 ;
-                throw new Error("Failed pattern match at Components.Index (line 180, column 19 - line 189, column 37): " + []);
+                throw new Error("Failed pattern match at Components.Index (line 177, column 19 - line 188, column 37): " + []);
               }();
 
               var leftDrawer = function () {
@@ -14082,7 +14177,11 @@ var PS = {};
                     classes: {
                       paper: props.classes.drawerPaper
                     }
-                  })([Components_Drawers_Timelines.timelinesDrawer, MaterialUI_Divider.divider_([]), Components_Drawers_Siblings.siblingsDrawer])];
+                  })([Components_Drawers_Timelines.timelinesDrawer({
+                    settingsSignal: Zeta_Types.readOnly(IxZeta.signalScopeIxSignal)(v.primarySignals.settingsSignal)
+                  }), MaterialUI_Divider.divider_([]), Components_Drawers_Siblings.siblingsDrawer({
+                    settingsSignal: Zeta_Types.readOnly(IxZeta.signalScopeIxSignal)(v.primarySignals.settingsSignal)
+                  })])];
                 }
 
                 ;
@@ -14092,7 +14191,7 @@ var PS = {};
                 }
 
                 ;
-                throw new Error("Failed pattern match at Components.Index (line 167, column 19 - line 179, column 37): " + []);
+                throw new Error("Failed pattern match at Components.Index (line 164, column 19 - line 176, column 37): " + []);
               }();
 
               return React.toElement(React.isReactElementArray)(Data_Semigroup.append(Data_Semigroup.semigroupArray)([Components_TopBar.topBar({

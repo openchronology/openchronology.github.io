@@ -170,7 +170,7 @@ index
                           }
                           [ timelinesDrawer {settingsSignal: S.readOnly settingsSignal}
                           , divider_ []
-                          , siblingsDrawer
+                          , siblingsDrawer {settingsSignal: S.readOnly settingsSignal}
                           ]
                         ]
                     | otherwise = []
@@ -181,7 +181,9 @@ index
                           , variant: permanent
                           , classes: {paper: props.classes.drawerPaper}
                           , anchor: right
-                          } [childrenDrawer]
+                          }
+                          [ childrenDrawer {settingsSignal: S.readOnly settingsSignal}
+                          ]
                         ]
                     | otherwise = []
               pure $ toElement $

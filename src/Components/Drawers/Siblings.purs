@@ -1,5 +1,7 @@
 module Components.Drawers.Siblings where
 
+import Settings (Settings (..))
+
 import Prelude
 import Data.Maybe (Maybe (..), isJust)
 import Data.Array (mapWithIndex) as Array
@@ -10,6 +12,7 @@ import React
   ( ReactElement, ReactClass, ReactClassConstructor
   , toElement, component, setState, getState, getProps, createLeafElement)
 import React.DOM (text)
+import React.Signal.WhileMounted (whileMountedIx)
 import React.SyntheticEvent (currentTarget, NativeEventTarget)
 import MaterialUI.Styles (withStyles)
 import MaterialUI.Typography (typography)
@@ -24,6 +27,8 @@ import MaterialUI.Menu (menu)
 import MaterialUI.MenuItem (menuItem)
 import MaterialUI.Enums (title, subheading, small, raised, primary)
 import MaterialUI.Theme (Theme)
+import Zeta.Types (READ) as S
+import IxZeta (IxSignal, get) as IxSig
 
 
 
@@ -31,22 +36,27 @@ type State =
   { elements :: Array {name :: String, time :: String} -- FIXME time-sorted mapping?
   , selected :: Maybe Int
   , menuAnchor :: Maybe NativeEventTarget
+  , isEditable :: Boolean
   }
 
 
-initialState :: Effect State
-initialState = pure
-  { elements:
-    [ {name: "Event A", time: "20200130"}
-    , {name: "Event B", time: "20200131"}
-    , {name: "TimeSpan C", time: "20200202"}
-    , {name: "TimeSpan D", time: "20200204"}
-    , {name: "Event E", time: "20200208"}
-    , {name: "Event F", time: "20200211"}
-    ]
-  , selected: Nothing
-  , menuAnchor: Nothing
-  }
+initialState :: IxSig.IxSignal (read :: S.READ) Settings
+             -> Effect State
+initialState settingsSignal = do
+  Settings {isEditable} <- IxSig.get settingsSignal
+  pure
+    { elements:
+      [ {name: "Event A", time: "20200130"}
+      , {name: "Event B", time: "20200131"}
+      , {name: "TimeSpan C", time: "20200202"}
+      , {name: "TimeSpan D", time: "20200204"}
+      , {name: "Event E", time: "20200208"}
+      , {name: "Event F", time: "20200211"}
+      ]
+    , selected: Nothing
+    , menuAnchor: Nothing
+    , isEditable
+    }
 
 
 
@@ -59,8 +69,9 @@ styles theme =
   }
 
 
-siblingsDrawer :: ReactElement
-siblingsDrawer = createLeafElement c {}
+siblingsDrawer :: { settingsSignal :: IxSig.IxSignal (read :: S.READ) Settings
+                  } -> ReactElement
+siblingsDrawer {settingsSignal} = createLeafElement c {}
   where
     c :: ReactClass {}
     c = withStyles styles c'
@@ -73,17 +84,19 @@ siblingsDrawer = createLeafElement c {}
         c' = component "SiblingsDrawer" constructor
 
     constructor :: ReactClassConstructor _ State _
-    constructor = constructor'
+    constructor =
+      let handleChangeEdit this (Settings {isEditable}) = setState this {isEditable}
+      in  whileMountedIx settingsSignal "SiblingsDrawer" handleChangeEdit constructor'
       where
         constructor' this = do
-          state <- initialState
+          state <- initialState settingsSignal
           pure
             { state
             , componentDidMount: pure unit
             , componentWillUnmount: pure unit
             , render: do
               props <- getProps this
-              {elements,selected,menuAnchor} <- getState this
+              {elements,selected,menuAnchor,isEditable} <- getState this
               let handleMenuClick e = do
                     anchor <- currentTarget e
                     setState this {menuAnchor: Just anchor}
@@ -93,23 +106,32 @@ siblingsDrawer = createLeafElement c {}
                       { button: true
                       , selected: isSelected
                       , onClick: mkEffectFn1 (const select)
-                      }
+                      } $
                       [ listItemText' {primary: name, secondary: time}
-                      , listItemSecondaryAction_
-                        [ iconButton
-                          { onClick: mkEffectFn1 handleMenuClick
-                          }
-                          [moreHorizIcon]
-                        ]
-                      ]
+                      ] <>
+                        ( if isEditable
+                            then
+                              [ listItemSecondaryAction_
+                                [ iconButton
+                                  { onClick: mkEffectFn1 handleMenuClick
+                                  }
+                                  [moreHorizIcon]
+                                ]
+                              ]
+                            else []
+                        )
                     where
                       isSelected = Just i == selected
                       select = setState this {selected: if isSelected then Nothing else Just i}
-              pure $ toElement
+              pure $ toElement $
                 [ typography {variant: title} [text "Events and TimeSpans"]
                 , typography {variant: subheading} [text "For Multiple Timelines"]
-                , button {size: small, variant: raised, color: primary} [text "Add"]
-                , list {className: props.classes.leftDrawerList} (Array.mapWithIndex mkTextItemTime elements)
+                ] <>
+                  ( if isEditable
+                      then [button {size: small, variant: raised, color: primary} [text "Add"]]
+                      else []
+                  ) <>
+                [ list {className: props.classes.leftDrawerList} (Array.mapWithIndex mkTextItemTime elements)
                 , menu
                   { id: "siblings-item-menu"
                   , anchorEl: toNullable menuAnchor
