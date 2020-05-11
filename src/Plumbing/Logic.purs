@@ -4,10 +4,10 @@ import Components.Dialogs.Import (ImportDialog (..)) as Import
 import Components.Dialogs.Export (ExportDialog (..)) as Export
 import Components.Snackbar (SnackbarContent, SnackbarVariant (Warning))
 import Timeline.Data.TimelineName
-  (TimelineName (..), newTimelineNameSignal, clearTimelineNameCache, setDefaultTimelineName)
+  (TimelineName (..), clearTimelineNameCache, setDefaultTimelineName)
 import Timeline.Data.TimeScale
-  (TimeScale, newTimeScaleSignal, clearTimeScaleCache, setDefaultTimeScale)
-import Settings (Settings (..), newSettingsSignal)
+  (TimeScale, clearTimeScaleCache, setDefaultTimeScale)
+import Settings (Settings (..))
 
 import Prelude
 import Data.Maybe (Maybe (..))
@@ -17,12 +17,12 @@ import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Console (log)
-import Queue.One (Queue, new, put) as Q
+import Queue.One (Queue, put) as Q
 import Queue.Types (WRITE, allowWriting) as Q
 import IOQueues (IOQueues (..))
 import IOQueues (callAsync) as IOQueues
 import Zeta.Types (WRITE, READ) as S
-import IxZeta (IxSignal, make, setDiff, get) as IxSig
+import IxZeta (IxSignal, setDiff, get) as IxSig
 import Web.File.File (File)
 import Web.File.Store (fileToArrayBuffer)
 import Unsafe.Coerce (unsafeCoerce)

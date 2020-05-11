@@ -19,8 +19,8 @@ import Effect.Uncurried (mkEffectFn1)
 import React
   ( ReactElement, ReactClass, ReactClassConstructor
   , component, getProps, getState, setState, createLeafElement)
-import React.DOM (text, div, img)
-import React.DOM.Props (className, src, style) as RP
+import React.DOM (text, div)
+import React.DOM.Props (className) as RP
 import React.Signal.WhileMounted (whileMountedIx)
 import React.SyntheticEvent (currentTarget, NativeEventTarget)
 import MaterialUI.AppBar (appBar)
@@ -29,18 +29,16 @@ import MaterialUI.Button (button)
 import MaterialUI.IconButton (iconButton)
 import MaterialUI.Styles (withStyles)
 import MaterialUI.Enums (absolute, inherit, dense)
-import MaterialUI.Icon (icon', icon_)
 import MaterialUI.Icons.SettingsIcon (settingsIcon)
-import MaterialUI.Icons.AddCircleIcon (addCircleIcon)
 import MaterialUI.Menu (menu)
 import MaterialUI.MenuItem (menuItem)
+import MaterialUI.Theme (Theme)
 import Zeta.Types (READ) as S
 import IxZeta (IxSignal, get) as IxSig
-import Debug.Trace (trace)
 
 
 -- | This CSS allows the app bar to stretch across the screen
-styles :: _
+styles :: Theme -> _
 styles theme = -- trace theme \_ ->
   { root:
     { flexGrow: 1

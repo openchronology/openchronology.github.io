@@ -18,34 +18,23 @@ import Plumbing.Logic
   , onNew, onTimelineNameEdit, onTimeScaleEdit, onSettingsEdit
   )
 
-import Components.Dialogs.Import (ImportDialog (..)) as Import
-import Components.Dialogs.Export (ExportDialog (..)) as Export
-import Timeline.Data.TimelineName
-  (TimelineName (..), newTimelineNameSignal, clearTimelineNameCache, setDefaultTimelineName)
-import Timeline.Data.TimeScale
-  (TimeScale, newTimeScaleSignal, clearTimeScaleCache, setDefaultTimeScale)
-import Components.Snackbar (SnackbarContent, SnackbarVariant (Warning))
-import Settings (Settings (..), newSettingsSignal)
+import Components.Dialogs.Import (ImportDialog) as Import
+import Components.Dialogs.Export (ExportDialog) as Export
+import Timeline.Data.TimelineName (TimelineName, newTimelineNameSignal)
+import Timeline.Data.TimeScale (TimeScale, newTimeScaleSignal)
+import Components.Snackbar (SnackbarContent)
+import Settings (Settings, newSettingsSignal)
 
 import Prelude
-import Data.Maybe (Maybe (..))
-import Data.Either (Either (..))
-import Data.ArrayBuffer.Class (encodeArrayBuffer)
-import Data.Time.Duration (Milliseconds (..))
+import Data.Maybe (Maybe)
 import Effect (Effect)
-import Effect.Console (log)
-import Effect.Exception (throwException)
-import Effect.Aff (runAff_)
-import Effect.Class (liftEffect)
-import Queue.One (Queue, new, put) as Q
-import Queue.Types (allowWriting, writeOnly, WRITE) as Q
-import IOQueues (IOQueues (..))
-import IOQueues (new, callAsync) as IOQueues
+import Queue.One (Queue, new) as Q
+import Queue.Types (writeOnly, WRITE) as Q
+import IOQueues (IOQueues)
+import IOQueues (new) as IOQueues
 import Zeta.Types (WRITE, READ, readOnly, writeOnly) as S
-import IxZeta (IxSignal, make, setDiff, get) as IxSig
+import IxZeta (IxSignal, make) as IxSig
 import Web.File.File (File)
-import Web.File.Store (fileToArrayBuffer)
-import Unsafe.Coerce (unsafeCoerce)
 
 
 -- | Mostly just Dialog invocations

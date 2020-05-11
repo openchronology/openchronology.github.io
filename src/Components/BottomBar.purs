@@ -17,7 +17,6 @@ import Data.Maybe (Maybe (..))
 import Effect (Effect)
 import Effect.Exception (throw)
 import Effect.Uncurried (mkEffectFn1)
-import Effect.Console (log)
 import React
   ( ReactElement, ReactClass, ReactClassConstructor
   , component, getProps, getState, setState, createLeafElement)
@@ -32,17 +31,16 @@ import MaterialUI.Button (button, button'')
 import MaterialUI.IconButton (iconButton)
 import MaterialUI.Icons.AddIcon (addIcon)
 import MaterialUI.Icons.RemoveIcon (removeIcon)
-import MaterialUI.Typography (typography)
 import MaterialUI.Styles (withStyles)
-import MaterialUI.Enums (subheading, absolute, inherit, dense)
+import MaterialUI.Enums (absolute, inherit, dense)
+import MaterialUI.Theme (Theme)
 import Zeta.Types (READ, WRITE, readOnly) as S
 import IxZeta (IxSignal, get, set) as IxSig
-import Debug.Trace (traceM)
 
 
 
  -- | This CSS allows the app bar to stretch across the screen
-styles :: _
+styles :: Theme -> _
 styles theme =
   { root:
     { flexGrow: 1

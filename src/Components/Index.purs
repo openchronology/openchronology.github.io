@@ -33,18 +33,15 @@ import IxZeta (IxSignal, get) as IxSig
 import React
   ( ReactElement, ReactClass, ReactClassConstructor
   , toElement, component, setState, getState, getProps, createLeafElement)
-import React.DOM (text, div, main)
-import React.DOM.Props (style, className) as P
+import React.DOM (text, main)
+import React.DOM.Props (className) as P
 import React.Signal.WhileMounted (whileMountedIx)
 import MaterialUI.Styles (withStyles)
 import MaterialUI.Typography (typography)
 import MaterialUI.Drawer (drawer)
 import MaterialUI.Divider (divider_)
-import MaterialUI.List (list_, list)
-import MaterialUI.ListItem (listItem)
-import MaterialUI.ListItemText (listItemText')
-import MaterialUI.Enums (title, subheading, permanent, right)
-import Unsafe.Coerce (unsafeCoerce)
+import MaterialUI.Enums (title, permanent, right)
+import MaterialUI.Theme (Theme)
 
 
 
@@ -56,7 +53,7 @@ drawerWidth :: Int
 drawerWidth = 240
 
 
-styles :: _
+styles :: Theme -> _
 styles theme =
   { drawer:
     { width: drawerWidth

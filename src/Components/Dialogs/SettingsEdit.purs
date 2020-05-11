@@ -11,8 +11,7 @@ import React
   ( ReactElement, ReactClass, ReactClassConstructor
   , getState, setState, getProps, component, createLeafElement
   )
-import React.DOM (text, img)
-import React.DOM.Props (src, style) as RP
+import React.DOM (text)
 import React.DOM.NonBlockingSpace (nbsp)
 import React.Queue.WhileMounted (whileMountedOne)
 import React.Signal.WhileMounted (whileMountedIx)
@@ -27,10 +26,10 @@ import MaterialUI.FormGroup (formGroup_)
 import MaterialUI.FormControlLabel (formControlLabel')
 import MaterialUI.Icon (icon')
 import MaterialUI.Icons.GetAppIcon (getAppIcon)
-import MaterialUI.Typography (typography)
 import MaterialUI.Switch (switch')
 import MaterialUI.Divider (divider_)
-import MaterialUI.Enums (primary, secondary, contained, subheading)
+import MaterialUI.Enums (primary, secondary, contained)
+import MaterialUI.Theme (Theme)
 import Queue.One (Queue, put)
 import IOQueues (IOQueues (..))
 import Zeta.Types (READ) as S
@@ -56,7 +55,7 @@ initialState settingsSignal = do
 
 
 
-styles :: _
+styles :: Theme -> _
 styles theme =
   { buttons:
     { zIndex: 2

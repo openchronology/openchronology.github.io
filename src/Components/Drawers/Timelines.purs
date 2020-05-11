@@ -16,7 +16,7 @@ import React.Signal.WhileMounted (whileMountedIx)
 import React.SyntheticEvent (currentTarget, NativeEventTarget)
 import MaterialUI.Styles (withStyles)
 import MaterialUI.Typography (typography)
-import MaterialUI.List (list_, list)
+import MaterialUI.List (list)
 import MaterialUI.ListItem (listItem)
 import MaterialUI.ListItemText (listItemText')
 import MaterialUI.ListItemSecondaryAction (listItemSecondaryAction_)
@@ -25,7 +25,8 @@ import MaterialUI.Icons.MoreHorizIcon (moreHorizIcon)
 import MaterialUI.Button (button)
 import MaterialUI.Menu (menu)
 import MaterialUI.MenuItem (menuItem)
-import MaterialUI.Enums (title, subheading, permanent, right, small, raised, primary)
+import MaterialUI.Enums (title, small, raised, primary)
+import MaterialUI.Theme (Theme)
 import Zeta.Types (READ) as S
 import IxZeta (IxSignal, get) as IxSig
 
@@ -60,7 +61,7 @@ initialState settingsSignal = do
 
 
 
-styles :: _
+styles :: Theme -> _
 styles theme =
   { leftDrawerList:
     { height: "calc(100vh - " <> show ((theme.spacing.unit * 12.0) + (24.5 * 3.0) + (30.75 * 2.0)) <> "px)"
