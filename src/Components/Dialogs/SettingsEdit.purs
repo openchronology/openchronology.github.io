@@ -11,11 +11,12 @@ import React
   ( ReactElement, ReactClass, ReactClassConstructor
   , getState, setState, getProps, component, createLeafElement
   )
-import React.DOM (text, br, img)
+import React.DOM (text, img)
 import React.DOM.Props (src, style) as RP
 import React.DOM.NonBlockingSpace (nbsp)
 import React.Queue.WhileMounted (whileMountedOne)
 import React.Signal.WhileMounted (whileMountedIx)
+import MaterialUI.Colors (red)
 import MaterialUI.Dialog (dialog'')
 import MaterialUI.DialogTitle (dialogTitle)
 import MaterialUI.DialogContent (dialogContent_)
@@ -28,6 +29,7 @@ import MaterialUI.Icon (icon')
 import MaterialUI.Icons.GetAppIcon (getAppIcon)
 import MaterialUI.Typography (typography)
 import MaterialUI.Switch (switch')
+import MaterialUI.Divider (divider_)
 import MaterialUI.Enums (primary, secondary, contained, subheading)
 import Queue.One (Queue, put)
 import IOQueues (IOQueues (..))
@@ -52,24 +54,42 @@ initialState settingsSignal = do
     , localCacheTilExport
     }
 
+
+
+styles :: _
+styles theme =
+  { buttons:
+    { zIndex: 2
+    }
+  , redButton:
+    { backgroundColor: red."500"
+    , "&:hover":
+      { backgroundColor: red."700"
+      }
+    }
+  }
+
+
+
 settingsEditDialog :: { settingsSignal :: IxSig.IxSignal (read :: S.READ) Settings
                       , settingsEditQueues :: IOQueues Queue Unit (Maybe Settings)
+                      , onNew :: Effect Unit
                       } -> ReactElement
 settingsEditDialog
   { settingsSignal
   , settingsEditQueues: IOQueues{input,output}
+  , onNew
   } = createLeafElement c {}
   where
     c :: ReactClass {}
     c = withStyles styles c'
       where
-        styles :: _
-        styles theme =
-          { buttons:
-            { zIndex: 2
-            }
-          }
-        c' :: ReactClass {classes :: {buttons :: String}}
+        c' :: ReactClass
+              { classes ::
+                { buttons :: String
+                , redButton :: String
+                }
+              }
         c' = component "SettingsEdit" constructor'
     constructor' :: ReactClassConstructor _ State _
     constructor' =
@@ -108,35 +128,30 @@ settingsEditDialog
                 dialog'' {onClose: mkEffectFn1 (const close), open, "aria-labelledby": "settingsedit-dialog-title"}
                   [ dialogTitle {id: "settingsedit-dialog-title"} [text "Settings"]
                   , dialogContent_
-                    [ typography {variant: subheading, paragraph: true}
-                      [ img [RP.src "images/logo.svg", RP.style {width: "24px", height: "24px"}]
-                      , nbsp
-                      , text "OpenChronology"
-                      ]
-                    , button
+                    [ button
                       { variant: contained
                       , color: primary
                       , href: "https://github.com/openchronology/openchronology.github.io/"
                       , target: "__blank"
                       , title: "GitHub"
+                      , fullWidth: true
                       }
                       [ text "GitHub"
                       , nbsp
                       , icon' {className: "fab fa-github"}
                       ]
-                    , br []
-                    , br []
                     , button
                       { variant: contained
                       , color: primary
                       , href: "./openchronology-static.zip"
                       , title: "Download App"
+                      , fullWidth: true
                       }
                       [ text "Download"
                       , nbsp
                       , getAppIcon
                       ]
-                    , br []
+                    , divider_ []
                     , formGroup_
                       [ formControlLabel'
                         { control: switch'
@@ -154,6 +169,15 @@ settingsEditDialog
                         , label: (unsafeCoerce "Local Cache until Export") :: ReactNode
                         }
                       ]
+                    , divider_ []
+                    , button
+                      { variant: contained
+                      , color: primary
+                      , title: "Erase and Create New Timeline"
+                      , fullWidth: true
+                      , className: props.classes.redButton
+                      , onClick: mkEffectFn1 (const onNew)
+                      } [text "Delete"]
                     ]
                   , dialogActions {className: props.classes.buttons}
                     [ button {onClick: mkEffectFn1 (const close), color: primary} [text "Cancel"]

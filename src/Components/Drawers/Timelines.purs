@@ -1,5 +1,7 @@
 module Components.Drawers.Timelines where
 
+import Settings (Settings (..))
+
 import Prelude
 import Data.Maybe (Maybe (..), isJust)
 import Data.Array (mapWithIndex) as Array
@@ -10,6 +12,7 @@ import React
   ( ReactElement, ReactClass, ReactClassConstructor
   , toElement, component, setState, getState, getProps, createLeafElement)
 import React.DOM (text)
+import React.Signal.WhileMounted (whileMountedIx)
 import React.SyntheticEvent (currentTarget, NativeEventTarget)
 import MaterialUI.Styles (withStyles)
 import MaterialUI.Typography (typography)
@@ -23,6 +26,8 @@ import MaterialUI.Button (button)
 import MaterialUI.Menu (menu)
 import MaterialUI.MenuItem (menuItem)
 import MaterialUI.Enums (title, subheading, permanent, right, small, raised, primary)
+import Zeta.Types (READ) as S
+import IxZeta (IxSignal, get) as IxSig
 
 
 
@@ -30,23 +35,28 @@ type State =
   { elements :: Array String -- FIXME time-sorted mapping?
   , selected :: Maybe Int
   , menuAnchor :: Maybe NativeEventTarget
+  , isEditable :: Boolean
   }
 
 
-initialState :: Effect State
-initialState = pure
-  { elements:
-    [ "Timeline A"
-    , "Timeline B"
-    , "Timeline C"
-    , "Timeline D"
-    , "Timeline E"
-    , "Timeline F"
-    , "Timeline G"
-    ]
-  , selected: Nothing
-  , menuAnchor: Nothing
-  }
+initialState :: IxSig.IxSignal (read :: S.READ) Settings
+             -> Effect State
+initialState settingsSignal = do
+  Settings {isEditable} <- IxSig.get settingsSignal
+  pure
+    { elements:
+      [ "Timeline A"
+      , "Timeline B"
+      , "Timeline C"
+      , "Timeline D"
+      , "Timeline E"
+      , "Timeline F"
+      , "Timeline G"
+      ]
+    , selected: Nothing
+    , menuAnchor: Nothing
+    , isEditable
+    }
 
 
 
@@ -59,8 +69,9 @@ styles theme =
   }
 
 
-timelinesDrawer :: ReactElement
-timelinesDrawer = createLeafElement c {}
+timelinesDrawer :: { settingsSignal :: IxSig.IxSignal (read :: S.READ) Settings
+                   } -> ReactElement
+timelinesDrawer {settingsSignal} = createLeafElement c {}
   where
     c :: ReactClass {}
     c = withStyles styles c'
@@ -73,17 +84,19 @@ timelinesDrawer = createLeafElement c {}
         c' = component "TimelinesDrawer" constructor
 
     constructor :: ReactClassConstructor _ State _
-    constructor = constructor'
+    constructor =
+      let handleChangeEdit this (Settings {isEditable}) = setState this {isEditable}
+      in  whileMountedIx settingsSignal "TimelinesDrawer" handleChangeEdit constructor'
       where
         constructor' this = do
-          state <- initialState
+          state <- initialState settingsSignal
           pure
             { state
             , componentDidMount: pure unit
             , componentWillUnmount: pure unit
             , render: do
               props <- getProps this
-              {elements,selected,menuAnchor} <- getState this
+              {elements,selected,menuAnchor,isEditable} <- getState this
               let handleMenuClick e = do
                     anchor <- currentTarget e
                     setState this {menuAnchor: Just anchor}
@@ -93,22 +106,31 @@ timelinesDrawer = createLeafElement c {}
                       { button: true
                       , selected: isSelected
                       , onClick: mkEffectFn1 (const select)
-                      }
+                      } $
                       [ listItemText' {primary: t}
-                      , listItemSecondaryAction_
-                        [ iconButton
-                          { onClick: mkEffectFn1 handleMenuClick
-                          }
-                          [moreHorizIcon]
-                        ]
-                      ]
+                      ] <>
+                        ( if isEditable
+                            then
+                              [ listItemSecondaryAction_
+                                [ iconButton
+                                  { onClick: mkEffectFn1 handleMenuClick
+                                  }
+                                  [moreHorizIcon]
+                                ]
+                              ]
+                            else []
+                        )
                     where
                       isSelected = Just i == selected
                       select = setState this {selected: if isSelected then Nothing else Just i}
-              pure $ toElement
+              pure $ toElement $
                 [ typography {variant: title} [text "Timelines"]
-                , button {size: small, variant: raised, color: primary} [text "Add"]
-                , list {className: props.classes.leftDrawerList} (Array.mapWithIndex mkTextItem elements)
+                ] <>
+                  ( if isEditable
+                      then [button {size: small, variant: raised, color: primary} [text "Add"]]
+                      else []
+                  ) <>
+                [ list {className: props.classes.leftDrawerList} (Array.mapWithIndex mkTextItem elements)
                 , menu
                   { id: "timelines-menu"
                   , anchorEl: toNullable menuAnchor

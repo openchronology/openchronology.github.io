@@ -171,7 +171,7 @@ index
                           , variant: permanent
                           , classes: {paper: props.classes.drawerPaper}
                           }
-                          [ timelinesDrawer
+                          [ timelinesDrawer {settingsSignal: S.readOnly settingsSignal}
                           , divider_ []
                           , siblingsDrawer
                           ]
@@ -191,7 +191,6 @@ index
                 [ topBar
                   { onImport
                   , onExport
-                  , onNew
                   , onTimelineNameEdit
                   , onSettingsEdit
                   , timelineNameSignal: S.readOnly timelineNameSignal
@@ -236,6 +235,7 @@ index
                 , settingsEditDialog
                   { settingsSignal: S.readOnly settingsSignal
                   , settingsEditQueues
+                  , onNew
                   }
                 , snackbars (Q.readOnly (Q.allowReading snackbarQueue))
                 ]
