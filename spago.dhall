@@ -20,4 +20,5 @@ You can edit this file as you like.
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
+, license = "AGPL-3.0-or-later"
 }
