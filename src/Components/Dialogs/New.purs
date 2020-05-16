@@ -9,7 +9,9 @@ import React
   (ReactElement, ReactClass, ReactClassConstructor, component, setState, getState, getProps, createLeafElement)
 import React.DOM (text, strong, span)
 import React.DOM.Props (dangerouslySetInnerHTML) as RP
+import React.DOM.NonBlockingSpace (nbsp)
 import React.Queue.WhileMounted (whileMountedOne)
+import MaterialUI.Theme (Theme)
 import MaterialUI.Dialog (dialog'')
 import MaterialUI.DialogTitle (dialogTitle)
 import MaterialUI.DialogContent (dialogContent_)
@@ -25,6 +27,12 @@ type State = {open :: Boolean}
 initialState :: State
 initialState = {open: false}
 
+styles :: Theme -> _
+styles theme =
+  { buttons:
+    { zIndex: 2
+    }
+  }
 
 newDialog :: { newQueues :: IOQueues Queue Unit Boolean
              } -> ReactElement
@@ -33,14 +41,9 @@ newDialog {newQueues: IOQueues{input,output}} = createLeafElement c {}
     c :: ReactClass {}
     c = withStyles styles c'
       where
-        styles :: _
-        styles theme =
-          { buttons:
-            { zIndex: 2
-            }
-          }
         c' :: ReactClass {classes :: {buttons :: String}}
         c' = component "New" constructor'
+
     constructor' :: ReactClassConstructor _ State _
     constructor' =
       let handlerOpen :: _ -> Unit -> Effect Unit
@@ -51,14 +54,14 @@ newDialog {newQueues: IOQueues{input,output}} = createLeafElement c {}
           pure
             { componentDidMount: pure unit
             , componentWillUnmount: pure unit
-            , state: {open: false}
+            , state: initialState
             , render: do
               let close = do
-                    setState this {open: false}
+                    setState this initialState
                     put output false
                   submit = do
                     put output true
-                    setState this {open: false}
+                    setState this initialState
               {open} <- getState this
               props <- getProps this
               pure $
@@ -69,7 +72,7 @@ newDialog {newQueues: IOQueues{input,output}} = createLeafElement c {}
                       { gutterBottom: true
                       , variant: subheading
                       } [ strong [] [text "Warning!"]
-                        , span [RP.dangerouslySetInnerHTML {__html: "&nbsp;"}] []
+                        , nbsp
                         , text "Creating a new timeline will erase all content! You can keep any unsaved work with the \"Export\" button."
                         ]
                     ]

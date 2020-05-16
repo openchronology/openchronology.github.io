@@ -20,6 +20,7 @@ import Components.Dialogs.New (newDialog)
 import Components.Dialogs.TimelineNameEdit (timelineNameEditDialog)
 import Components.Dialogs.TimeScaleEdit (timeScaleEditDialog)
 import Components.Dialogs.SettingsEdit (settingsEditDialog)
+import Components.Dialogs.EULA (eulaDialog)
 import Components.Snackbar (snackbars)
 import WithRoot (withRoot)
 import Plumbing (PrimaryQueues, PrimarySignals, LogicFunctions)
@@ -236,6 +237,7 @@ index
                   , settingsEditQueues
                   , onNew
                   }
+                , eulaDialog
                 , snackbars (Q.readOnly (Q.allowReading snackbarQueue))
                 ]
             }
