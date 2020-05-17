@@ -1,4 +1,4 @@
-module Timeline.Data.Event where
+module Timeline.UI.Event where
 
 -- | An event documented at time `index`.
 -- |

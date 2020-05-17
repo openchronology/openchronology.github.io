@@ -1,4 +1,4 @@
-module Timeline.Data.TimeScale where
+module Timeline.UI.TimeScale where
 
 import Settings (Settings(..))
 import Prelude

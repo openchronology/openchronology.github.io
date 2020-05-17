@@ -1,4 +1,4 @@
-module Timeline.Data.StoredTimeline where
+module Timeline.UI.StoredTimeline where
 
 import Prelude
 import Data.Map (Map)

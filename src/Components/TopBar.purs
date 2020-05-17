@@ -6,7 +6,7 @@ Both TopBar and BottomBar are Material-UI "AppBar"s - giving site-wide functiona
 and access to control the side-wide settings.
 
 -}
-import Timeline.Data.TimeSpaceName (TimeSpaceName(..))
+import Timeline.UI.TimeSpaceName (TimeSpaceName(..))
 import Settings (Settings(..))
 import Prelude hiding (div)
 import Data.Maybe (Maybe(..), isJust)

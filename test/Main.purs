@@ -1,7 +1,7 @@
 module Test.Main where
 
-import Timeline.Data.TimeSpaceName (TimeSpaceName)
-import Timeline.Data.TimeScale (TimeScale)
+import Timeline.UI.TimeSpaceName (TimeSpaceName)
+import Timeline.UI.TimeScale (TimeScale)
 import Settings (Settings)
 
 

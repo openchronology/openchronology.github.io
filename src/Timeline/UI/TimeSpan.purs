@@ -1,4 +1,4 @@
-module Timeline.Data.TimeSpan where
+module Timeline.UI.TimeSpan where
 
 -- | An inclusive span of time from `startIndex` to `stopIndex`.
 -- |

@@ -40,8 +40,8 @@ import Plumbing.Logic
   )
 import Components.Dialogs.Import (ImportDialog) as Import
 import Components.Dialogs.Export (ExportDialog) as Export
-import Timeline.Data.TimeSpaceName (TimeSpaceName, newTimeSpaceNameSignal)
-import Timeline.Data.TimeScale (TimeScale, newTimeScaleSignal)
+import Timeline.UI.TimeSpaceName (TimeSpaceName, newTimeSpaceNameSignal)
+import Timeline.UI.TimeScale (TimeScale, newTimeScaleSignal)
 import Components.Snackbar (SnackbarContent)
 import Settings (Settings, newSettingsSignal)
 import Prelude

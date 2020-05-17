@@ -1,4 +1,4 @@
-module Timeline.Data.TimeSpace where
+module Timeline.UI.TimeSpace where
 
 newtype TimeSpace a
   = TimeSpace

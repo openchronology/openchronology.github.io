@@ -1,6 +1,6 @@
 module Components.Dialogs.TimeScaleEdit (timeScaleEditDialog) where
 
-import Timeline.Data.TimeScale (TimeScale(..))
+import Timeline.UI.TimeScale (TimeScale(..))
 import Settings (Settings(..))
 import Prelude
 import Data.Maybe (Maybe(..))

@@ -3,9 +3,9 @@ module Plumbing.Logic where
 import Components.Dialogs.Import (ImportDialog(..)) as Import
 import Components.Dialogs.Export (ExportDialog(..)) as Export
 import Components.Snackbar (SnackbarContent, SnackbarVariant(Warning))
-import Timeline.Data.TimeSpaceName
+import Timeline.UI.TimeSpaceName
   (TimeSpaceName(..), clearTimeSpaceNameCache, setDefaultTimeSpaceName)
-import Timeline.Data.TimeScale
+import Timeline.UI.TimeScale
   (TimeScale, clearTimeScaleCache, setDefaultTimeScale)
 import Settings (Settings(..))
 import Prelude

@@ -1,4 +1,4 @@
-module Timeline.Data.TimeSpaceName where
+module Timeline.UI.TimeSpaceName where
 
 import Settings (Settings(..))
 import Prelude

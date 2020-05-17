@@ -23,6 +23,7 @@ import Web.File.Store (getFile)
 import React (ReactElement, ReactClass, ReactClassConstructor, component, setState, getState, getProps, createLeafElement)
 import React.DOM (text, div, strong, span)
 import React.DOM.Props (className, dangerouslySetInnerHTML) as RP
+import React.DOM.NonBlockingSpace (nbsp)
 import React.Queue.WhileMounted (whileMountedOne)
 import MaterialUI.Dialog (dialog'')
 import MaterialUI.DialogTitle (dialogTitle)
@@ -122,7 +123,7 @@ importDialog (IOQueues { input, output }) = createLeafElement c {}
                       , dialogContent_
                           $ [ typography { gutterBottom: true, variant: subheading }
                                 [ strong [] [ text "Warning!" ]
-                                , span [ RP.dangerouslySetInnerHTML { __html: "&nbsp;" } ] []
+                                , nbsp
                                 , text "Clicking \"Import\" will delete any unsaved data!"
                                 ]
                             , input' { type: "file", inputProps: { accept: ".och", id: "import-file" } }

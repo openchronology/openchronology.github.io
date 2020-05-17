@@ -19,6 +19,7 @@ import Queue.One (Queue, READ)
 import React (ReactElement, ReactClass, ReactClassConstructor, component, setState, getState, createLeafElement)
 import React.DOM (text, strong, span)
 import React.DOM.Props (dangerouslySetInnerHTML) as RP
+import React.DOM.NonBlockingSpace (nbsp)
 import React.Queue.WhileMounted (whileMountedOne)
 import MaterialUI.Dialog (dialog'')
 import MaterialUI.DialogTitle (dialogTitle)
@@ -81,7 +82,7 @@ exportDialog { exportQueue, onClickedExport } = createLeafElement c {}
                   , dialogContent_
                       [ typography { gutterBottom: true, variant: subheading }
                           [ strong [] [ text "Warning!" ]
-                          , span [ RP.dangerouslySetInnerHTML { __html: "&nbsp;" } ] []
+                          , nbsp
                           , text "Clicking \"Export\" will delete any unsaved data!"
                           ]
                       ]
