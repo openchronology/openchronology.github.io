@@ -48,7 +48,7 @@ instance arbitraryTimeScale :: Arbitrary TimeScale where
     name <- genString
     units <- genString
     description <- genString
-    pure (TimeScale {name,units,description})
+    pure (TimeScale { name, units, description })
 
 instance encodeJsonTimeScale :: EncodeJson TimeScale where
   encodeJson (TimeScale { name, units, description }) =

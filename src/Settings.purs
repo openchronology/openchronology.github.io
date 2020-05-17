@@ -67,7 +67,7 @@ instance arbitrarySettings :: Arbitrary Settings where
     isEditable <- arbitrary
     isSearchable <- arbitrary
     localCacheTilExport <- arbitrary
-    pure (Settings {isEditable,isSearchable,localCacheTilExport})
+    pure (Settings { isEditable, isSearchable, localCacheTilExport })
 
 instance encodeJsonSettings :: EncodeJson Settings where
   encodeJson (Settings { isEditable, isSearchable, localCacheTilExport }) =
