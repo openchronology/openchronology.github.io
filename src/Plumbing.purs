@@ -33,14 +33,14 @@ import Plumbing.Logic
   , onExport
   , onClickedExport
   , onNew
-  , onTimelineNameEdit
+  , onTimeSpaceNameEdit
   , onTimeScaleEdit
   , onSettingsEdit
   , onReadEULA
   )
 import Components.Dialogs.Import (ImportDialog) as Import
 import Components.Dialogs.Export (ExportDialog) as Export
-import Timeline.Data.TimelineName (TimelineName, newTimelineNameSignal)
+import Timeline.Data.TimeSpaceName (TimeSpaceName, newTimeSpaceNameSignal)
 import Timeline.Data.TimeScale (TimeScale, newTimeScaleSignal)
 import Components.Snackbar (SnackbarContent)
 import Settings (Settings, newSettingsSignal)
@@ -61,7 +61,7 @@ type PrimaryQueues
     , exportQueue :: Q.Queue ( write :: Q.WRITE ) Export.ExportDialog
     , newQueues :: IOQueues Q.Queue Unit Boolean
     , settingsEditQueues :: IOQueues Q.Queue Unit (Maybe Settings)
-    , timelineNameEditQueues :: IOQueues Q.Queue Unit (Maybe TimelineName)
+    , timeSpaceNameEditQueues :: IOQueues Q.Queue Unit (Maybe TimeSpaceName)
     , timeScaleEditQueues :: IOQueues Q.Queue Unit (Maybe TimeScale)
     , snackbarQueue :: Q.Queue ( write :: Q.WRITE ) SnackbarContent
     , eulaQueue :: Q.Queue ( write :: Q.WRITE ) Unit
@@ -82,7 +82,7 @@ newPrimaryQueues = do
   ( settingsEditQueues :: IOQueues Q.Queue Unit (Maybe Settings)
   ) <-
     IOQueues.new
-  ( timelineNameEditQueues :: IOQueues Q.Queue Unit (Maybe TimelineName)
+  ( timeSpaceNameEditQueues :: IOQueues Q.Queue Unit (Maybe TimeSpaceName)
   ) <-
     IOQueues.new
   ( timeScaleEditQueues :: IOQueues Q.Queue Unit (Maybe TimeScale)
@@ -100,7 +100,7 @@ newPrimaryQueues = do
     , exportQueue
     , newQueues
     , settingsEditQueues
-    , timelineNameEditQueues
+    , timeSpaceNameEditQueues
     , timeScaleEditQueues
     , snackbarQueue
     , eulaQueue
@@ -110,7 +110,7 @@ newPrimaryQueues = do
 type PrimarySignals
   = { settingsSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Settings
     -- status of the title and filename in the TopBar
-    , timelineNameSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) TimelineName
+    , timeSpaceNameSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) TimeSpaceName
     -- status of the timescale in the BottomBar
     , timeScaleSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) TimeScale
     -- initial zoom level
@@ -124,9 +124,9 @@ newPrimarySignals = do
   ) <-
     newSettingsSignal { wasOpenedByShareLink: false } -- FIXME bind to share link, if opened by one
   -- status of the title and filename in the TopBar
-  ( timelineNameSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) TimelineName
+  ( timeSpaceNameSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) TimeSpaceName
   ) <-
-    newTimelineNameSignal (S.readOnly settingsSignal)
+    newTimeSpaceNameSignal (S.readOnly settingsSignal)
   -- status of the timescale in the BottomBar
   ( timeScaleSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) TimeScale
   ) <-
@@ -137,7 +137,7 @@ newPrimarySignals = do
     IxSig.make 100.0
   pure
     { settingsSignal
-    , timelineNameSignal
+    , timeSpaceNameSignal
     , timeScaleSignal
     , zoomSignal
     }
@@ -149,7 +149,7 @@ type LogicFunctions
     , onExport :: Effect Unit
     , onClickedExport :: Effect Unit
     , onNew :: Effect Unit
-    , onTimelineNameEdit :: Effect Unit
+    , onTimeSpaceNameEdit :: Effect Unit
     , onTimeScaleEdit :: Effect Unit
     , onSettingsEdit :: Effect Unit
     , onReadEULA :: Effect Unit
@@ -161,19 +161,19 @@ logic { importQueues
 , exportQueue
 , newQueues
 , settingsEditQueues
-, timelineNameEditQueues
+, timeSpaceNameEditQueues
 , timeScaleEditQueues
 , snackbarQueue
 , eulaQueue
 } { settingsSignal
-, timelineNameSignal
+, timeSpaceNameSignal
 , timeScaleSignal
 , zoomSignal
 } =
   { onImport:
       onImport
         { importQueues
-        , timelineNameSignal: S.readOnly timelineNameSignal
+        , timeSpaceNameSignal: S.readOnly timeSpaceNameSignal
         , settingsSignal
         }
   , onExport: onExport { exportQueue }
@@ -182,9 +182,9 @@ logic { importQueues
       onNew
         { newQueues
         , timeScaleSignal: S.writeOnly timeScaleSignal
-        , timelineNameSignal: S.writeOnly timelineNameSignal
+        , timeSpaceNameSignal: S.writeOnly timeSpaceNameSignal
         }
-  , onTimelineNameEdit: onTimelineNameEdit { timelineNameEditQueues, timelineNameSignal }
+  , onTimeSpaceNameEdit: onTimeSpaceNameEdit { timeSpaceNameEditQueues, timeSpaceNameSignal }
   , onTimeScaleEdit: onTimeScaleEdit { timeScaleEditQueues, timeScaleSignal }
   , onSettingsEdit: onSettingsEdit { settingsEditQueues, settingsSignal }
   , onReadEULA: onReadEULA { eulaQueue }

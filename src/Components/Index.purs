@@ -15,7 +15,7 @@ import Components.Drawers.Children (childrenDrawer)
 import Components.Dialogs.Import (importDialog)
 import Components.Dialogs.Export (exportDialog)
 import Components.Dialogs.New (newDialog)
-import Components.Dialogs.TimelineNameEdit (timelineNameEditDialog)
+import Components.Dialogs.TimeSpaceNameEdit (timeSpaceNameEditDialog)
 import Components.Dialogs.TimeScaleEdit (timeScaleEditDialog)
 import Components.Dialogs.SettingsEdit (settingsEditDialog)
 import Components.Dialogs.EULA (eulaDialog)
@@ -110,14 +110,14 @@ index { stateRef
     , exportQueue
     , newQueues
     , settingsEditQueues
-    , timelineNameEditQueues
+    , timeSpaceNameEditQueues
     , timeScaleEditQueues
     , snackbarQueue
     , eulaQueue
     }
 , primarySignals:
     { settingsSignal
-    , timelineNameSignal
+    , timeSpaceNameSignal
     , timeScaleSignal
     , zoomSignal
     }
@@ -126,7 +126,7 @@ index { stateRef
     , onExport
     , onClickedExport
     , onNew
-    , onTimelineNameEdit
+    , onTimeSpaceNameEdit
     , onTimeScaleEdit
     , onSettingsEdit
     , onReadEULA
@@ -197,9 +197,9 @@ index { stateRef
                 $ [ topBar
                       { onImport
                       , onExport
-                      , onTimelineNameEdit
+                      , onTimeSpaceNameEdit
                       , onSettingsEdit
-                      , timelineNameSignal: S.readOnly timelineNameSignal
+                      , timeSpaceNameSignal: S.readOnly timeSpaceNameSignal
                       , settingsSignal: S.readOnly settingsSignal
                       }
                   ]
@@ -228,10 +228,10 @@ index { stateRef
                       , onClickedExport
                       }
                   , newDialog { newQueues }
-                  , timelineNameEditDialog
-                      { timelineNameSignal: S.readOnly timelineNameSignal
+                  , timeSpaceNameEditDialog
+                      { timeSpaceNameSignal: S.readOnly timeSpaceNameSignal
                       , settingsSignal: S.readOnly settingsSignal
-                      , timelineNameEditQueues
+                      , timeSpaceNameEditQueues
                       }
                   , timeScaleEditDialog
                       { timeScaleSignal: S.readOnly timeScaleSignal

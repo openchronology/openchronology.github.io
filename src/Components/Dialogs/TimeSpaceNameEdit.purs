@@ -1,6 +1,6 @@
-module Components.Dialogs.TimelineNameEdit (timelineNameEditDialog) where
+module Components.Dialogs.TimeSpaceNameEdit (timeSpaceNameEditDialog) where
 
-import Timeline.Data.TimelineName (TimelineName(..))
+import Timeline.Data.TimeSpaceName (TimeSpaceName(..))
 import Settings (Settings(..))
 import Prelude
 import Data.Maybe (Maybe(..))
@@ -44,11 +44,11 @@ type State
     }
 
 initialState ::
-  IxSig.IxSignal ( read :: S.READ ) TimelineName ->
+  IxSig.IxSignal ( read :: S.READ ) TimeSpaceName ->
   IxSig.IxSignal ( read :: S.READ ) Settings ->
   Effect State
-initialState timelineNameSignal settingsSignal = do
-  TimelineName { title, description } <- IxSig.get timelineNameSignal
+initialState timeSpaceNameSignal settingsSignal = do
+  TimeSpaceName { title, description } <- IxSig.get timeSpaceNameSignal
   Settings { isEditable } <- IxSig.get settingsSignal
   pure
     { open: false
@@ -64,22 +64,22 @@ styles theme =
       }
   }
 
-timelineNameEditDialog ::
-  { timelineNameSignal :: IxSig.IxSignal ( read :: S.READ ) TimelineName
+timeSpaceNameEditDialog ::
+  { timeSpaceNameSignal :: IxSig.IxSignal ( read :: S.READ ) TimeSpaceName
   , settingsSignal :: IxSig.IxSignal ( read :: S.READ ) Settings
-  , timelineNameEditQueues :: IOQueues Queue Unit (Maybe TimelineName)
+  , timeSpaceNameEditQueues :: IOQueues Queue Unit (Maybe TimeSpaceName)
   } ->
   ReactElement
-timelineNameEditDialog { timelineNameSignal
+timeSpaceNameEditDialog { timeSpaceNameSignal
 , settingsSignal
-, timelineNameEditQueues: IOQueues { input, output }
+, timeSpaceNameEditQueues: IOQueues { input, output }
 } = createLeafElement c {}
   where
   c :: ReactClass {}
   c = withStyles styles c'
     where
     c' :: ReactClass { classes :: { buttons :: String } }
-    c' = component "TimelineNameEdit" constructor'
+    c' = component "TimeSpaceNameEdit" constructor'
 
   constructor' :: ReactClassConstructor _ State _
   constructor' =
@@ -87,18 +87,18 @@ timelineNameEditDialog { timelineNameSignal
       handlerOpen :: _ -> Unit -> Effect Unit
       handlerOpen this _ = setState this { open: true }
 
-      handlerChange :: _ -> TimelineName -> Effect Unit
-      handlerChange this (TimelineName { title, description }) = setState this { title, description }
+      handlerChange :: _ -> TimeSpaceName -> Effect Unit
+      handlerChange this (TimeSpaceName { title, description }) = setState this { title, description }
 
       handlerChangeEdit :: _ -> Settings -> Effect Unit
       handlerChangeEdit this (Settings { isEditable }) = setState this { isEditable }
     in
       whileMountedOne input handlerOpen
-        $ whileMountedIx timelineNameSignal "TimelineNameEdit" handlerChange
-        $ whileMountedIx settingsSignal "TimelineNameEdit" handlerChangeEdit constructor
+        $ whileMountedIx timeSpaceNameSignal "TimeSpaceNameEdit" handlerChange
+        $ whileMountedIx settingsSignal "TimeSpaceNameEdit" handlerChangeEdit constructor
     where
     constructor this = do
-      state <- initialState timelineNameSignal settingsSignal
+      state <- initialState timeSpaceNameSignal settingsSignal
       pure
         { componentDidMount: pure unit
         , componentWillUnmount: pure unit
@@ -107,13 +107,13 @@ timelineNameEditDialog { timelineNameSignal
             do
               let
                 close = do
-                  state' <- initialState timelineNameSignal settingsSignal
+                  state' <- initialState timeSpaceNameSignal settingsSignal
                   setState this state'
                   put output Nothing
 
                 submit = do
                   { title, description } <- getState this
-                  put output (Just (TimelineName { title, description }))
+                  put output (Just (TimeSpaceName { title, description }))
                   setState this { open: false }
 
                 changeTitle e = do
@@ -129,11 +129,11 @@ timelineNameEditDialog { timelineNameSignal
                 $ dialog''
                     { onClose: mkEffectFn1 (const close)
                     , open
-                    , "aria-labelledby": "timelinenameedit-dialog-title"
+                    , "aria-labelledby": "timeSpaceNameedit-dialog-title"
                     }
                 $ let
                     editable =
-                      [ dialogTitle { id: "timelinenameedit-dialog-title" } [ text "Timeline Name" ]
+                      [ dialogTitle { id: "timeSpaceNameedit-dialog-title" } [ text "TimeSpace Name" ]
                       , dialogContent_
                           [ textField'
                               { label: "Title"
@@ -162,7 +162,7 @@ timelineNameEditDialog { timelineNameSignal
                       ]
 
                     notEditable =
-                      [ dialogTitle { id: "timelinenameedit-dialog-title" } [ text title ]
+                      [ dialogTitle { id: "timeSpaceNameedit-dialog-title" } [ text title ]
                       , dialogContent_ -- FIXME use markdown
                           [ typography { gutterBottom: true, variant: body2 } [ text description ] ]
                       , dialogActions { className: props.classes.buttons }

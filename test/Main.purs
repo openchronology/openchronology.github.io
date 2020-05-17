@@ -1,6 +1,8 @@
 module Test.Main where
 
-import Timeline.Data.TimelineName (TimelineName)
+import Timeline.Data.TimeSpaceName (TimeSpaceName)
+import Timeline.Data.TimeScale (TimeScale)
+import Settings (Settings)
 
 
 import Prelude
@@ -26,7 +28,9 @@ main =
 tests :: SpecT Aff Unit Identity Unit
 tests = do
   describe "Json" do
-    jsonTest "TimelineName" (Proxy :: Proxy TimelineName)
+    jsonTest "Settings" (Proxy :: Proxy Settings)
+    jsonTest "TimeSpaceName" (Proxy :: Proxy TimeSpaceName)
+    jsonTest "TimeScale" (Proxy :: Proxy TimeScale)
   where
     jsonTest :: forall a
               . Arbitrary a

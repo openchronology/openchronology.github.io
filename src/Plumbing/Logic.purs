@@ -3,8 +3,8 @@ module Plumbing.Logic where
 import Components.Dialogs.Import (ImportDialog(..)) as Import
 import Components.Dialogs.Export (ExportDialog(..)) as Export
 import Components.Snackbar (SnackbarContent, SnackbarVariant(Warning))
-import Timeline.Data.TimelineName
-  (TimelineName(..), clearTimelineNameCache, setDefaultTimelineName)
+import Timeline.Data.TimeSpaceName
+  (TimeSpaceName(..), clearTimeSpaceNameCache, setDefaultTimeSpaceName)
 import Timeline.Data.TimeScale
   (TimeScale, clearTimeScaleCache, setDefaultTimeScale)
 import Settings (Settings(..))
@@ -29,12 +29,12 @@ import Unsafe.Coerce (unsafeCoerce)
 -- | When the "Import" button is clicked
 onImport ::
   { importQueues :: IOQueues Q.Queue Import.ImportDialog (Maybe File)
-  , timelineNameSignal :: IxSig.IxSignal ( read :: S.READ ) TimelineName
+  , timeSpaceNameSignal :: IxSig.IxSignal ( read :: S.READ ) TimeSpaceName
   , settingsSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Settings
   } ->
   Effect Unit
 onImport { importQueues
-, timelineNameSignal
+, timeSpaceNameSignal
 , settingsSignal
 } =
   launchAff_ do
@@ -44,9 +44,9 @@ onImport { importQueues
       Just file -> do
         liftEffect do
           -- assign the filename
-          TimelineName timelineName <- IxSig.get timelineNameSignal
+          TimeSpaceName timeSpaceName <- IxSig.get timeSpaceNameSignal
           -- FIXME filename
-          -- IxSig.setDiff (TimelineName $ timelineName {filename = File.name file}) timelineNameSignal
+          -- IxSig.setDiff (TimeSpaceName $ timeSpaceName {filename = File.name file}) timeSpaceNameSignal
           -- reset settings to be read-only
           Settings settings <- IxSig.get settingsSignal
           IxSig.setDiff (Settings $ settings { isEditable = false }) settingsSignal
@@ -68,7 +68,7 @@ onExport { exportQueue } = do
   -- TODO encode actual content state from content signal
   buffer <- encodeArrayBuffer "yo dawg"
   -- FIXME get filename state
-  -- TimelineName {filename} <- IxSig.get timelineNameSignal
+  -- TimeSpaceName {filename} <- IxSig.get timeSpaceNameSignal
   Q.put exportQueue (Export.ExportDialog { buffer, filename: "foobar" })
 
 -- | Clears local unsaved cache, and triggers a snackbar message
@@ -77,7 +77,7 @@ onClickedExport ::
   } ->
   Effect Unit
 onClickedExport { snackbarQueue } = do
-  clearTimelineNameCache
+  clearTimeSpaceNameCache
   clearTimeScaleCache
   Q.put snackbarQueue
     { variant: Warning
@@ -89,29 +89,29 @@ onClickedExport { snackbarQueue } = do
 onNew ::
   { newQueues :: IOQueues Q.Queue Unit Boolean
   , timeScaleSignal :: IxSig.IxSignal ( write :: S.WRITE ) TimeScale
-  , timelineNameSignal :: IxSig.IxSignal ( write :: S.WRITE ) TimelineName
+  , timeSpaceNameSignal :: IxSig.IxSignal ( write :: S.WRITE ) TimeSpaceName
   } ->
   Effect Unit
-onNew { newQueues, timeScaleSignal, timelineNameSignal } =
+onNew { newQueues, timeScaleSignal, timeSpaceNameSignal } =
   launchAff_ do
     resetAll <- IOQueues.callAsync newQueues unit
     when resetAll
       $ liftEffect do
           setDefaultTimeScale timeScaleSignal
-          setDefaultTimelineName timelineNameSignal
+          setDefaultTimeSpaceName timeSpaceNameSignal
 
 -- | Invokes dialog queues and stores the result in state signals
-onTimelineNameEdit ::
-  { timelineNameEditQueues :: IOQueues Q.Queue Unit (Maybe TimelineName)
-  , timelineNameSignal :: IxSig.IxSignal ( read :: S.READ, write :: S.WRITE ) TimelineName
+onTimeSpaceNameEdit ::
+  { timeSpaceNameEditQueues :: IOQueues Q.Queue Unit (Maybe TimeSpaceName)
+  , timeSpaceNameSignal :: IxSig.IxSignal ( read :: S.READ, write :: S.WRITE ) TimeSpaceName
   } ->
   Effect Unit
-onTimelineNameEdit { timelineNameEditQueues, timelineNameSignal } =
+onTimeSpaceNameEdit { timeSpaceNameEditQueues, timeSpaceNameSignal } =
   launchAff_ do
-    mEditedTimelineName <- IOQueues.callAsync timelineNameEditQueues unit
-    case mEditedTimelineName of
+    mEditedTimeSpaceName <- IOQueues.callAsync timeSpaceNameEditQueues unit
+    case mEditedTimeSpaceName of
       Nothing -> pure unit
-      Just newTimelineName -> liftEffect (IxSig.setDiff newTimelineName timelineNameSignal)
+      Just newTimeSpaceName -> liftEffect (IxSig.setDiff newTimeSpaceName timeSpaceNameSignal)
 
 onTimeScaleEdit ::
   { timeScaleEditQueues :: IOQueues Q.Queue Unit (Maybe TimeScale)

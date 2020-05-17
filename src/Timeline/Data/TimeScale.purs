@@ -24,6 +24,8 @@ import Effect (Effect)
 import Effect.Exception (throw)
 import Zeta.Types (READ, WRITE) as S
 import IxZeta (IxSignal, make, get, set, subscribeDiffLight)
+import Test.QuickCheck (class Arbitrary)
+import Test.QuickCheck.UTF8String (genString)
 
 newtype TimeScale
   = TimeScale
@@ -40,6 +42,13 @@ derive instance genericTimeScale :: Generic TimeScale _
 derive newtype instance eqTimeScale :: Eq TimeScale
 
 derive newtype instance showTimeScale :: Show TimeScale
+
+instance arbitraryTimeScale :: Arbitrary TimeScale where
+  arbitrary = do
+    name <- genString
+    units <- genString
+    description <- genString
+    pure (TimeScale {name,units,description})
 
 instance encodeJsonTimeScale :: EncodeJson TimeScale where
   encodeJson (TimeScale { name, units, description }) =

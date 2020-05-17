@@ -6,7 +6,7 @@ Both TopBar and BottomBar are Material-UI "AppBar"s - giving site-wide functiona
 and access to control the side-wide settings.
 
 -}
-import Timeline.Data.TimelineName (TimelineName(..))
+import Timeline.Data.TimeSpaceName (TimeSpaceName(..))
 import Settings (Settings(..))
 import Prelude hiding (div)
 import Data.Maybe (Maybe(..), isJust)
@@ -68,11 +68,11 @@ type State
     }
 
 initialState ::
-  IxSig.IxSignal ( read :: S.READ ) TimelineName ->
+  IxSig.IxSignal ( read :: S.READ ) TimeSpaceName ->
   IxSig.IxSignal ( read :: S.READ ) Settings ->
   Effect State
-initialState timelineNameSignal settingsSignal = do
-  TimelineName { title } <- IxSig.get timelineNameSignal
+initialState timeSpaceNameSignal settingsSignal = do
+  TimeSpaceName { title } <- IxSig.get timeSpaceNameSignal
   Settings { isEditable } <- IxSig.get settingsSignal
   pure
     { title
@@ -85,17 +85,17 @@ initialState timelineNameSignal settingsSignal = do
 topBar ::
   { onImport :: Effect Unit
   , onExport :: Effect Unit
-  , onTimelineNameEdit :: Effect Unit
+  , onTimeSpaceNameEdit :: Effect Unit
   , onSettingsEdit :: Effect Unit
-  , timelineNameSignal :: IxSig.IxSignal ( read :: S.READ ) TimelineName
+  , timeSpaceNameSignal :: IxSig.IxSignal ( read :: S.READ ) TimeSpaceName
   , settingsSignal :: IxSig.IxSignal ( read :: S.READ ) Settings
   } ->
   ReactElement
 topBar { onImport
 , onExport
-, onTimelineNameEdit: onTimeSpaceNameEdit
+, onTimeSpaceNameEdit: onTimeSpaceNameEdit
 , onSettingsEdit
-, timelineNameSignal: timeSpaceNameSignal
+, timeSpaceNameSignal: timeSpaceNameSignal
 , settingsSignal
 } = createLeafElement c' {}
   where
@@ -116,7 +116,7 @@ topBar { onImport
   constructor' :: ReactClassConstructor _ State _
   constructor' =
     let
-      handlerChangeTitle this (TimelineName { title }) = setState this { title }
+      handlerChangeTitle this (TimeSpaceName { title }) = setState this { title }
 
       handlerChangeEdit this (Settings { isEditable }) = setState this { isEditable }
     in

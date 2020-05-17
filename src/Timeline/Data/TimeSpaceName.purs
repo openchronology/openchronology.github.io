@@ -1,4 +1,4 @@
-module Timeline.Data.TimelineName where
+module Timeline.Data.TimeSpaceName where
 
 import Settings (Settings(..))
 import Prelude
@@ -28,62 +28,62 @@ import Test.QuickCheck (class Arbitrary)
 import Test.QuickCheck.UTF8String (genString)
 
 -- | Represents both the filename and the timeline's presented name
-newtype TimelineName
-  = TimelineName
+newtype TimeSpaceName
+  = TimeSpaceName
   { title :: String
   , description :: String
   }
 
-derive instance genericTimelineName :: Generic TimelineName _
+derive instance genericTimeSpaceName :: Generic TimeSpaceName _
 
-derive newtype instance eqTimelineName :: Eq TimelineName
+derive newtype instance eqTimeSpaceName :: Eq TimeSpaceName
 
-derive newtype instance showTimelineName :: Show TimelineName
+derive newtype instance showTimeSpaceName :: Show TimeSpaceName
 
-instance encodeJsonTimelineName :: EncodeJson TimelineName where
-  encodeJson (TimelineName { title, description }) =
+instance encodeJsonTimeSpaceName :: EncodeJson TimeSpaceName where
+  encodeJson (TimeSpaceName { title, description }) =
     "title" := title
       ~> "description"
       := description
       ~> jsonEmptyObject
 
-instance decodeJsonTimelineName :: DecodeJson TimelineName where
+instance decodeJsonTimeSpaceName :: DecodeJson TimeSpaceName where
   decodeJson json = do
     o <- decodeJson json
     title <- o .: "title"
     description <- o .: "description"
-    pure (TimelineName { title, description })
+    pure (TimeSpaceName { title, description })
 
-instance arbitraryTimelineName :: Arbitrary TimelineName where
+instance arbitraryTimeSpaceName :: Arbitrary TimeSpaceName where
   arbitrary = do
     title <- genString
     description <- genString
-    pure (TimelineName { title, description })
+    pure (TimeSpaceName { title, description })
 
 -- TODO validate filename? Meh
 localstorageSignalKey :: String
 localstorageSignalKey = "localstorage"
 
 localstorageKey :: String
-localstorageKey = "TimelineName"
+localstorageKey = "TimeSpaceName"
 
 -- FIXME need to differentiate root from children; and whether a single node being a signal is even valid
 -- | Chosen timeline name on boot, disregarding the shared signal
-newTimelineNameSignal ::
+newTimeSpaceNameSignal ::
   IxSignal ( read :: S.READ ) Settings ->
-  Effect (IxSignal ( read :: S.READ, write :: S.WRITE ) TimelineName)
-newTimelineNameSignal settingsSignal = do
+  Effect (IxSignal ( read :: S.READ, write :: S.WRITE ) TimeSpaceName)
+newTimeSpaceNameSignal settingsSignal = do
   store <- window >>= localStorage
   mItem <- getItem localstorageKey store
   item <- case mItem of
     Nothing ->
       pure
-        $ TimelineName
+        $ TimeSpaceName
             { title: "TimeSpace Name"
             , description: ""
             }
     Just s -> case jsonParser s >>= decodeJson of
-      Left e -> throw $ "Couldn't parse TimelineName: " <> e
+      Left e -> throw $ "Couldn't parse TimeSpaceName: " <> e
       Right x -> pure x
   sig <- make item
   let
@@ -94,13 +94,13 @@ newTimelineNameSignal settingsSignal = do
   subscribeDiffLight localstorageSignalKey handler sig
   pure sig
 
-clearTimelineNameCache :: Effect Unit
-clearTimelineNameCache = do
+clearTimeSpaceNameCache :: Effect Unit
+clearTimeSpaceNameCache = do
   store <- window >>= localStorage
   removeItem localstorageKey store
 
-setDefaultTimelineName ::
-  IxSignal ( write :: S.WRITE ) TimelineName ->
+setDefaultTimeSpaceName ::
+  IxSignal ( write :: S.WRITE ) TimeSpaceName ->
   Effect Unit
-setDefaultTimelineName timelineNameSignal = do
-  set (TimelineName { title: "Timeline Name", description: "" }) timelineNameSignal
+setDefaultTimeSpaceName timeSpaceNameSignal = do
+  set (TimeSpaceName { title: "TimeSpace Name", description: "" }) timeSpaceNameSignal

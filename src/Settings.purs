@@ -46,6 +46,7 @@ import Effect.Console (warn)
 import Effect.Exception (throw)
 import Zeta.Types (READ, WRITE) as S
 import IxZeta (IxSignal, make, subscribeDiffLight)
+import Test.QuickCheck (class Arbitrary, arbitrary)
 
 -- | The `Settings` record, which is JSON encodable so it can be stored.
 newtype Settings
@@ -60,6 +61,13 @@ derive instance genericSettings :: Generic Settings _
 derive newtype instance eqSettings :: Eq Settings
 
 derive newtype instance showSettings :: Show Settings
+
+instance arbitrarySettings :: Arbitrary Settings where
+  arbitrary = do
+    isEditable <- arbitrary
+    isSearchable <- arbitrary
+    localCacheTilExport <- arbitrary
+    pure (Settings {isEditable,isSearchable,localCacheTilExport})
 
 instance encodeJsonSettings :: EncodeJson Settings where
   encodeJson (Settings { isEditable, isSearchable, localCacheTilExport }) =
