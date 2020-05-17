@@ -14,7 +14,6 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -}
-
 module Settings where
 
 {-|
@@ -23,15 +22,22 @@ This module defines the `Settings` record, and how to obtain a signal for it,
 which gets its information from LocalStorage.
 
 -}
-
 import Prelude
-import Data.Maybe (Maybe (..))
-import Data.Either (Either (..))
+import Data.Maybe (Maybe(..))
+import Data.Either (Either(..))
 import Data.Generic.Rep (class Generic)
 import Data.Argonaut
-  ( class EncodeJson, class DecodeJson
-  , encodeJson, decodeJson, (:=), (.:), (~>), jsonEmptyObject
-  , stringify, jsonParser)
+  ( class EncodeJson
+  , class DecodeJson
+  , encodeJson
+  , decodeJson
+  , (:=)
+  , (.:)
+  , (~>)
+  , jsonEmptyObject
+  , stringify
+  , jsonParser
+  )
 import Web.HTML (window)
 import Web.HTML.Window (localStorage)
 import Web.Storage.Storage (setItem, getItem)
@@ -40,27 +46,32 @@ import Effect.Exception (throw)
 import Zeta.Types (READ, WRITE) as S
 import IxZeta (IxSignal, make, subscribeDiffLight)
 
-
 -- | The `Settings` record, which is JSON encodable so it can be stored.
-newtype Settings = Settings
+newtype Settings
+  = Settings
   { isEditable :: Boolean -- ^ `true` when opening a new timeline, `false` when loading one
   , localCacheTilExport :: Boolean -- ^ `true` by default - store local changes until export
   }
+
 derive instance genericSettings :: Generic Settings _
+
 derive newtype instance eqSettings :: Eq Settings
+
 derive newtype instance showSettings :: Show Settings
+
 instance encodeJsonSettings :: EncodeJson Settings where
-  encodeJson (Settings {isEditable,localCacheTilExport}) =
+  encodeJson (Settings { isEditable, localCacheTilExport }) =
     "isEditable" := isEditable
-    ~> "localCacheTilExport" := localCacheTilExport
-    ~> jsonEmptyObject
+      ~> "localCacheTilExport"
+      := localCacheTilExport
+      ~> jsonEmptyObject
+
 instance decodeJsonSettings :: DecodeJson Settings where
   decodeJson json = do
     o <- decodeJson json
     isEditable <- o .: "isEditable"
     localCacheTilExport <- o .: "localCacheTilExport"
-    pure (Settings {isEditable,localCacheTilExport})
-
+    pure (Settings { isEditable, localCacheTilExport })
 
 -- | The key to be used by the `Handler` that listens to the signal for changes
 localstorageSignalKey :: String
@@ -70,30 +81,32 @@ localstorageSignalKey = "localstorage"
 localstorageKey :: String
 localstorageKey = "Settings"
 
-
 -- | Create a `Signal` which updates the LocalStorage record whenever the settings change.
 -- | The initial argument makes sure the interface isn't in edit mode when opening a shared link.
-newSettingsSignal :: { wasOpenedByShareLink :: Boolean
-                     } -> Effect (IxSignal (read :: S.READ, write :: S.WRITE) Settings)
-newSettingsSignal {wasOpenedByShareLink} = do
+newSettingsSignal ::
+  { wasOpenedByShareLink :: Boolean
+  } ->
+  Effect (IxSignal ( read :: S.READ, write :: S.WRITE ) Settings)
+newSettingsSignal { wasOpenedByShareLink } = do
   store <- window >>= localStorage
   mItem <- getItem localstorageKey store
   item <- case mItem of
-    Nothing -> pure $ Settings
-      { isEditable: not wasOpenedByShareLink
-      , localCacheTilExport: true
-      }
+    Nothing ->
+      pure
+        $ Settings
+            { isEditable: not wasOpenedByShareLink
+            , localCacheTilExport: true
+            }
     Just s -> case jsonParser s >>= decodeJson of
       Left e -> throw $ "Couldn't parse Settings: " <> e
       Right x -> pure x
   sig <- make item
   -- Always store settings
-  let handler x = setItem localstorageKey (stringify (encodeJson x)) store
+  let
+    handler x = setItem localstorageKey (stringify (encodeJson x)) store
   subscribeDiffLight localstorageSignalKey handler sig
   pure sig
 
-
 -- | What the settings value should be for new users, with no link opened.
 defaultSettings :: Settings
-defaultSettings =
-  Settings {isEditable: true, localCacheTilExport: true}
+defaultSettings = Settings { isEditable: true, localCacheTilExport: true }

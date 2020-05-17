@@ -14,18 +14,16 @@ do
     if [ $# -eq 0 ]
     then
         purty $file > tmp/$file
+        diff --brief $file tmp/$file
+        if [ $? -ne 0 ]
+        then
+            REMOVE=1
+        fi
     elif [ $1 == "write" ]
     then
         purty --write $file
     else
         echo "Bad argument. Only one allowed is write"
-    fi
-
-    diff --brief $file tmp/$file
-
-    if [ $? -ne 0 ]
-    then
-        REMOVE=1
     fi
 done
 

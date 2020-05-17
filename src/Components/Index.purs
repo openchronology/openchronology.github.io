@@ -6,9 +6,7 @@ This is the main entry point React.js component - basically, everything that's i
 user interface visually, lives here.
 
 -}
-
-import Settings (Settings (..))
-
+import Settings (Settings(..))
 import Components.TopBar (topBar)
 import Components.BottomBar (bottomBar)
 import Components.Drawers.Timelines (timelinesDrawer)
@@ -24,7 +22,6 @@ import Components.Dialogs.EULA (eulaDialog)
 import Components.Snackbar (snackbars)
 import WithRoot (withRoot)
 import Plumbing (PrimaryQueues, PrimarySignals, LogicFunctions)
-
 import Prelude hiding (div)
 import Effect (Effect)
 import Effect.Ref (Ref)
@@ -32,8 +29,16 @@ import Queue.Types (allowReading, readOnly) as Q
 import Zeta.Types (READ, readOnly) as S
 import IxZeta (IxSignal, get) as IxSig
 import React
-  ( ReactElement, ReactClass, ReactClassConstructor
-  , toElement, component, setState, getState, getProps, createLeafElement)
+  ( ReactElement
+  , ReactClass
+  , ReactClassConstructor
+  , toElement
+  , component
+  , setState
+  , getState
+  , getProps
+  , createLeafElement
+  )
 import React.DOM (text, main)
 import React.DOM.Props (className) as P
 import React.Signal.WhileMounted (whileMountedIx)
@@ -44,71 +49,63 @@ import MaterialUI.Divider (divider_)
 import MaterialUI.Enums (title, permanent, right)
 import MaterialUI.Theme (Theme)
 
-
-
 -- TODO define which queues, signals, and functions Index will need, and keep separate
 -- from others
-
-
 drawerWidth :: Int
 drawerWidth = 240
-
 
 styles :: Theme -> _
 styles theme =
   { drawer:
-    { width: drawerWidth
-    , flexShrink: 0
-    }
+      { width: drawerWidth
+      , flexShrink: 0
+      }
   , drawerPaper:
-    { width: drawerWidth
-    , marginTop: theme.spacing.unit * 6.0
-    , marginBottom: theme.spacing.unit * 6.0
-    , height: "calc(100vh - " <> show (theme.spacing.unit * 12.0) <> "px)"
-    }
+      { width: drawerWidth
+      , marginTop: theme.spacing.unit * 6.0
+      , marginBottom: theme.spacing.unit * 6.0
+      , height: "calc(100vh - " <> show (theme.spacing.unit * 12.0) <> "px)"
+      }
   , contentEditMode:
-    { flexGrow: 1
-    , paddingTop: theme.spacing.unit * 6.0
-    , marginTop: 0
-    , marginBottom: theme.spacing.unit * 6.0
-    , marginLeft: drawerWidth
-    , marginRight: drawerWidth
-    , height: "calc(100vh - " <> show (theme.spacing.unit * 12.0) <> "px)"
-    }
+      { flexGrow: 1
+      , paddingTop: theme.spacing.unit * 6.0
+      , marginTop: 0
+      , marginBottom: theme.spacing.unit * 6.0
+      , marginLeft: drawerWidth
+      , marginRight: drawerWidth
+      , height: "calc(100vh - " <> show (theme.spacing.unit * 12.0) <> "px)"
+      }
   , content:
-    { flexGrow: 1
-    , paddingTop: theme.spacing.unit * 6.0
-    , marginTop: 0
-    , marginBottom: theme.spacing.unit * 6.0
-    , height: "calc(100vh - " <> show (theme.spacing.unit * 12.0) <> "px)"
+      { flexGrow: 1
+      , paddingTop: theme.spacing.unit * 6.0
+      , marginTop: 0
+      , marginBottom: theme.spacing.unit * 6.0
+      , height: "calc(100vh - " <> show (theme.spacing.unit * 12.0) <> "px)"
+      }
+  }
+
+type State
+  = { isEditable :: Boolean
     }
-  }
 
-
-
-type State =
-  { isEditable :: Boolean
-  }
-
-initialState :: IxSig.IxSignal (read :: S.READ) Settings
-             -> Effect State
+initialState ::
+  IxSig.IxSignal ( read :: S.READ ) Settings ->
+  Effect State
 initialState settingsSignal = do
-  Settings {isEditable} <- IxSig.get settingsSignal
-  pure {isEditable}
-
-
+  Settings { isEditable } <- IxSig.get settingsSignal
+  pure { isEditable }
 
 -- | This component takes the top-level functions, queues, and signals created
 -- | in `Main`, and distributes them to its child elements.
-index :: { stateRef :: Ref Unit -- FIXME change to whatever state is changed - is this even needed?
-         , primaryQueues :: PrimaryQueues
-         , primarySignals :: PrimarySignals
-         , logicFunctions :: LogicFunctions
-         }
-      -> ReactElement
-index
-  { stateRef
-  , primaryQueues:
+index ::
+  { stateRef :: Ref Unit -- FIXME change to whatever state is changed - is this even needed?
+  , primaryQueues :: PrimaryQueues
+  , primarySignals :: PrimarySignals
+  , logicFunctions :: LogicFunctions
+  } ->
+  ReactElement
+index { stateRef
+, primaryQueues:
     { importQueues
     , exportQueue
     , newQueues
@@ -117,13 +114,13 @@ index
     , timeScaleEditQueues
     , snackbarQueue
     }
-  , primarySignals:
+, primarySignals:
     { settingsSignal
     , timelineNameSignal
     , timeScaleSignal
     , zoomSignal
     }
-  , logicFunctions:
+, logicFunctions:
     { onImport
     , onExport
     , onClickedExport
@@ -132,112 +129,119 @@ index
     , onTimeScaleEdit
     , onSettingsEdit
     }
-  } = withRoot e
+} = withRoot e
   where
-    e = createLeafElement c {}
-    c :: ReactClass {}
-    c = withStyles styles c'
-      where
-        c' :: ReactClass
-              { classes ::
-                { drawer :: String
-                , drawerPaper :: String
-                , content :: String
-                , contentEditMode :: String
-                }
-              }
-        c' = component "Index" constructor'
+  e = createLeafElement c {}
 
-    constructor' :: ReactClassConstructor _ State _
-    constructor' =
-      let handleChangeEdit this (Settings {isEditable}) = setState this {isEditable}
-      in  whileMountedIx settingsSignal "Index" handleChangeEdit constructor
-      where
-        constructor this = do
-          state <- initialState (S.readOnly settingsSignal)
-          pure
-            { state
-            , componentDidMount: pure unit
-            , componentWillUnmount: pure unit
-            , render: do
-              props <- getProps this
-              {isEditable} <- getState this
-              let leftDrawer
-                    | isEditable =
-                        [ drawer
-                          { className: props.classes.drawer
-                          , variant: permanent
-                          , classes: {paper: props.classes.drawerPaper}
-                          }
-                          [ timelinesDrawer {settingsSignal: S.readOnly settingsSignal}
-                          , divider_ []
-                          , siblingsDrawer {settingsSignal: S.readOnly settingsSignal}
-                          ]
-                        ]
-                    | otherwise = []
-                  rightDrawer
-                    | isEditable =
-                        [ drawer
-                          { className: props.classes.drawer
-                          , variant: permanent
-                          , classes: {paper: props.classes.drawerPaper}
-                          , anchor: right
-                          }
-                          [ childrenDrawer {settingsSignal: S.readOnly settingsSignal}
-                          ]
-                        ]
-                    | otherwise = []
-              pure $ toElement $
-                [ topBar
-                  { onImport
-                  , onExport
-                  , onTimelineNameEdit
-                  , onSettingsEdit
-                  , timelineNameSignal: S.readOnly timelineNameSignal
-                  , settingsSignal: S.readOnly settingsSignal
-                  }
-                ] <> leftDrawer <>
-
-                [ main
-                  [ P.className $
-                    if isEditable
-                      then props.classes.contentEditMode
-                      else props.classes.content
-                  ]
-                  [ typography {gutterBottom: true, variant: title}
-                    [text "Just a Test - blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah"]
-                  ]
-                ] <> rightDrawer <>
-
-                [ bottomBar
-                  { onTimeScaleEdit
-                  , zoomSignal
-                  , timeScaleSignal: S.readOnly timeScaleSignal
-                  }
-
-                -- dialogs
-                , importDialog importQueues
-                , exportDialog
-                  { exportQueue: Q.readOnly (Q.allowReading exportQueue)
-                  , onClickedExport
-                  }
-                , newDialog {newQueues}
-                , timelineNameEditDialog
-                  { timelineNameSignal: S.readOnly timelineNameSignal
-                  , settingsSignal: S.readOnly settingsSignal
-                  , timelineNameEditQueues
-                  }
-                , timeScaleEditDialog
-                  { timeScaleSignal: S.readOnly timeScaleSignal
-                  , settingsSignal: S.readOnly settingsSignal
-                  , timeScaleEditQueues
-                  }
-                , settingsEditDialog
-                  { settingsSignal: S.readOnly settingsSignal
-                  , settingsEditQueues
-                  , onNew
-                  }
-                , eulaDialog
-                , snackbars (Q.readOnly (Q.allowReading snackbarQueue))
-                ]
+  c :: ReactClass {}
+  c = withStyles styles c'
+    where
+    c' ::
+      ReactClass
+        { classes ::
+            { drawer :: String
+            , drawerPaper :: String
+            , content :: String
+            , contentEditMode :: String
             }
+        }
+    c' = component "Index" constructor'
+
+  constructor' :: ReactClassConstructor _ State _
+  constructor' =
+    let
+      handleChangeEdit this (Settings { isEditable }) = setState this { isEditable }
+    in
+      whileMountedIx settingsSignal "Index" handleChangeEdit constructor
+    where
+    constructor this = do
+      state <- initialState (S.readOnly settingsSignal)
+      pure
+        { state
+        , componentDidMount: pure unit
+        , componentWillUnmount: pure unit
+        , render:
+            do
+              props <- getProps this
+              { isEditable } <- getState this
+              let
+                leftDrawer
+                  | isEditable =
+                    [ drawer
+                        { className: props.classes.drawer
+                        , variant: permanent
+                        , classes: { paper: props.classes.drawerPaper }
+                        }
+                        [ timelinesDrawer { settingsSignal: S.readOnly settingsSignal }
+                        , divider_ []
+                        , siblingsDrawer { settingsSignal: S.readOnly settingsSignal }
+                        ]
+                    ]
+                  | otherwise = []
+
+                rightDrawer
+                  | isEditable =
+                    [ drawer
+                        { className: props.classes.drawer
+                        , variant: permanent
+                        , classes: { paper: props.classes.drawerPaper }
+                        , anchor: right
+                        }
+                        [ childrenDrawer { settingsSignal: S.readOnly settingsSignal }
+                        ]
+                    ]
+                  | otherwise = []
+              pure $ toElement
+                $ [ topBar
+                      { onImport
+                      , onExport
+                      , onTimelineNameEdit
+                      , onSettingsEdit
+                      , timelineNameSignal: S.readOnly timelineNameSignal
+                      , settingsSignal: S.readOnly settingsSignal
+                      }
+                  ]
+                <> leftDrawer
+                <> [ main
+                      [ P.className
+                          $ if isEditable then
+                              props.classes.contentEditMode
+                            else
+                              props.classes.content
+                      ]
+                      [ typography { gutterBottom: true, variant: title }
+                          [ text "Just a Test - blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah" ]
+                      ]
+                  ]
+                <> rightDrawer
+                <> [ bottomBar
+                      { onTimeScaleEdit
+                      , zoomSignal
+                      , timeScaleSignal: S.readOnly timeScaleSignal
+                      }
+                  -- dialogs
+                  , importDialog importQueues
+                  , exportDialog
+                      { exportQueue: Q.readOnly (Q.allowReading exportQueue)
+                      , onClickedExport
+                      }
+                  , newDialog { newQueues }
+                  , timelineNameEditDialog
+                      { timelineNameSignal: S.readOnly timelineNameSignal
+                      , settingsSignal: S.readOnly settingsSignal
+                      , timelineNameEditQueues
+                      }
+                  , timeScaleEditDialog
+                      { timeScaleSignal: S.readOnly timeScaleSignal
+                      , settingsSignal: S.readOnly settingsSignal
+                      , timeScaleEditQueues
+                      }
+                  , settingsEditDialog
+                      { settingsSignal: S.readOnly settingsSignal
+                      , settingsEditQueues
+                      , onNew
+                      }
+                  , eulaDialog
+                  , snackbars (Q.readOnly (Q.allowReading snackbarQueue))
+                  ]
+        }

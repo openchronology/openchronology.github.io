@@ -14,7 +14,6 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -}
-
 module Main where
 
 {-|
@@ -26,18 +25,14 @@ from this standpoint:
 - `main` kicks off the application
 
 -}
-
-
 import Components.Index (index)
 import Plumbing (newPrimaryQueues, newPrimarySignals, logic)
-
 import Prelude
-import Data.Maybe (Maybe (..))
+import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Console (log)
 import Effect.Exception (throw)
 import Effect.Ref (new) as Ref
-
 import ReactDOM (render)
 import React (ReactElement, ReactComponent)
 import Web.HTML (window)
@@ -45,7 +40,6 @@ import Web.HTML.Window (document)
 import Web.HTML.HTMLDocument (toDocument)
 import Web.DOM.Document (toNonElementParentNode)
 import Web.DOM.NonElementParentNode (getElementById)
-
 
 -- | Get the `Document` node, and look for the `<div id='root'></div>` element
 -- | (found in the templates - see [build/README.md](../../build/README.md)).
@@ -57,25 +51,23 @@ mountToRoot x = do
     Nothing -> throw "No #root <div> node!"
     Just el -> render x el -- hand-off to React.js
 
-
 -- | Start application
 main :: Effect Unit
 main = do
   log "Booting up application"
-
   stateRef <- Ref.new unit
-
   -- initialize asynchronous signals and queues
   primaryQueues <- newPrimaryQueues
   -- shared state signals
   primarySignals <- newPrimarySignals
   -- create logic functions
-  let logicFunctions = logic primaryQueues primarySignals
-
+  let
+    logicFunctions = logic primaryQueues primarySignals
   -- `mountToRoot` returns the react component generated when binding to the DOM node #root
-  void $ mountToRoot $ index
-    { stateRef
-    , primaryQueues
-    , primarySignals
-    , logicFunctions
-    }
+  void $ mountToRoot
+    $ index
+        { stateRef
+        , primaryQueues
+        , primarySignals
+        , logicFunctions
+        }

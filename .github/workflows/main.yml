@@ -60,7 +60,10 @@ jobs:
     - name: Install dependencies
       run: |
         npm install
-        npm install -g purescript spago mocha chromedriver
+        npm install -g purescript spago mocha chromedriver purty
+
+    - name: Lint
+      run: ./scripts/lint.sh
 
     - name: Build
       run: |
