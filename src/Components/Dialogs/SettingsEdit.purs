@@ -44,6 +44,7 @@ import Unsafe.Coerce (unsafeCoerce)
 type State
   = { open :: Boolean
     , isEditable :: Boolean
+    , isSearchable :: Boolean
     , localCacheTilExport :: Boolean -- is disabled when isEditable == false
     }
 
@@ -51,10 +52,11 @@ initialState ::
   IxSig.IxSignal ( read :: S.READ ) Settings ->
   Effect State
 initialState settingsSignal = do
-  Settings { isEditable, localCacheTilExport } <- IxSig.get settingsSignal
+  Settings { isEditable, isSearchable, localCacheTilExport } <- IxSig.get settingsSignal
   pure
     { open: false
     , isEditable
+    , isSearchable
     , localCacheTilExport
     }
 
@@ -75,11 +77,13 @@ settingsEditDialog ::
   { settingsSignal :: IxSig.IxSignal ( read :: S.READ ) Settings
   , settingsEditQueues :: IOQueues Queue Unit (Maybe Settings)
   , onNew :: Effect Unit
+  , onReadEULA :: Effect Unit
   } ->
   ReactElement
 settingsEditDialog { settingsSignal
 , settingsEditQueues: IOQueues { input, output }
 , onNew
+, onReadEULA
 } = createLeafElement c {}
   where
   c :: ReactClass {}
@@ -101,7 +105,7 @@ settingsEditDialog { settingsSignal
       handlerOpen this _ = setState this { open: true }
 
       handlerChange :: _ -> Settings -> Effect Unit
-      handlerChange this (Settings { isEditable, localCacheTilExport }) = setState this { isEditable, localCacheTilExport }
+      handlerChange this (Settings { isEditable, isSearchable, localCacheTilExport }) = setState this { isEditable, isSearchable, localCacheTilExport }
     in
       whileMountedOne input handlerOpen
         $ whileMountedIx settingsSignal "SettingsEdit" handlerChange constructor
@@ -124,14 +128,16 @@ settingsEditDialog { settingsSignal
                   Settings settings -> setState this settings
 
                 submit = do
-                  { isEditable, localCacheTilExport } <- getState this
-                  put output (Just (Settings { isEditable, localCacheTilExport }))
+                  { isEditable, isSearchable, localCacheTilExport } <- getState this
+                  put output (Just (Settings { isEditable, isSearchable, localCacheTilExport }))
                   setState this { open: false }
 
                 changeIsEditable _ isEditable = setState this { isEditable }
 
+                changeIsSearchable _ isSearchable = setState this { isSearchable }
+
                 changeLocalCacheTilExport _ localCacheTilExport = setState this { localCacheTilExport }
-              { open, isEditable, localCacheTilExport } <- getState this
+              { open, isEditable, isSearchable, localCacheTilExport } <- getState this
               props <- getProps this
               pure
                 $ dialog'' { onClose: mkEffectFn1 (const close), open, "aria-labelledby": "settingsedit-dialog-title" }
@@ -160,9 +166,24 @@ settingsEditDialog { settingsSignal
                             , nbsp
                             , getAppIcon
                             ]
+                        , button
+                            { variant: contained
+                            , color: primary
+                            , fullWidth: true
+                            , onClick: mkEffectFn1 (const onReadEULA)
+                            }
+                            [ text "Read EULA" ]
                         , divider_ []
                         , formGroup_
                             [ formControlLabel'
+                                { control:
+                                    switch'
+                                      { checked: isSearchable
+                                      , onChange: mkEffectFn2 changeIsSearchable
+                                      }
+                                , label: (unsafeCoerce "Is Searchable") :: ReactNode
+                                }
+                            , formControlLabel'
                                 { control:
                                     switch'
                                       { checked: isEditable

@@ -34,6 +34,7 @@ import React
   )
 import React.DOM (text, a, strong)
 import React.DOM.Props (href)
+import React.Queue.WhileMounted (whileMountedOne)
 import MaterialUI.Dialog (dialog'')
 import MaterialUI.DialogTitle (dialogTitle)
 import MaterialUI.DialogContent (dialogContent_)
@@ -41,6 +42,7 @@ import MaterialUI.DialogActions (dialogActions_)
 import MaterialUI.Typography (typography)
 import MaterialUI.Button (button)
 import MaterialUI.Enums (body2, subheading, secondary, headline)
+import Queue.One (READ, Queue) as Q
 
 eulaLocalStorageKey :: String
 eulaLocalStorageKey = "eula"
@@ -54,42 +56,47 @@ initialState = do
   mExists <- getItem eulaLocalStorageKey store
   pure { open: not (isJust mExists) }
 
-eulaDialog :: ReactElement
-eulaDialog = createLeafElement c {}
+eulaDialog ::
+  { eulaQueue :: Q.Queue ( read :: Q.READ ) Unit -- ^ Write to this to open the dialog
+  } ->
+  ReactElement
+eulaDialog { eulaQueue } = createLeafElement c {}
   where
   c :: ReactClass {}
   c = component "EULADialog" constructor'
 
   constructor' :: ReactClassConstructor _ State _
-  constructor' this = do
-    state <- initialState
-    pure
-      { componentDidMount: pure unit
-      , componentWillUnmount: pure unit
-      , state
-      , render:
-          do
-            let
-              handleAccept = do
-                store <- window >>= localStorage
-                setItem eulaLocalStorageKey "accepted" store
-                setState this { open: false }
-            { open } <- getState this
-            pure
-              $ dialog''
-                  { disableBackdropClick: true
-                  , disableEscapeKeyDown: true
-                  , open
-                  , "aria-labelledby": "eula-dialog-title"
-                  }
-                  [ dialogTitle { id: "eula-dialog-title" } [ text "End User License Agreement" ]
-                  , dialogContent_ eulaText
-                  , dialogActions_
-                      [ button { onClick: mkEffectFn1 (const handleAccept), color: secondary }
-                          [ text "I Accept" ]
-                      ]
-                  ]
-      }
+  constructor' = whileMountedOne eulaQueue (\this _ -> setState this { open: true }) constructor
+    where
+    constructor this = do
+      state <- initialState
+      pure
+        { componentDidMount: pure unit
+        , componentWillUnmount: pure unit
+        , state
+        , render:
+            do
+              let
+                handleAccept = do
+                  store <- window >>= localStorage
+                  setItem eulaLocalStorageKey "accepted" store
+                  setState this { open: false }
+              { open } <- getState this
+              pure
+                $ dialog''
+                    { disableBackdropClick: true
+                    , disableEscapeKeyDown: true
+                    , open
+                    , "aria-labelledby": "eula-dialog-title"
+                    }
+                    [ dialogTitle { id: "eula-dialog-title" } [ text "End User License Agreement" ]
+                    , dialogContent_ eulaText
+                    , dialogActions_
+                        [ button { onClick: mkEffectFn1 (const handleAccept), color: secondary }
+                            [ text "I Accept" ]
+                        ]
+                    ]
+        }
 
 eulaText :: Array ReactElement
 eulaText =

@@ -66,7 +66,7 @@ styles theme =
       , marginBottom: theme.spacing.unit * 6.0
       , height: "calc(100vh - " <> show (theme.spacing.unit * 12.0) <> "px)"
       }
-  , contentEditMode:
+  , contentSearchMode:
       { flexGrow: 1
       , paddingTop: theme.spacing.unit * 6.0
       , marginTop: 0
@@ -85,15 +85,15 @@ styles theme =
   }
 
 type State
-  = { isEditable :: Boolean
+  = { isSearchable :: Boolean
     }
 
 initialState ::
   IxSig.IxSignal ( read :: S.READ ) Settings ->
   Effect State
 initialState settingsSignal = do
-  Settings { isEditable } <- IxSig.get settingsSignal
-  pure { isEditable }
+  Settings { isSearchable } <- IxSig.get settingsSignal
+  pure { isSearchable }
 
 -- | This component takes the top-level functions, queues, and signals created
 -- | in `Main`, and distributes them to its child elements.
@@ -113,6 +113,7 @@ index { stateRef
     , timelineNameEditQueues
     , timeScaleEditQueues
     , snackbarQueue
+    , eulaQueue
     }
 , primarySignals:
     { settingsSignal
@@ -128,6 +129,7 @@ index { stateRef
     , onTimelineNameEdit
     , onTimeScaleEdit
     , onSettingsEdit
+    , onReadEULA
     }
 } = withRoot e
   where
@@ -142,7 +144,7 @@ index { stateRef
             { drawer :: String
             , drawerPaper :: String
             , content :: String
-            , contentEditMode :: String
+            , contentSearchMode :: String
             }
         }
     c' = component "Index" constructor'
@@ -150,7 +152,7 @@ index { stateRef
   constructor' :: ReactClassConstructor _ State _
   constructor' =
     let
-      handleChangeEdit this (Settings { isEditable }) = setState this { isEditable }
+      handleChangeEdit this (Settings { isSearchable }) = setState this { isSearchable }
     in
       whileMountedIx settingsSignal "Index" handleChangeEdit constructor
     where
@@ -163,10 +165,10 @@ index { stateRef
         , render:
             do
               props <- getProps this
-              { isEditable } <- getState this
+              { isSearchable } <- getState this
               let
                 leftDrawer
-                  | isEditable =
+                  | isSearchable =
                     [ drawer
                         { className: props.classes.drawer
                         , variant: permanent
@@ -180,7 +182,7 @@ index { stateRef
                   | otherwise = []
 
                 rightDrawer
-                  | isEditable =
+                  | isSearchable =
                     [ drawer
                         { className: props.classes.drawer
                         , variant: permanent
@@ -204,8 +206,8 @@ index { stateRef
                 <> leftDrawer
                 <> [ main
                       [ P.className
-                          $ if isEditable then
-                              props.classes.contentEditMode
+                          $ if isSearchable then
+                              props.classes.contentSearchMode
                             else
                               props.classes.content
                       ]
@@ -240,8 +242,9 @@ index { stateRef
                       { settingsSignal: S.readOnly settingsSignal
                       , settingsEditQueues
                       , onNew
+                      , onReadEULA
                       }
-                  , eulaDialog
+                  , eulaDialog { eulaQueue: Q.readOnly (Q.allowReading eulaQueue) }
                   , snackbars (Q.readOnly (Q.allowReading snackbarQueue))
                   ]
         }

@@ -29,6 +29,7 @@ import MaterialUI.Styles (withStyles)
 import MaterialUI.TextField (textField')
 import MaterialUI.Typography (typography)
 import MaterialUI.Enums (primary, secondary, body2)
+import MaterialUI.Theme (Theme)
 import Queue.One (Queue, put)
 import IOQueues (IOQueues(..))
 import Zeta.Types (READ) as S
@@ -56,6 +57,13 @@ initialState timelineNameSignal settingsSignal = do
     , description
     }
 
+styles :: Theme -> _
+styles theme =
+  { buttons:
+      { zIndex: 2
+      }
+  }
+
 timelineNameEditDialog ::
   { timelineNameSignal :: IxSig.IxSignal ( read :: S.READ ) TimelineName
   , settingsSignal :: IxSig.IxSignal ( read :: S.READ ) Settings
@@ -70,13 +78,6 @@ timelineNameEditDialog { timelineNameSignal
   c :: ReactClass {}
   c = withStyles styles c'
     where
-    styles :: _
-    styles theme =
-      { buttons:
-          { zIndex: 2
-          }
-      }
-
     c' :: ReactClass { classes :: { buttons :: String } }
     c' = component "TimelineNameEdit" constructor'
 

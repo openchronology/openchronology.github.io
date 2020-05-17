@@ -42,6 +42,7 @@ import Web.HTML (window)
 import Web.HTML.Window (localStorage)
 import Web.Storage.Storage (setItem, getItem)
 import Effect (Effect)
+import Effect.Console (warn)
 import Effect.Exception (throw)
 import Zeta.Types (READ, WRITE) as S
 import IxZeta (IxSignal, make, subscribeDiffLight)
@@ -50,6 +51,7 @@ import IxZeta (IxSignal, make, subscribeDiffLight)
 newtype Settings
   = Settings
   { isEditable :: Boolean -- ^ `true` when opening a new timeline, `false` when loading one
+  , isSearchable :: Boolean -- ^ `true` shows side panels
   , localCacheTilExport :: Boolean -- ^ `true` by default - store local changes until export
   }
 
@@ -60,8 +62,10 @@ derive newtype instance eqSettings :: Eq Settings
 derive newtype instance showSettings :: Show Settings
 
 instance encodeJsonSettings :: EncodeJson Settings where
-  encodeJson (Settings { isEditable, localCacheTilExport }) =
+  encodeJson (Settings { isEditable, isSearchable, localCacheTilExport }) =
     "isEditable" := isEditable
+      ~> "isSearchable"
+      := isSearchable
       ~> "localCacheTilExport"
       := localCacheTilExport
       ~> jsonEmptyObject
@@ -70,8 +74,9 @@ instance decodeJsonSettings :: DecodeJson Settings where
   decodeJson json = do
     o <- decodeJson json
     isEditable <- o .: "isEditable"
+    isSearchable <- o .: "isSearchable"
     localCacheTilExport <- o .: "localCacheTilExport"
-    pure (Settings { isEditable, localCacheTilExport })
+    pure (Settings { isEditable, isSearchable, localCacheTilExport })
 
 -- | The key to be used by the `Handler` that listens to the signal for changes
 localstorageSignalKey :: String
@@ -90,15 +95,21 @@ newSettingsSignal ::
 newSettingsSignal { wasOpenedByShareLink } = do
   store <- window >>= localStorage
   mItem <- getItem localstorageKey store
+  let
+    isEditable = not wasOpenedByShareLink
+
+    def =
+      Settings
+        { isEditable
+        , isSearchable: isEditable
+        , localCacheTilExport: true
+        }
   item <- case mItem of
-    Nothing ->
-      pure
-        $ Settings
-            { isEditable: not wasOpenedByShareLink
-            , localCacheTilExport: true
-            }
+    Nothing -> pure def
     Just s -> case jsonParser s >>= decodeJson of
-      Left e -> throw $ "Couldn't parse Settings: " <> e
+      Left e -> do
+        warn $ "Couldn't parse Settings: " <> e
+        pure def
       Right x -> pure x
   sig <- make item
   -- Always store settings
@@ -109,4 +120,4 @@ newSettingsSignal { wasOpenedByShareLink } = do
 
 -- | What the settings value should be for new users, with no link opened.
 defaultSettings :: Settings
-defaultSettings = Settings { isEditable: true, localCacheTilExport: true }
+defaultSettings = Settings { isEditable: true, isSearchable: true, localCacheTilExport: true }

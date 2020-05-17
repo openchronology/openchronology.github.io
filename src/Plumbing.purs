@@ -36,6 +36,7 @@ import Plumbing.Logic
   , onTimelineNameEdit
   , onTimeScaleEdit
   , onSettingsEdit
+  , onReadEULA
   )
 import Components.Dialogs.Import (ImportDialog) as Import
 import Components.Dialogs.Export (ExportDialog) as Export
@@ -63,6 +64,7 @@ type PrimaryQueues
     , timelineNameEditQueues :: IOQueues Q.Queue Unit (Maybe TimelineName)
     , timeScaleEditQueues :: IOQueues Q.Queue Unit (Maybe TimeScale)
     , snackbarQueue :: Q.Queue ( write :: Q.WRITE ) SnackbarContent
+    , eulaQueue :: Q.Queue ( write :: Q.WRITE ) Unit
     }
 
 -- | Created only on boot of the program
@@ -90,6 +92,9 @@ newPrimaryQueues = do
   ( snackbarQueue :: Q.Queue ( write :: Q.WRITE ) SnackbarContent
   ) <-
     Q.writeOnly <$> Q.new
+  ( eulaQueue :: Q.Queue ( write :: Q.WRITE ) Unit
+  ) <-
+    Q.writeOnly <$> Q.new
   pure
     { importQueues
     , exportQueue
@@ -98,6 +103,7 @@ newPrimaryQueues = do
     , timelineNameEditQueues
     , timeScaleEditQueues
     , snackbarQueue
+    , eulaQueue
     }
 
 -- | shared state signals
@@ -146,6 +152,7 @@ type LogicFunctions
     , onTimelineNameEdit :: Effect Unit
     , onTimeScaleEdit :: Effect Unit
     , onSettingsEdit :: Effect Unit
+    , onReadEULA :: Effect Unit
     }
 
 -- | Create the logical functions
@@ -157,6 +164,7 @@ logic { importQueues
 , timelineNameEditQueues
 , timeScaleEditQueues
 , snackbarQueue
+, eulaQueue
 } { settingsSignal
 , timelineNameSignal
 , timeScaleSignal
@@ -179,4 +187,5 @@ logic { importQueues
   , onTimelineNameEdit: onTimelineNameEdit { timelineNameEditQueues, timelineNameSignal }
   , onTimeScaleEdit: onTimeScaleEdit { timeScaleEditQueues, timeScaleSignal }
   , onSettingsEdit: onSettingsEdit { settingsEditQueues, settingsSignal }
+  , onReadEULA: onReadEULA { eulaQueue }
   }

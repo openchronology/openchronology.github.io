@@ -136,3 +136,6 @@ onSettingsEdit { settingsEditQueues, settingsSignal } =
     case mEditedSettings of
       Nothing -> pure unit
       Just newSettings -> liftEffect (IxSig.setDiff newSettings settingsSignal)
+
+onReadEULA :: { eulaQueue :: Q.Queue ( write :: Q.WRITE ) Unit } -> Effect Unit
+onReadEULA { eulaQueue } = Q.put eulaQueue unit
