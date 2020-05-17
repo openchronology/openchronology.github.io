@@ -3524,6 +3524,7 @@ var PS = {};
   var primary = "primary";
   var permanent = "permanent";
   var inherit = "inherit";
+  var headline = "headline";
   var dense = "dense";
   var contained = "contained";
   var body2 = "body2";
@@ -3532,6 +3533,7 @@ var PS = {};
   exports["body2"] = body2;
   exports["contained"] = contained;
   exports["dense"] = dense;
+  exports["headline"] = headline;
   exports["inherit"] = inherit;
   exports["permanent"] = permanent;
   exports["primary"] = primary;
@@ -4382,6 +4384,9 @@ var PS = {};
   var Web_HTML_Window = $PS["Web.HTML.Window"];
   var Web_Storage_Storage = $PS["Web.Storage.Storage"];
   var eulaText = [MaterialUI_Typography.typography()({
+    variant: MaterialUI_Enums.headline,
+    gutterBottom: true
+  })([React_DOM.text("Copyright Disclaimer")]), MaterialUI_Typography.typography()({
     variant: MaterialUI_Enums.subheading
   })([React_DOM.strong([])([React_DOM.text("OpenChronology")]), React_DOM.text(" - an application for graphing and visualizing timelines.")]), MaterialUI_Typography.typography()({
     variant: MaterialUI_Enums.subheading,

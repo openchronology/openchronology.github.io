@@ -35,7 +35,7 @@ import MaterialUI.DialogContent (dialogContent_)
 import MaterialUI.DialogActions (dialogActions_)
 import MaterialUI.Typography (typography)
 import MaterialUI.Button (button)
-import MaterialUI.Enums (body2, subheading, secondary)
+import MaterialUI.Enums (body2, subheading, secondary, headline)
 
 
 
@@ -91,7 +91,8 @@ eulaDialog = createLeafElement c {}
 
 eulaText :: Array ReactElement
 eulaText =
-  [ typography {variant: subheading}
+  [ typography {variant: headline, gutterBottom: true} [text "Copyright Disclaimer"]
+  , typography {variant: subheading}
     [ strong [] [text "OpenChronology"]
     , text " - an application for graphing and visualizing timelines."
     ]
