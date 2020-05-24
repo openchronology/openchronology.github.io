@@ -17,6 +17,8 @@ You can edit this file as you like.
   , "react-mui"
   , "react-queue"
   , "spec"
+  , "timeline"
+  , "quickcheck-utf8"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]

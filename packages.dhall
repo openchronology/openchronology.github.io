@@ -124,28 +124,60 @@ let upstream =
 let overrides = {=}
 
 let additions =
-      { tscompat =
-        { dependencies = [ "react", "lists", "strings", "typelevel-prelude" ]
-        , repo = "https://github.com/athanclark/purescript-tscompat.git"
-        , version = "master"
-        }
-      , react-mui =
-        { dependencies =
-          [ "react-dom"
-          , "typelevel-prelude"
-          , "web-html"
-          , "web-dom"
-          , "react"
-          , "tscompat"
-          ]
-        , repo = "https://github.com/openchronology/purescript-react-mui.git"
-        , version = "master"
-        }
-      , file-store =
-        { dependencies = [ "aff", "arraybuffer", "b64", "promises", "web-html" ]
-        , repo = "https://github.com/openchronology/purescript-file-store.git"
-        , version = "master"
-        }
-      }
+  { tscompat =
+    { dependencies = [ "react", "lists", "strings", "typelevel-prelude" ]
+    , repo = "https://github.com/athanclark/purescript-tscompat.git"
+    , version = "master"
+    }
+  , react-mui =
+    { dependencies =
+      [ "react-dom"
+      , "typelevel-prelude"
+      , "web-html"
+      , "web-dom"
+      , "react"
+      , "tscompat"
+      ]
+    , repo = "https://github.com/openchronology/purescript-react-mui.git"
+    , version = "master"
+    }
+  , file-store =
+    { dependencies = [ "aff", "arraybuffer", "b64", "promises", "web-html" ]
+    , repo = "https://github.com/openchronology/purescript-file-store.git"
+    , version = "master"
+    }
+  , indexed-multiset =
+    { dependencies =
+      [ "ordered-collections"
+      , "intmap"
+      ]
+    , repo = "https://github.com/openchronology/purescript-indexed-multiset.git"
+    , version = "master"
+    }
+  , intmap =
+    { dependencies = ["arraybuffer-class", "argonaut", "parseint"]
+    , repo = "https://github.com/openchronology/purescript-intmap.git"
+    , version = "master"
+    }
+  , indexed-set =
+    { dependencies = ["intmap"]
+    , repo = "https://github.com/openchronology/purescript-indexed-set.git"
+    , version = "master"
+    }
+  , timeline =
+    { dependencies =
+      [ "indexed-multiset"
+      , "indexed-set"
+      , "numbers"
+      ]
+    , repo = "https://github.com/openchronology/purescript-timeline.git"
+    , version = "master"
+    }
+  , quickcheck-utf8 =
+    { dependencies = ["quickcheck"]
+    , repo = "https://github.com/openchronology/purescript-quickcheck-utf8.git"
+    , version = "master"
+    }
+  }
 
 in  upstream // overrides // additions
