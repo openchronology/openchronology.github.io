@@ -140,11 +140,11 @@ topBar { onImport
                     [ toolbar { variant: dense }
                         $ let
                             clickedTimeSpaceButton e =
-                              if isEditable
-                                then do
-                                  anchor <- currentTarget e
-                                  setState this { menuAnchor: Just anchor }
-                                else onExploreTimeSpaces
+                              if isEditable then do
+                                anchor <- currentTarget e
+                                setState this { menuAnchor: Just anchor }
+                              else
+                                onExploreTimeSpaces
 
                             divider :: ReactElement
                             divider = div [ RP.className props.classes.center ] []
