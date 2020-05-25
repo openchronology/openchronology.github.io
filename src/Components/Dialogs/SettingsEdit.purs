@@ -141,7 +141,7 @@ settingsEditDialog { settingsSignal
               { open, isEditable, isSearchable, localCacheTilExport } <- getState this
               props <- getProps this
               pure
-                $ dialog'' { onClose: mkEffectFn1 (const close), open, "aria-labelledby": "settingsedit-dialog-title" }
+                $ dialog'' { onClose: mkEffectFn1 (const close), open, "aria-labelledby": "settingsedit-dialog-title", fullWidth: true }
                     [ dialogTitle { id: "settingsedit-dialog-title" } [ text "Settings" ]
                     , dialogContent_
                         [ div [RP.style {flexDirection: "row"}]
