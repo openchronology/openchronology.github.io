@@ -53,14 +53,18 @@ jobs:
         sudo apt update
         sudo apt install graphviz -y
 
-    - name: Install chrome
-      run: |
-        sudo apt install google-chrome-stable -y
+        # Google chrome apparently only supports the latest version in apt
+        # - name: Install chrome
+        # run: |
+        # sudo apt install google-chrome-stable=81.0.4044.138-1 -y
 
     - name: Install dependencies
       run: |
         npm install
-        npm install -g purescript spago mocha chromedriver
+        npm install -g purescript spago mocha chromedriver purty
+
+    - name: Lint
+      run: ./scripts/lint.sh
 
     - name: Build
       run: |
@@ -68,7 +72,8 @@ jobs:
         ./scripts/build.sh production
 
     - name: Test
-      run: npm test
+      # run: npm test
+      run: spago test
 
     - name: Docs
       run: ./scripts/build_all_docs.sh

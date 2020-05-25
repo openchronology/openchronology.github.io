@@ -1,3 +1,19 @@
+{-
+OpenChronology - an application for graphing and visualizing timelines.
+Copyright (C) 2020  Athan Clark
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation version 3 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-}
 module Plumbing where
 
 {-|
@@ -12,162 +28,186 @@ Furthermore, there is some logic defined here where it's ambiguous to the user i
 but still creates desirable effects (i.e. triggering an ask for data, then piping that data into a state).
 
 -}
-
 import Plumbing.Logic
-  ( onImport, onExport, onClickedExport
-  , onNew, onTimelineNameEdit, onTimeScaleEdit, onSettingsEdit
+  ( onImport
+  , onExport
+  , onClickedExport
+  , onNew
+  , onTimeSpaceNameEdit
+  , onTimeScaleEdit
+  , onSettingsEdit
+  , onReadEULA
+  , onExploreTimeSpaces
   )
-
-import Components.Dialogs.Import (ImportDialog (..)) as Import
-import Components.Dialogs.Export (ExportDialog (..)) as Export
-import Timeline.Data.TimelineName
-  (TimelineName (..), newTimelineNameSignal, clearTimelineNameCache, setDefaultTimelineName)
-import Timeline.Data.TimeScale
-  (TimeScale, newTimeScaleSignal, clearTimeScaleCache, setDefaultTimeScale)
-import Components.Snackbar (SnackbarContent, SnackbarVariant (Warning))
-import Settings (Settings (..), newSettingsSignal)
-
+import Components.Dialogs.Import (ImportDialog) as Import
+import Components.Dialogs.Export (ExportDialog) as Export
+import Timeline.UI.TimeSpaceName (TimeSpaceName, newTimeSpaceNameSignal)
+import Timeline.UI.TimeScale (TimeScale, newTimeScaleSignal)
+import Timeline.UI.ExploreTimeSpaces (ExploreTimeSpaces, WithSpanOfTime, newExploreTimeSpacesSignal)
+import Components.Snackbar (SnackbarContent)
+import Settings (Settings, newSettingsSignal)
 import Prelude
-import Data.Maybe (Maybe (..))
-import Data.Either (Either (..))
-import Data.ArrayBuffer.Class (encodeArrayBuffer)
-import Data.Time.Duration (Milliseconds (..))
+import Data.Maybe (Maybe)
+import Data.IxSet.Demi (Index)
 import Effect (Effect)
-import Effect.Console (log)
-import Effect.Exception (throwException)
-import Effect.Aff (runAff_)
-import Effect.Class (liftEffect)
-import Queue.One (Queue, new, put) as Q
-import Queue.Types (allowWriting, writeOnly, WRITE) as Q
-import IOQueues (IOQueues (..))
-import IOQueues (new, callAsync) as IOQueues
+import Queue.One (Queue, new) as Q
+import Queue.Types (writeOnly, WRITE) as Q
+import IOQueues (IOQueues)
+import IOQueues (new) as IOQueues
 import Zeta.Types (WRITE, READ, readOnly, writeOnly) as S
-import IxZeta (IxSignal, make, setDiff, get) as IxSig
+import IxZeta (IxSignal, make) as IxSig
 import Web.File.File (File)
-import Web.File.Store (fileToArrayBuffer)
-import Unsafe.Coerce (unsafeCoerce)
-
 
 -- | Mostly just Dialog invocations
-type PrimaryQueues =
-  { importQueues           :: IOQueues Q.Queue Import.ImportDialog (Maybe File)
-  , exportQueue            :: Q.Queue (write :: Q.WRITE) Export.ExportDialog
-  , newQueues              :: IOQueues Q.Queue Unit Boolean
-  , settingsEditQueues     :: IOQueues Q.Queue Unit (Maybe Settings)
-  , timelineNameEditQueues :: IOQueues Q.Queue Unit (Maybe TimelineName)
-  , timeScaleEditQueues    :: IOQueues Q.Queue Unit (Maybe TimeScale)
-  , snackbarQueue          :: Q.Queue (write :: Q.WRITE) SnackbarContent
-  }
-
+type PrimaryQueues
+  = { importQueues :: IOQueues Q.Queue Import.ImportDialog (Maybe File)
+    , exportQueue :: Q.Queue ( write :: Q.WRITE ) Export.ExportDialog
+    , newQueues :: IOQueues Q.Queue Unit Boolean
+    , settingsEditQueues :: IOQueues Q.Queue Unit (Maybe Settings)
+    , timeSpaceNameEditQueues :: IOQueues Q.Queue Unit (Maybe TimeSpaceName)
+    , timeScaleEditQueues :: IOQueues Q.Queue Unit (Maybe TimeScale)
+    , snackbarQueue :: Q.Queue ( write :: Q.WRITE ) SnackbarContent
+    , eulaQueue :: Q.Queue ( write :: Q.WRITE ) Unit
+    , exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array Index))
+    }
 
 -- | Created only on boot of the program
 newPrimaryQueues :: Effect PrimaryQueues
 newPrimaryQueues = do
   ( importQueues :: IOQueues Q.Queue Import.ImportDialog (Maybe File)
-    ) <- IOQueues.new
-  ( exportQueue :: Q.Queue (write :: Q.WRITE) Export.ExportDialog
-    ) <- Q.writeOnly <$> Q.new
+  ) <-
+    IOQueues.new
+  ( exportQueue :: Q.Queue ( write :: Q.WRITE ) Export.ExportDialog
+  ) <-
+    Q.writeOnly <$> Q.new
   ( newQueues :: IOQueues Q.Queue Unit Boolean
-    ) <- IOQueues.new
+  ) <-
+    IOQueues.new
   ( settingsEditQueues :: IOQueues Q.Queue Unit (Maybe Settings)
-    ) <- IOQueues.new
-  ( timelineNameEditQueues :: IOQueues Q.Queue Unit (Maybe TimelineName)
-    ) <- IOQueues.new
+  ) <-
+    IOQueues.new
+  ( timeSpaceNameEditQueues :: IOQueues Q.Queue Unit (Maybe TimeSpaceName)
+  ) <-
+    IOQueues.new
   ( timeScaleEditQueues :: IOQueues Q.Queue Unit (Maybe TimeScale)
-    ) <- IOQueues.new
-
+  ) <-
+    IOQueues.new
   -- sudden messages and notices
-  ( snackbarQueue :: Q.Queue (write :: Q.WRITE) SnackbarContent
-    ) <- Q.writeOnly <$> Q.new
-
+  ( snackbarQueue :: Q.Queue ( write :: Q.WRITE ) SnackbarContent
+  ) <-
+    Q.writeOnly <$> Q.new
+  ( eulaQueue :: Q.Queue ( write :: Q.WRITE ) Unit
+  ) <-
+    Q.writeOnly <$> Q.new
+  ( exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array Index))
+  ) <-
+    IOQueues.new
   pure
     { importQueues
     , exportQueue
     , newQueues
     , settingsEditQueues
-    , timelineNameEditQueues
+    , timeSpaceNameEditQueues
     , timeScaleEditQueues
     , snackbarQueue
+    , eulaQueue
+    , exploreTimeSpacesQueues
     }
 
-
 -- | shared state signals
-type PrimarySignals =
-  { settingsSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) Settings
-  -- status of the title and filename in the TopBar
-  , timelineNameSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) TimelineName
-  -- status of the timescale in the BottomBar
-  , timeScaleSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) TimeScale
-  -- initial zoom level
-  , zoomSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) Number
-  }
-
+type PrimarySignals
+  = { settingsSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Settings
+    -- status of the title and filename in the TopBar
+    , timeSpaceNameSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) TimeSpaceName
+    -- status of the timescale in the BottomBar
+    , timeScaleSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) TimeScale
+    -- initial zoom level
+    , zoomSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Number
+    , exploreTimeSpacesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (WithSpanOfTime ExploreTimeSpaces)
+    , timeSpaceSelectedSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (Array Index)
+    }
 
 -- | Created only on boot of the program
 newPrimarySignals :: Effect PrimarySignals
 newPrimarySignals = do
-  ( settingsSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) Settings
-    ) <- newSettingsSignal {wasOpenedByShareLink: false} -- FIXME bind to share link, if opened by one
+  ( settingsSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Settings
+  ) <-
+    newSettingsSignal { wasOpenedByShareLink: false } -- FIXME bind to share link, if opened by one
   -- status of the title and filename in the TopBar
-  ( timelineNameSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) TimelineName
-    ) <- newTimelineNameSignal (S.readOnly settingsSignal)
+  ( timeSpaceNameSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) TimeSpaceName
+  ) <-
+    newTimeSpaceNameSignal (S.readOnly settingsSignal)
   -- status of the timescale in the BottomBar
-  ( timeScaleSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) TimeScale
-    ) <- newTimeScaleSignal (S.readOnly settingsSignal)
+  ( timeScaleSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) TimeScale
+  ) <-
+    newTimeScaleSignal (S.readOnly settingsSignal)
   -- initial zoom level
-  ( zoomSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) Number
-    ) <- IxSig.make 100.0
-
+  ( zoomSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Number
+  ) <-
+    IxSig.make 100.0
+  ( exploreTimeSpacesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (WithSpanOfTime ExploreTimeSpaces)
+  ) <-
+    newExploreTimeSpacesSignal
+  ( timeSpaceSelectedSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (Array Index)
+  ) <-
+    IxSig.make []
   pure
     { settingsSignal
-    , timelineNameSignal
+    , timeSpaceNameSignal
     , timeScaleSignal
     , zoomSignal
+    , exploreTimeSpacesSignal
+    , timeSpaceSelectedSignal
     }
-
 
 -- | Functions given to the React.js components, to interact with the async devices.
 -- | They're the same functions as `Plumbing.Logic`, but with parameters applied.
-type LogicFunctions =
-  { onImport           :: Effect Unit
-  , onExport           :: Effect Unit
-  , onClickedExport    :: Effect Unit
-  , onNew              :: Effect Unit
-  , onTimelineNameEdit :: Effect Unit
-  , onTimeScaleEdit    :: Effect Unit
-  , onSettingsEdit     :: Effect Unit
-  }
-
+type LogicFunctions
+  = { onImport :: Effect Unit
+    , onExport :: Effect Unit
+    , onClickedExport :: Effect Unit
+    , onNew :: Effect Unit
+    , onTimeSpaceNameEdit :: Effect Unit
+    , onTimeScaleEdit :: Effect Unit
+    , onSettingsEdit :: Effect Unit
+    , onReadEULA :: Effect Unit
+    , onExploreTimeSpaces :: Effect Unit
+    }
 
 -- | Create the logical functions
 logic :: PrimaryQueues -> PrimarySignals -> LogicFunctions
-logic
-  { importQueues
-  , exportQueue
-  , newQueues
-  , settingsEditQueues
-  , timelineNameEditQueues
-  , timeScaleEditQueues
-  , snackbarQueue
-  }
-  { settingsSignal
-  , timelineNameSignal
-  , timeScaleSignal
-  , zoomSignal
-  } =
-  { onImport: onImport
-    { importQueues
-    , timelineNameSignal: S.readOnly timelineNameSignal
-    , settingsSignal
-    }
-  , onExport: onExport {exportQueue}
-  , onClickedExport: onClickedExport {snackbarQueue}
-  , onNew: onNew
-    { newQueues
-    , timeScaleSignal: S.writeOnly timeScaleSignal
-    , timelineNameSignal: S.writeOnly timelineNameSignal
-    }
-  , onTimelineNameEdit: onTimelineNameEdit {timelineNameEditQueues,timelineNameSignal}
-  , onTimeScaleEdit: onTimeScaleEdit {timeScaleEditQueues,timeScaleSignal}
-  , onSettingsEdit: onSettingsEdit {settingsEditQueues,settingsSignal}
+logic { importQueues
+, exportQueue
+, newQueues
+, settingsEditQueues
+, timeSpaceNameEditQueues
+, timeScaleEditQueues
+, snackbarQueue
+, eulaQueue
+, exploreTimeSpacesQueues
+} { settingsSignal
+, timeSpaceNameSignal
+, timeScaleSignal
+, zoomSignal
+, timeSpaceSelectedSignal
+} =
+  { onImport:
+      onImport
+        { importQueues
+        , timeSpaceNameSignal: S.readOnly timeSpaceNameSignal
+        , settingsSignal
+        }
+  , onExport: onExport { exportQueue }
+  , onClickedExport: onClickedExport { snackbarQueue }
+  , onNew:
+      onNew
+        { newQueues
+        , timeScaleSignal: S.writeOnly timeScaleSignal
+        , timeSpaceNameSignal: S.writeOnly timeSpaceNameSignal
+        }
+  , onTimeSpaceNameEdit: onTimeSpaceNameEdit { timeSpaceNameEditQueues, timeSpaceNameSignal }
+  , onTimeScaleEdit: onTimeScaleEdit { timeScaleEditQueues, timeScaleSignal }
+  , onSettingsEdit: onSettingsEdit { settingsEditQueues, settingsSignal }
+  , onReadEULA: onReadEULA { eulaQueue }
+  , onExploreTimeSpaces: onExploreTimeSpaces { exploreTimeSpacesQueues, timeSpaceSelectedSignal }
   }
