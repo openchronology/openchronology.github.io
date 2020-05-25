@@ -5,7 +5,8 @@ rm .purs-repl
 rm -rf .spago/
 rm -rf node_modules/
 rm -rf output/
-rm graphs/*
+rm graphs/*.svg
+rm graphs/modules.dot
 rm generated-docs/*
 rm openchronology-static.zip
 rm index.html
