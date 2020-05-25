@@ -164,6 +164,11 @@ let additions =
     , repo = "https://github.com/openchronology/purescript-indexed-set.git"
     , version = "master"
     }
+  , indexed-demiset =
+    { dependencies = ["intmap"]
+    , repo = "https://github.com/openchronology/purescript-indexed-demiset.git"
+    , version = "master"
+    }
   , timeline =
     { dependencies =
       [ "indexed-multiset"

@@ -19,6 +19,7 @@ You can edit this file as you like.
   , "spec"
   , "timeline"
   , "quickcheck-utf8"
+  , "indexed-demiset"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]

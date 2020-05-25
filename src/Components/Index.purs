@@ -19,6 +19,7 @@ import Components.Dialogs.TimeSpaceNameEdit (timeSpaceNameEditDialog)
 import Components.Dialogs.TimeScaleEdit (timeScaleEditDialog)
 import Components.Dialogs.SettingsEdit (settingsEditDialog)
 import Components.Dialogs.EULA (eulaDialog)
+import Components.Dialogs.ExploreTimeSpaces (exploreTimeSpacesDialog)
 import Components.Snackbar (snackbars)
 import WithRoot (withRoot)
 import Plumbing (PrimaryQueues, PrimarySignals, LogicFunctions)
@@ -114,12 +115,15 @@ index { stateRef
     , timeScaleEditQueues
     , snackbarQueue
     , eulaQueue
+    , exploreTimeSpacesQueues
     }
 , primarySignals:
     { settingsSignal
     , timeSpaceNameSignal
     , timeScaleSignal
     , zoomSignal
+    , exploreTimeSpacesSignal
+    , timeSpaceSelectedSignal
     }
 , logicFunctions:
     { onImport
@@ -130,6 +134,7 @@ index { stateRef
     , onTimeScaleEdit
     , onSettingsEdit
     , onReadEULA
+    , onExploreTimeSpaces
     }
 } = withRoot e
   where
@@ -201,6 +206,7 @@ index { stateRef
                       , onSettingsEdit
                       , timeSpaceNameSignal: S.readOnly timeSpaceNameSignal
                       , settingsSignal: S.readOnly settingsSignal
+                      , onExploreTimeSpaces
                       }
                   ]
                 <> leftDrawer
@@ -245,6 +251,11 @@ index { stateRef
                       , onReadEULA
                       }
                   , eulaDialog { eulaQueue: Q.readOnly (Q.allowReading eulaQueue) }
+                  , exploreTimeSpacesDialog
+                      { exploreTimeSpacesSignal: S.readOnly exploreTimeSpacesSignal
+                      , timeSpaceSelectedSignal: S.readOnly timeSpaceSelectedSignal
+                      , exploreTimeSpacesQueues
+                      }
                   , snackbars (Q.readOnly (Q.allowReading snackbarQueue))
                   ]
         }

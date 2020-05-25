@@ -12,6 +12,7 @@ import Prelude
 import Data.Maybe (Maybe(..))
 import Data.ArrayBuffer.Class (encodeArrayBuffer)
 import Data.Time.Duration (Milliseconds(..))
+import Data.IxSet.Demi (Index)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
@@ -139,3 +140,17 @@ onSettingsEdit { settingsEditQueues, settingsSignal } =
 
 onReadEULA :: { eulaQueue :: Q.Queue ( write :: Q.WRITE ) Unit } -> Effect Unit
 onReadEULA { eulaQueue } = Q.put eulaQueue unit
+
+onExploreTimeSpaces ::
+  { exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array Index))
+  , timeSpaceSelectedSignal :: IxSig.IxSignal (read :: S.READ, write :: S.WRITE) (Array Index)
+  -- TODO assign new timespace name, pulling from the global directory, not the explore sub-view
+  -- , timeSpaceNameSignal :: IxSig.IxSignal (write :: S.WRITE) TimeSpaceName
+  -- , exploreTimeSpacesSignal :: IxSig.IxSignal (read :: S.READ) (WithSpanOfTime ExploreTimeSpaces)
+  } -> Effect Unit
+onExploreTimeSpaces {exploreTimeSpacesQueues,timeSpaceSelectedSignal} =
+  launchAff_ do
+    mNewSelected <- IOQueues.callAsync exploreTimeSpacesQueues unit
+    case mNewSelected of
+      Nothing -> pure unit
+      Just selected -> liftEffect (IxSig.setDiff selected timeSpaceSelectedSignal)

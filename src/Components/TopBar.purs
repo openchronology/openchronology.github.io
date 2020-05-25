@@ -87,6 +87,7 @@ topBar ::
   , onExport :: Effect Unit
   , onTimeSpaceNameEdit :: Effect Unit
   , onSettingsEdit :: Effect Unit
+  , onExploreTimeSpaces :: Effect Unit
   , timeSpaceNameSignal :: IxSig.IxSignal ( read :: S.READ ) TimeSpaceName
   , settingsSignal :: IxSig.IxSignal ( read :: S.READ ) Settings
   } ->
@@ -95,6 +96,7 @@ topBar { onImport
 , onExport
 , onTimeSpaceNameEdit: onTimeSpaceNameEdit
 , onSettingsEdit
+, onExploreTimeSpaces
 , timeSpaceNameSignal: timeSpaceNameSignal
 , settingsSignal
 } = createLeafElement c' {}
@@ -190,7 +192,10 @@ topBar { onImport
                               }
                               [ text "Edit" ]
                           , menuItem
-                              { onClick: mkEffectFn1 (const handleCloseMenu)
+                              { onClick:
+                                  mkEffectFn1 \_ -> do
+                                    handleCloseMenu
+                                    onExploreTimeSpaces
                               }
                               [ text "Explore" ]
                           ]

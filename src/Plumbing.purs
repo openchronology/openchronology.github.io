@@ -37,15 +37,18 @@ import Plumbing.Logic
   , onTimeScaleEdit
   , onSettingsEdit
   , onReadEULA
+  , onExploreTimeSpaces
   )
 import Components.Dialogs.Import (ImportDialog) as Import
 import Components.Dialogs.Export (ExportDialog) as Export
 import Timeline.UI.TimeSpaceName (TimeSpaceName, newTimeSpaceNameSignal)
 import Timeline.UI.TimeScale (TimeScale, newTimeScaleSignal)
+import Timeline.UI.ExploreTimeSpaces (ExploreTimeSpaces, WithSpanOfTime, newExploreTimeSpacesSignal)
 import Components.Snackbar (SnackbarContent)
 import Settings (Settings, newSettingsSignal)
 import Prelude
 import Data.Maybe (Maybe)
+import Data.IxSet.Demi (Index)
 import Effect (Effect)
 import Queue.One (Queue, new) as Q
 import Queue.Types (writeOnly, WRITE) as Q
@@ -65,6 +68,7 @@ type PrimaryQueues
     , timeScaleEditQueues :: IOQueues Q.Queue Unit (Maybe TimeScale)
     , snackbarQueue :: Q.Queue ( write :: Q.WRITE ) SnackbarContent
     , eulaQueue :: Q.Queue ( write :: Q.WRITE ) Unit
+    , exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array Index))
     }
 
 -- | Created only on boot of the program
@@ -95,6 +99,9 @@ newPrimaryQueues = do
   ( eulaQueue :: Q.Queue ( write :: Q.WRITE ) Unit
   ) <-
     Q.writeOnly <$> Q.new
+  ( exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array Index))
+  ) <-
+    IOQueues.new
   pure
     { importQueues
     , exportQueue
@@ -104,6 +111,7 @@ newPrimaryQueues = do
     , timeScaleEditQueues
     , snackbarQueue
     , eulaQueue
+    , exploreTimeSpacesQueues
     }
 
 -- | shared state signals
@@ -115,6 +123,8 @@ type PrimarySignals
     , timeScaleSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) TimeScale
     -- initial zoom level
     , zoomSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Number
+    , exploreTimeSpacesSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) (WithSpanOfTime ExploreTimeSpaces)
+    , timeSpaceSelectedSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) (Array Index)
     }
 
 -- | Created only on boot of the program
@@ -135,11 +145,19 @@ newPrimarySignals = do
   ( zoomSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Number
   ) <-
     IxSig.make 100.0
+  ( exploreTimeSpacesSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) (WithSpanOfTime ExploreTimeSpaces)
+  ) <-
+    newExploreTimeSpacesSignal
+  ( timeSpaceSelectedSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) (Array Index)
+  ) <-
+    IxSig.make []
   pure
     { settingsSignal
     , timeSpaceNameSignal
     , timeScaleSignal
     , zoomSignal
+    , exploreTimeSpacesSignal
+    , timeSpaceSelectedSignal
     }
 
 -- | Functions given to the React.js components, to interact with the async devices.
@@ -153,6 +171,7 @@ type LogicFunctions
     , onTimeScaleEdit :: Effect Unit
     , onSettingsEdit :: Effect Unit
     , onReadEULA :: Effect Unit
+    , onExploreTimeSpaces :: Effect Unit
     }
 
 -- | Create the logical functions
@@ -165,10 +184,12 @@ logic { importQueues
 , timeScaleEditQueues
 , snackbarQueue
 , eulaQueue
+, exploreTimeSpacesQueues
 } { settingsSignal
 , timeSpaceNameSignal
 , timeScaleSignal
 , zoomSignal
+, timeSpaceSelectedSignal
 } =
   { onImport:
       onImport
@@ -188,4 +209,5 @@ logic { importQueues
   , onTimeScaleEdit: onTimeScaleEdit { timeScaleEditQueues, timeScaleSignal }
   , onSettingsEdit: onSettingsEdit { settingsEditQueues, settingsSignal }
   , onReadEULA: onReadEULA { eulaQueue }
+  , onExploreTimeSpaces: onExploreTimeSpaces {exploreTimeSpacesQueues, timeSpaceSelectedSignal}
   }
