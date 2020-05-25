@@ -1,0 +1,172 @@
+digraph SignalsAndQueues {
+  ratio="0.5";
+  rankdir="LR";
+
+  subgraph cluster_1 {
+    label="Signals";
+    color="#0000000F";
+    style="filled";
+    settingsSignal[label="Settings",style="filled",fillcolor="#ffffbb",penwidth="0"];
+    timelineNameSignal[label="TimelineName",style="filled",fillcolor="#ffffbb",penwidth="0"];
+    timeScaleSignal[label="TimeScale",style="filled",fillcolor="#ffffbb",penwidth="0"];
+    zoomSignal[label="Zoom",style="filled",fillcolor="#ffffbb",penwidth="0"];
+  }
+
+  subgraph cluster_2 {
+    label="Queues";
+    color="#0000000F";
+    style="filled";
+    importQueues[label="Import Dialog IOQueues",style="filled",fillcolor="#ffffbb",penwidth="0"];
+    exportQueue[label="Export Dialog Queue",style="filled",fillcolor="#ffffbb",penwidth="0"];
+    newQueues[label="New Dialog IOQueues",style="filled",fillcolor="#ffffbb",penwidth="0"];
+    settingsEditQueues[label="Settings Dialog IOQueues",style="filled",fillcolor="#ffffbb",penwidth="0"];
+    timelineNameEditQueues[label="TimelineNameEdit Dialog IOQueues",style="filled",fillcolor="#ffffbb",penwidth="0"];
+    timeScaleEditQueues[label="TimeScaleEdit Dialog IOQueues",style="filled",fillcolor="#ffffbb",penwidth="0"];
+    snackbarQueue[label="Snackbar Queue",style="filled",fillcolor="#ffffbb",penwidth="0"];
+  }
+
+  subgraph cluster_3 {
+    label="Plumbing";
+    color="#0000000F";
+    style="filled";
+    newSettingsSignal[label="Settings.newSettingsSignal",style="filled",fillcolor="#ffffbb",penwidth="0"];
+    newTimelineNameSignal[label="Timeline.Data.TimelineName.newTimelineNameSignal",style="filled",fillcolor="#ffffbb",penwidth="0"];
+    newTimeScaleSignal[label="Timeline.Data.TimeScale.newTimeScaleSignal",style="filled",fillcolor="#ffffbb",penwidth="0"];
+    newPrimarySignals[label="newPrimarySignals",style="filled",fillcolor="#ffffbb",penwidth="0"];
+    newPrimaryQueues[label="newPrimaryQueues",style="filled",fillcolor="#ffffbb",penwidth="0"];
+
+    subgraph cluster_4 {
+      label="Logic Functions";
+      color="#0000000F";
+      style="filled";
+      onImport[label="onImport",style="filled",fillcolor="#bbbbff",penwidth="0"];
+      onExport[label="onExport",style="filled",fillcolor="#bbbbff",penwidth="0"];
+      onClickedExport[label="onClickedExport",style="filled",fillcolor="#bbbbff",penwidth="0"];
+      onNew[label="onNew",style="filled",fillcolor="#bbbbff",penwidth="0"];
+      onTimelineNameEdit[label="onTimelineNameEdit",style="filled",fillcolor="#bbbbff",penwidth="0"];
+      onTimeScaleEdit[label="onTimeScaleEdit",style="filled",fillcolor="#bbbbff",penwidth="0"];
+      onSettingsEdit[label="onSettingsEdit",style="filled",fillcolor="#bbbbff",penwidth="0"];
+    }
+  }
+
+  subgraph cluster_5 {
+    label="Components";
+    color="#0000000F";
+    style="filled";
+    compIndex[label="Index",style="filled",fillcolor="#ffffbb",penwidth="0"];
+    compTopBar[label="TopBar",style="filled",fillcolor="#ffffbb",penwidth="0"];
+    compBottomBar[label="BottomBar",style="filled",fillcolor="#ffffbb",penwidth="0"];
+    compSnackbar[label="Snackbar",style="filled",fillcolor="#ffffbb",penwidth="0"];
+    subgraph cluster_6 {
+      label="Dialogs";
+      color="#0000000F";
+      style="filled";
+      compDialImport[label="Import",style="filled",fillcolor="#bbbbff",penwidth="0"];
+      compDialExport[label="Export",style="filled",fillcolor="#bbbbff",penwidth="0"];
+      compDialNew[label="New",style="filled",fillcolor="#bbbbff",penwidth="0"];
+      compDialTimelineNameEdit[label="TimelineNameEdit",style="filled",fillcolor="#bbbbff",penwidth="0"];
+      compDialTimeScaleEdit[label="TimeScaleEdit",style="filled",fillcolor="#bbbbff",penwidth="0"];
+      compDialSettingsEdit[label="SettingsEdit",style="filled",fillcolor="#bbbbff",penwidth="0"];
+    }
+  }
+
+  // Signal creation - destination is end of creation
+  newSettingsSignal -> settingsSignal;
+  settingsSignal -> newTimelineNameSignal[color="#00FF00"];
+  settingsSignal -> newTimeScaleSignal[color="#00FF00"];
+  newTimelineNameSignal -> timelineNameSignal;
+  newTimeScaleSignal -> timeScaleSignal;
+
+  newPrimarySignals -> newSettingsSignal;
+  newPrimarySignals -> newTimelineNameSignal;
+  newPrimarySignals -> newTimeScaleSignal;
+  newPrimarySignals -> zoomSignal;
+
+  // Queue creation - destination is end of creation
+  newPrimaryQueues -> importQueues;
+  newPrimaryQueues -> exportQueue;
+  newPrimaryQueues -> newQueues;
+  newPrimaryQueues -> settingsEditQueues;
+  newPrimaryQueues -> timelineNameEditQueues;
+  newPrimaryQueues -> timeScaleEditQueues;
+  newPrimaryQueues -> snackbarQueue;
+
+  // Logic Functions - destination is the user
+  importQueues -> onImport;
+  timelineNameSignal -> onImport[color="#00FF00"];
+  onImport -> settingsSignal[color="#FF0000"];
+  settingsSignal -> onImport[color="#00FF00"];
+
+  onExport -> exportQueue[color="#FF0000"];
+
+  onClickedExport -> snackbarQueue[color="#FF0000"];
+  onClickedExport -> timelineNameSignal[color="#FF0000"];
+  onClickedExport -> timeScaleSignal[color="#FF0000"];
+
+  newQueues -> onNew;
+  onNew -> timeScaleSignal[color="#FF0000"];
+  onNew -> timelineNameSignal[color="#FF0000"];
+
+  timelineNameEditQueues -> onTimelineNameEdit;
+  onTimelineNameEdit -> timelineNameSignal[color="#FF0000"];
+  timelineNameSignal -> onTimelineNameEdit[color="#00FF00"];
+
+  timeScaleEditQueues -> onTimeScaleEdit;
+  onTimeScaleEdit -> timeScaleSignal[color="#FF0000"];
+  timeScaleSignal -> onTimeScaleEdit[color="#00FF00"];
+
+  settingsEditQueues -> onSettingsEdit;
+  onSettingsEdit -> settingsSignal[color="#FF0000"];
+  settingsSignal -> onSettingsEdit[color="#00FF00"];
+
+  // Components - destination is the user
+  importQueues -> compDialImport[color="#00FF00"];
+  compDialImport -> importQueues[color="#FF0000"];
+
+  onClickedExport -> compDialExport[color="#0000FF"];
+  exportQueue -> compDialExport[color="#00FF00"];
+
+  newQueues -> compDialNew[color="#00FF00"];
+  compDialNew -> newQueues[color="#FF0000"];
+
+  settingsSignal -> compDialSettingsEdit[color="#00FF00"];
+  settingsEditQueues -> compDialSettingsEdit[color="#00FF00"];
+  compDialSettingsEdit -> settingsEditQueues[color="#FF0000"];
+
+  timeScaleSignal -> compDialTimeScaleEdit[color="#00FF00"];
+  settingsSignal -> compDialTimeScaleEdit[color="#00FF00"];
+  timeScaleEditQueues -> compDialTimeScaleEdit[color="#00FF00"];
+  compDialTimeScaleEdit -> timeScaleEditQueues[color="#FF0000"];
+
+  timelineNameSignal -> compDialTimelineNameEdit[color="#00FF00"];
+  settingsSignal -> compDialTimelineNameEdit[color="#00FF00"];
+  timelineNameEditQueues -> compDialTimelineNameEdit[color="#00FF00"];
+  compDialTimelineNameEdit -> timelineNameEditQueues[color="#FF0000"];
+
+  onImport -> compTopBar[color="#0000FF"];
+  onExport -> compTopBar[color="#0000FF"];
+  onNew -> compTopBar[color="#0000FF"];
+  onTimelineNameEdit -> compTopBar[color="#0000FF"];
+  onSettingsEdit -> compTopBar[color="#0000FF"];
+  timelineNameSignal -> compTopBar[color="#00FF00"];
+  settingsSignal -> compTopBar[color="#00FF00"];
+
+  onTimeScaleEdit -> compBottomBar[color="#0000FF"];
+  compBottomBar -> zoomSignal[color="#FF0000"];
+  zoomSignal -> compBottomBar[color="#00FF00"];
+  timeScaleSignal -> compBottomBar[color="#00FF00"];
+
+  snackbarQueue -> compSnackbar[color="#00FF00"];
+
+  settingsSignal -> compIndex[color="#00FF00"];
+  compTopBar -> compIndex;
+  compBottomBar -> compIndex;
+  compSnackbar -> compIndex;
+  compDialImport -> compIndex;
+  compDialExport -> compIndex;
+  compDialNew -> compIndex;
+  compDialTimelineNameEdit -> compIndex;
+  compDialTimeScaleEdit -> compIndex;
+  compDialSettingsEdit -> compIndex;
+}
+
