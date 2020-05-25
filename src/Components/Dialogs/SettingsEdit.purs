@@ -16,7 +16,8 @@ import React
   , component
   , createLeafElement
   )
-import React.DOM (text)
+import React.DOM (text, div)
+import React.DOM.Props (style) as RP
 import React.DOM.NonBlockingSpace (nbsp)
 import React.Queue.WhileMounted (whileMountedOne)
 import React.Signal.WhileMounted (whileMountedIx)
@@ -143,33 +144,34 @@ settingsEditDialog { settingsSignal
                 $ dialog'' { onClose: mkEffectFn1 (const close), open, "aria-labelledby": "settingsedit-dialog-title" }
                     [ dialogTitle { id: "settingsedit-dialog-title" } [ text "Settings" ]
                     , dialogContent_
-                        [ button
-                            { variant: contained
-                            , color: primary
-                            , href: "https://github.com/openchronology/openchronology.github.io/"
-                            , target: "__blank"
-                            , title: "GitHub"
-                            , fullWidth: true
-                            }
-                            [ text "GitHub"
-                            , nbsp
-                            , icon' { className: "fab fa-github" }
-                            ]
+                        [ div [RP.style {flexDirection: "row"}]
+                          [ button
+                              { variant: contained
+                              , color: primary
+                              , href: "https://github.com/openchronology/openchronology.github.io/"
+                              , target: "__blank"
+                              , title: "GitHub"
+                              , fullWidth: true
+                              }
+                              [ text "GitHub"
+                              , nbsp
+                              , icon' { className: "fab fa-github" }
+                              ]
+                          , button
+                              { variant: contained
+                              , color: primary
+                              , href: "./openchronology-static.zip"
+                              , title: "Download App"
+                              , fullWidth: true
+                              }
+                              [ text "Download"
+                              , nbsp
+                              , getAppIcon
+                              ]
+                          ]
                         , button
                             { variant: contained
                             , color: primary
-                            , href: "./openchronology-static.zip"
-                            , title: "Download App"
-                            , fullWidth: true
-                            }
-                            [ text "Download"
-                            , nbsp
-                            , getAppIcon
-                            ]
-                        , button
-                            { variant: contained
-                            , color: primary
-                            , fullWidth: true
                             , onClick: mkEffectFn1 (const onReadEULA)
                             }
                             [ text "Read EULA" ]
