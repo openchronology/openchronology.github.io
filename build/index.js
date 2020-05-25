@@ -6962,15 +6962,15 @@ var PS = {};
           }
 
           ;
-          throw new Error("Failed pattern match at Timeline.UI.ExploreTimeSpaces (line 111, column 25 - line 117, column 10): " + [v2.constructor.name]);
+          throw new Error("Failed pattern match at Timeline.UI.ExploreTimeSpaces (line 132, column 28 - line 142, column 14): " + [v2.constructor.name]);
         }
 
         ;
-        throw new Error("Failed pattern match at Timeline.UI.ExploreTimeSpaces (line 109, column 13 - line 117, column 10): " + [v1.constructor.name]);
+        throw new Error("Failed pattern match at Timeline.UI.ExploreTimeSpaces (line 130, column 13 - line 142, column 14): " + [v1.constructor.name]);
       }
 
       ;
-      throw new Error("Failed pattern match at Timeline.UI.ExploreTimeSpaces (line 107, column 54 - line 117, column 10): " + [v.children.constructor.name]);
+      throw new Error("Failed pattern match at Timeline.UI.ExploreTimeSpaces (line 128, column 54 - line 142, column 14): " + [v.children.constructor.name]);
     };
   };
 
@@ -7018,15 +7018,15 @@ var PS = {};
             }
 
             ;
-            throw new Error("Failed pattern match at Timeline.UI.ExploreTimeSpaces (line 124, column 25 - line 130, column 10): " + [v2.constructor.name]);
+            throw new Error("Failed pattern match at Timeline.UI.ExploreTimeSpaces (line 149, column 28 - line 159, column 14): " + [v2.constructor.name]);
           }
 
           ;
-          throw new Error("Failed pattern match at Timeline.UI.ExploreTimeSpaces (line 122, column 13 - line 130, column 10): " + [v1.constructor.name]);
+          throw new Error("Failed pattern match at Timeline.UI.ExploreTimeSpaces (line 147, column 13 - line 159, column 14): " + [v1.constructor.name]);
         }
 
         ;
-        throw new Error("Failed pattern match at Timeline.UI.ExploreTimeSpaces (line 120, column 56 - line 130, column 10): " + [v.children.constructor.name]);
+        throw new Error("Failed pattern match at Timeline.UI.ExploreTimeSpaces (line 145, column 56 - line 159, column 14): " + [v.children.constructor.name]);
       };
     };
   };
@@ -7043,7 +7043,7 @@ var PS = {};
             }
 
             ;
-            throw new Error("Failed pattern match at Timeline.UI.ExploreTimeSpaces (line 138, column 40 - line 139, column 69): " + [v.constructor.name]);
+            throw new Error("Failed pattern match at Timeline.UI.ExploreTimeSpaces (line 172, column 15 - line 173, column 74): " + [v.constructor.name]);
           };
         };
 
@@ -7159,7 +7159,7 @@ var PS = {};
             }
 
             ;
-            throw new Error("Failed pattern match at Timeline.UI.ExploreTimeSpaces (line 94, column 21 - line 103, column 14): " + [v.children.constructor.name]);
+            throw new Error("Failed pattern match at Timeline.UI.ExploreTimeSpaces (line 115, column 15 - line 124, column 20): " + [v.children.constructor.name]);
           }());
         }()
       };
@@ -7340,7 +7340,7 @@ var PS = {};
                             }
 
                             ;
-                            throw new Error("Failed pattern match at Components.Dialogs.ExploreTimeSpaces (line 142, column 36 - line 147, column 42): " + [v3.children.constructor.name]);
+                            throw new Error("Failed pattern match at Components.Dialogs.ExploreTimeSpaces (line 159, column 38 - line 164, column 42): " + [v3.children.constructor.name]);
                           }()))])(function () {
                             if (v3.children instanceof Data_Maybe.Nothing) {
                               return [];
@@ -7367,7 +7367,7 @@ var PS = {};
                             }
 
                             ;
-                            throw new Error("Failed pattern match at Components.Dialogs.ExploreTimeSpaces (line 148, column 32 - line 158, column 37): " + [v3.children.constructor.name]);
+                            throw new Error("Failed pattern match at Components.Dialogs.ExploreTimeSpaces (line 166, column 36 - line 179, column 40): " + [v3.children.constructor.name]);
                           }());
                         };
                       };
@@ -13637,7 +13637,7 @@ var PS = {};
       }
 
       ;
-      throw new Error("Failed pattern match at Plumbing.Logic (line 154, column 5 - line 156, column 83): " + [mNewSelected.constructor.name]);
+      throw new Error("Failed pattern match at Plumbing.Logic (line 155, column 5 - line 157, column 83): " + [mNewSelected.constructor.name]);
     }));
   };
 

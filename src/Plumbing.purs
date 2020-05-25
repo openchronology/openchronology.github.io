@@ -123,8 +123,8 @@ type PrimarySignals
     , timeScaleSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) TimeScale
     -- initial zoom level
     , zoomSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Number
-    , exploreTimeSpacesSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) (WithSpanOfTime ExploreTimeSpaces)
-    , timeSpaceSelectedSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) (Array Index)
+    , exploreTimeSpacesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (WithSpanOfTime ExploreTimeSpaces)
+    , timeSpaceSelectedSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (Array Index)
     }
 
 -- | Created only on boot of the program
@@ -145,10 +145,10 @@ newPrimarySignals = do
   ( zoomSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Number
   ) <-
     IxSig.make 100.0
-  ( exploreTimeSpacesSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) (WithSpanOfTime ExploreTimeSpaces)
+  ( exploreTimeSpacesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (WithSpanOfTime ExploreTimeSpaces)
   ) <-
     newExploreTimeSpacesSignal
-  ( timeSpaceSelectedSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) (Array Index)
+  ( timeSpaceSelectedSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (Array Index)
   ) <-
     IxSig.make []
   pure
@@ -209,5 +209,5 @@ logic { importQueues
   , onTimeScaleEdit: onTimeScaleEdit { timeScaleEditQueues, timeScaleSignal }
   , onSettingsEdit: onSettingsEdit { settingsEditQueues, settingsSignal }
   , onReadEULA: onReadEULA { eulaQueue }
-  , onExploreTimeSpaces: onExploreTimeSpaces {exploreTimeSpacesQueues, timeSpaceSelectedSignal}
+  , onExploreTimeSpaces: onExploreTimeSpaces { exploreTimeSpacesQueues, timeSpaceSelectedSignal }
   }

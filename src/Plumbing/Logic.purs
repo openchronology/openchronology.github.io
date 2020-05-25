@@ -143,12 +143,13 @@ onReadEULA { eulaQueue } = Q.put eulaQueue unit
 
 onExploreTimeSpaces ::
   { exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array Index))
-  , timeSpaceSelectedSignal :: IxSig.IxSignal (read :: S.READ, write :: S.WRITE) (Array Index)
+  , timeSpaceSelectedSignal :: IxSig.IxSignal ( read :: S.READ, write :: S.WRITE ) (Array Index)
   -- TODO assign new timespace name, pulling from the global directory, not the explore sub-view
   -- , timeSpaceNameSignal :: IxSig.IxSignal (write :: S.WRITE) TimeSpaceName
   -- , exploreTimeSpacesSignal :: IxSig.IxSignal (read :: S.READ) (WithSpanOfTime ExploreTimeSpaces)
-  } -> Effect Unit
-onExploreTimeSpaces {exploreTimeSpacesQueues,timeSpaceSelectedSignal} =
+  } ->
+  Effect Unit
+onExploreTimeSpaces { exploreTimeSpacesQueues, timeSpaceSelectedSignal } =
   launchAff_ do
     mNewSelected <- IOQueues.callAsync exploreTimeSpacesQueues unit
     case mNewSelected of
