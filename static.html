@@ -16363,7 +16363,6 @@ var PS = {};
   $PS["Components.TopBar"] = $PS["Components.TopBar"] || {};
   var exports = $PS["Components.TopBar"];
   var Control_Applicative = $PS["Control.Applicative"];
-  var Data_Boolean = $PS["Data.Boolean"];
   var Data_Function = $PS["Data.Function"];
   var Data_Maybe = $PS["Data.Maybe"];
   var Data_Nullable = $PS["Data.Nullable"];
@@ -16452,13 +16451,7 @@ var PS = {};
                   }
 
                   ;
-
-                  if (Data_Boolean.otherwise) {
-                    return Control_Applicative.pure(Effect.applicativeEffect)(Data_Unit.unit);
-                  }
-
-                  ;
-                  throw new Error("Failed pattern match at Components.TopBar (line 142, column 29 - line 146, column 54): " + [e.constructor.name]);
+                  return v.onExploreTimeSpaces;
                 };
 
                 return [MaterialUI_Button.button()({
