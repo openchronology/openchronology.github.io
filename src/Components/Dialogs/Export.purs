@@ -89,7 +89,6 @@ exportDialog { exportQueue, onClickedExport } = createLeafElement c {}
                   , dialogActions_
                       [ button
                           { onClick: mkEffectFn1 (const close)
-                          , color: primary
                           }
                           [ text "Cancel" ]
                       , let

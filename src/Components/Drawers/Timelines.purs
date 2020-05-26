@@ -140,7 +140,7 @@ timelinesDrawer { settingsSignal } = createLeafElement c {}
                 $ [ typography { variant: title } [ text "Timelines" ]
                   ]
                 <> ( if isEditable then
-                      [ button { size: small, variant: raised, color: primary } [ text "Add" ] ]
+                      [ button { size: small, variant: raised } [ text "Add" ] ]
                     else
                       []
                   )

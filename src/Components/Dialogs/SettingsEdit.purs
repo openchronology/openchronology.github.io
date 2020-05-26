@@ -144,7 +144,7 @@ settingsEditDialog { settingsSignal
                 $ dialog'' { onClose: mkEffectFn1 (const close), open, "aria-labelledby": "settingsedit-dialog-title", fullWidth: true }
                     [ dialogTitle { id: "settingsedit-dialog-title" } [ text "Settings" ]
                     , dialogContent_
-                        [ div [RP.style {flexDirection: "row"}]
+                        [ div [RP.style {display: "flex", flexDirection: "row"}]
                           [ button
                               { variant: contained
                               , color: primary
@@ -171,7 +171,6 @@ settingsEditDialog { settingsSignal
                           ]
                         , button
                             { variant: contained
-                            , color: primary
                             , onClick: mkEffectFn1 (const onReadEULA)
                             }
                             [ text "Read EULA" ]
@@ -212,10 +211,10 @@ settingsEditDialog { settingsSignal
                             , className: props.classes.redButton
                             , onClick: mkEffectFn1 (const onNew)
                             }
-                            [ text "Delete" ]
+                            [ text "Delete And Create New" ]
                         ]
                     , dialogActions { className: props.classes.buttons }
-                        [ button { onClick: mkEffectFn1 (const close), color: primary } [ text "Cancel" ]
+                        [ button { onClick: mkEffectFn1 (const close) } [ text "Cancel" ]
                         , button { onClick: mkEffectFn1 (const restoreDefaults), color: secondary }
                             [ text "Restore Defaults" ]
                         , button

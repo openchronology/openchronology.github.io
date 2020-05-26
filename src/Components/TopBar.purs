@@ -139,12 +139,9 @@ topBar { onImport
                 $ appBar { position: absolute, className: props.classes.root }
                     [ toolbar { variant: dense }
                         $ let
-                            clickedTimeSpaceButton e =
-                              if isEditable then do
-                                anchor <- currentTarget e
-                                setState this { menuAnchor: Just anchor }
-                              else
-                                onExploreTimeSpaces
+                            clickedTimeSpaceButton e = do
+                              anchor <- currentTarget e
+                              setState this { menuAnchor: Just anchor }
 
                             divider :: ReactElement
                             divider = div [ RP.className props.classes.center ] []
@@ -191,7 +188,7 @@ topBar { onImport
                                     handleCloseMenu
                                     onTimeSpaceNameEdit
                               }
-                              [ text "Edit" ]
+                              [ text $ if isEditable then "Edit" else "Info" ]
                           , menuItem
                               { onClick:
                                   mkEffectFn1 \_ -> do

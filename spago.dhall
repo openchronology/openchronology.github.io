@@ -9,15 +9,16 @@ You can edit this file as you like.
   , "debug"
   , "file-store"
   , "fixed-precision"
+  , "indexed-demiset"
   , "node-fs-aff"
   , "promises"
   , "psci-support"
+  , "quickcheck-utf8"
+  , "react-markdown"
   , "react-mui"
   , "react-queue"
   , "spec"
   , "timeline"
-  , "quickcheck-utf8"
-  , "indexed-demiset"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]

@@ -140,7 +140,7 @@ siblingsDrawer { settingsSignal } = createLeafElement c {}
                   , typography { variant: subheading } [ text "For Multiple Timelines" ]
                   ]
                 <> ( if isEditable then
-                      [ button { size: small, variant: raised, color: primary } [ text "Add" ] ]
+                      [ button { size: small, variant: raised } [ text "Add" ] ]
                     else
                       []
                   )

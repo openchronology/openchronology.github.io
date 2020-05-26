@@ -177,7 +177,7 @@ timeScaleEditDialog { timeScaleSignal
                       -- Nothing -> []
                       -- Just {beginIndex, endIndex} -> [beginIndex, endIndex]
                       , dialogActions { className: props.classes.buttons }
-                          [ button { onClick: mkEffectFn1 (const close), color: primary } [ text "Cancel" ]
+                          [ button { onClick: mkEffectFn1 (const close) } [ text "Cancel" ]
                           , button
                               { onClick: mkEffectFn1 (const submit)
                               , color: secondary

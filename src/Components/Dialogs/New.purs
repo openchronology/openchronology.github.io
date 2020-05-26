@@ -73,7 +73,7 @@ newDialog { newQueues: IOQueues { input, output } } = createLeafElement c {}
               props <- getProps this
               pure
                 $ dialog'' { onClose: mkEffectFn1 (const close), open, "aria-labelledby": "new-dialog-title" }
-                    [ dialogTitle { id: "new-dialog-title" } [ text "New Timeline" ]
+                    [ dialogTitle { id: "new-dialog-title" } [ text "New Document" ]
                     , dialogContent_
                         [ typography
                             { gutterBottom: true
@@ -81,17 +81,17 @@ newDialog { newQueues: IOQueues { input, output } } = createLeafElement c {}
                             }
                             [ strong [] [ text "Warning!" ]
                             , nbsp
-                            , text "Creating a new timeline will erase all content! You can keep any unsaved work with the \"Export\" button."
+                            , text "Creating a new document will erase all content! You can keep any unsaved work with the \"Export\" button."
                             ]
                         ]
                     , dialogActions { className: props.classes.buttons }
-                        [ button { onClick: mkEffectFn1 (const close), color: primary } [ text "Cancel" ]
+                        [ button { onClick: mkEffectFn1 (const close) } [ text "Cancel" ]
                         , button
                             { onClick: mkEffectFn1 (const submit)
                             , color: secondary
                             , autoFocus: true
                             }
-                            [ text "Create New Timeline" ]
+                            [ text "Create New Document" ]
                         ]
                     ]
         }

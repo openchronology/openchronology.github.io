@@ -183,6 +183,11 @@ let additions =
     , repo = "https://github.com/openchronology/purescript-quickcheck-utf8.git"
     , version = "master"
     }
+  , react-markdown =
+    { dependencies = ["react", "undefinable", "row-extra"]
+    , repo = "https://github.com/openchronology/purescript-react-markdown.git"
+    , version = "master"
+    }
   }
 
 in  upstream // overrides // additions

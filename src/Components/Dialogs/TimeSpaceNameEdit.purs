@@ -30,6 +30,7 @@ import MaterialUI.TextField (textField')
 import MaterialUI.Typography (typography)
 import MaterialUI.Enums (primary, secondary, body2)
 import MaterialUI.Theme (Theme)
+import MaterialUI.Markdown (markdown)
 import Queue.One (Queue, put)
 import IOQueues (IOQueues(..))
 import Zeta.Types (READ) as S
@@ -151,7 +152,7 @@ timeSpaceNameEditDialog { timeSpaceNameSignal
                               }
                           ]
                       , dialogActions { className: props.classes.buttons }
-                          [ button { onClick: mkEffectFn1 (const close), color: primary } [ text "Cancel" ]
+                          [ button { onClick: mkEffectFn1 (const close) } [ text "Cancel" ]
                           , button
                               { onClick: mkEffectFn1 (const submit)
                               , color: secondary
@@ -164,9 +165,10 @@ timeSpaceNameEditDialog { timeSpaceNameSignal
                     notEditable =
                       [ dialogTitle { id: "timeSpaceNameedit-dialog-title" } [ text title ]
                       , dialogContent_ -- FIXME use markdown
-                          [ typography { gutterBottom: true, variant: body2 } [ text description ] ]
+                          -- [ typography { gutterBottom: true, variant: body2 } [ text description ] ]
+                          [ markdown description ]
                       , dialogActions { className: props.classes.buttons }
-                          [ button { onClick: mkEffectFn1 (const close), color: primary } [ text "Close" ] ]
+                          [ button { onClick: mkEffectFn1 (const close) } [ text "Close" ] ]
                       ]
                   in
                     if isEditable then editable else notEditable

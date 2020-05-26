@@ -135,7 +135,7 @@ importDialog (IOQueues { input, output }) = createLeafElement c {}
                             else
                               []
                       , dialogActions { className: props.classes.buttons }
-                          [ button { onClick: mkEffectFn1 (const close), color: primary } [ text "Cancel" ]
+                          [ button { onClick: mkEffectFn1 (const close) } [ text "Cancel" ]
                           , button
                               { onClick: mkEffectFn1 (const submit)
                               , color: primary

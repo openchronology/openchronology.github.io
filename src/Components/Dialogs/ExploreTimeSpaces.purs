@@ -184,7 +184,7 @@ exploreTimeSpacesDialog { exploreTimeSpacesSignal
                                   $ printListItem [] x.spanOfTime x.timeSpaces 16
                         ]
                     , dialogActions_
-                        [ button { onClick: mkEffectFn1 (const close), color: primary } [ text "Cancel" ]
+                        [ button { onClick: mkEffectFn1 (const close) } [ text "Cancel" ]
                         , button { onClick: mkEffectFn1 (const submit), color: secondary, autoFocus: true } [ text "Submit" ]
                         ]
                     ]
