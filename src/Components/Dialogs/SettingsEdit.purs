@@ -144,31 +144,31 @@ settingsEditDialog { settingsSignal
                 $ dialog'' { onClose: mkEffectFn1 (const close), open, "aria-labelledby": "settingsedit-dialog-title", fullWidth: true }
                     [ dialogTitle { id: "settingsedit-dialog-title" } [ text "Settings" ]
                     , dialogContent_
-                        [ div [RP.style {display: "flex", flexDirection: "row"}]
-                          [ button
-                              { variant: contained
-                              , color: primary
-                              , href: "https://github.com/openchronology/openchronology.github.io/"
-                              , target: "__blank"
-                              , title: "GitHub"
-                              , fullWidth: true
-                              }
-                              [ text "GitHub"
-                              , nbsp
-                              , icon' { className: "fab fa-github" }
-                              ]
-                          , button
-                              { variant: contained
-                              , color: primary
-                              , href: "./openchronology-static.zip"
-                              , title: "Download App"
-                              , fullWidth: true
-                              }
-                              [ text "Download"
-                              , nbsp
-                              , getAppIcon
-                              ]
-                          ]
+                        [ div [ RP.style { display: "flex", flexDirection: "row" } ]
+                            [ button
+                                { variant: contained
+                                , color: primary
+                                , href: "https://github.com/openchronology/openchronology.github.io/"
+                                , target: "__blank"
+                                , title: "GitHub"
+                                , fullWidth: true
+                                }
+                                [ text "GitHub"
+                                , nbsp
+                                , icon' { className: "fab fa-github" }
+                                ]
+                            , button
+                                { variant: contained
+                                , color: primary
+                                , href: "./openchronology-static.zip"
+                                , title: "Download App"
+                                , fullWidth: true
+                                }
+                                [ text "Download"
+                                , nbsp
+                                , getAppIcon
+                                ]
+                            ]
                         , button
                             { variant: contained
                             , onClick: mkEffectFn1 (const onReadEULA)
