@@ -8385,6 +8385,11 @@ var PS = {};
   exports.componentImpl = componentImpl;
   var pureComponentImpl = createClass(React.PureComponent);
   exports.pureComponentImpl = pureComponentImpl;
+
+  exports.statelessComponent = function (x) {
+    return x;
+  };
+
   exports.fragment = React.Fragment;
 
   function getProps(this_) {
@@ -8394,6 +8399,7 @@ var PS = {};
   }
 
   exports.getProps = getProps;
+  exports.childrenToArray = React.Children.toArray;
 
   function setStateImpl(this_) {
     return function (state) {
@@ -8523,10 +8529,12 @@ var PS = {};
   exports["unsafeCreateLeafElement"] = unsafeCreateLeafElement;
   exports["toElement"] = toElement;
   exports["isReactElementArray"] = isReactElementArray;
+  exports["statelessComponent"] = $foreign.statelessComponent;
   exports["getProps"] = $foreign.getProps;
   exports["getState"] = $foreign.getState;
   exports["createElementTagName"] = $foreign.createElementTagName;
   exports["createElementTagNameDynamic"] = $foreign.createElementTagNameDynamic;
+  exports["childrenToArray"] = $foreign.childrenToArray;
 })(PS);
 
 (function ($PS) {
@@ -8597,16 +8605,26 @@ var PS = {};
   var permanent = "permanent";
   var inherit = "inherit";
   var headline = "headline";
+  var display3 = "display3";
+  var display2 = "display2";
+  var display1 = "display1";
   var dense = "dense";
   var contained = "contained";
+  var caption = "caption";
   var body2 = "body2";
+  var body1 = "body1";
   var auto = "auto";
   var absolute = "absolute";
   exports["absolute"] = absolute;
   exports["auto"] = auto;
+  exports["body1"] = body1;
   exports["body2"] = body2;
+  exports["caption"] = caption;
   exports["contained"] = contained;
   exports["dense"] = dense;
+  exports["display1"] = display1;
+  exports["display2"] = display2;
+  exports["display3"] = display3;
   exports["headline"] = headline;
   exports["inherit"] = inherit;
   exports["permanent"] = permanent;
@@ -8866,8 +8884,11 @@ var PS = {};
     };
   };
 
+  var ol = mkDOM(false)("ol");
+  var pre = mkDOM(false)("pre");
   var span = mkDOM(false)("span");
   var strong = mkDOM(false)("strong");
+  var ul = mkDOM(false)("ul");
   var main = mkDOM(false)("main");
 
   var hr = function hr(props) {
@@ -8875,14 +8896,21 @@ var PS = {};
   };
 
   var div = mkDOM(false)("div");
+  var code = mkDOM(false)("code");
+  var blockquote = mkDOM(false)("blockquote");
   var a = mkDOM(false)("a");
   exports["text"] = text;
   exports["a"] = a;
+  exports["blockquote"] = blockquote;
+  exports["code"] = code;
   exports["div"] = div;
   exports["hr"] = hr;
   exports["main"] = main;
+  exports["ol"] = ol;
+  exports["pre"] = pre;
   exports["span"] = span;
   exports["strong"] = strong;
+  exports["ul"] = ul;
 })(PS);
 
 (function ($PS) {
@@ -14244,8 +14272,15 @@ var PS = {};
   var exports = $PS["MaterialUI.Divider"];
   var $foreign = $PS["MaterialUI.Divider"];
   var Data_TSCompat_React = $PS["Data.TSCompat.React"];
+  var React = $PS["React"];
   var divider_ = Data_TSCompat_React.unsafeCreateElement($foreign.classDivider)({});
+
+  var divider$prime = function divider$prime(dictIsTSEq) {
+    return React.unsafeCreateLeafElement($foreign.classDivider);
+  };
+
   exports["divider_"] = divider_;
+  exports["divider'"] = divider$prime;
 })(PS);
 
 (function (exports) {
@@ -15259,12 +15294,129 @@ var PS = {};
 
   $PS["MaterialUI.Markdown"] = $PS["MaterialUI.Markdown"] || {};
   var exports = $PS["MaterialUI.Markdown"];
+  var Data_Maybe = $PS["Data.Maybe"];
+  var Data_Nullable = $PS["Data.Nullable"];
+  var MaterialUI_Divider = $PS["MaterialUI.Divider"];
+  var MaterialUI_Enums = $PS["MaterialUI.Enums"];
+  var MaterialUI_Typography = $PS["MaterialUI.Typography"];
+  var React = $PS["React"];
+  var React_DOM = $PS["React.DOM"];
   var React_DOM_Markdown = $PS["React.DOM.Markdown"];
+  var React_DOM_Props = $PS["React.DOM.Props"];
 
   var markdown = function markdown(source) {
     return React_DOM_Markdown.markdown()()({
       source: source,
-      renderers: {}
+      renderers: {
+        heading: React.statelessComponent(function (v) {
+          if (v.level === 1) {
+            return MaterialUI_Typography.typography()({
+              variant: MaterialUI_Enums.display3
+            })(React.childrenToArray(v.children));
+          }
+
+          ;
+
+          if (v.level === 2) {
+            return MaterialUI_Typography.typography()({
+              variant: MaterialUI_Enums.display2
+            })(React.childrenToArray(v.children));
+          }
+
+          ;
+
+          if (v.level === 3) {
+            return MaterialUI_Typography.typography()({
+              variant: MaterialUI_Enums.display1
+            })(React.childrenToArray(v.children));
+          }
+
+          ;
+
+          if (v.level === 4) {
+            return MaterialUI_Typography.typography()({
+              variant: MaterialUI_Enums.headline
+            })(React.childrenToArray(v.children));
+          }
+
+          ;
+
+          if (v.level === 5) {
+            return MaterialUI_Typography.typography()({
+              variant: MaterialUI_Enums.title
+            })(React.childrenToArray(v.children));
+          }
+
+          ;
+
+          if (v.level === 6) {
+            return MaterialUI_Typography.typography()({
+              variant: MaterialUI_Enums.subheading
+            })(React.childrenToArray(v.children));
+          }
+
+          ;
+          throw new Error("Failed pattern match at MaterialUI.Markdown (line 20, column 73 - line 26, column 71): " + [v.level.constructor.name]);
+        }),
+        paragraph: React.statelessComponent(function (v) {
+          return MaterialUI_Typography.typography()({
+            variant: MaterialUI_Enums.body1,
+            paragraph: true
+          })(React.childrenToArray(v.children));
+        }),
+        thematicBreak: React.statelessComponent(function (v) {
+          return MaterialUI_Divider["divider'"]()({
+            style: {
+              margin: "1em 0"
+            }
+          });
+        }),
+        blockquote: React.statelessComponent(function (v) {
+          return MaterialUI_Typography.typography()({
+            variant: MaterialUI_Enums.caption
+          })([React_DOM.blockquote([])(React.childrenToArray(v.children))]);
+        }),
+        list: React.statelessComponent(function (v) {
+          return MaterialUI_Typography.typography()({
+            variant: MaterialUI_Enums.body1
+          })([function () {
+            if (v.ordered) {
+              return React_DOM.ol([])(React.childrenToArray(v.children));
+            }
+
+            ;
+            return React_DOM.ul([])(React.childrenToArray(v.children));
+          }()]);
+        }),
+        inlineCode: React.statelessComponent(function (v) {
+          return React_DOM.code([React_DOM_Props.style({
+            border: "1px solid #ddd"
+          })])(React.childrenToArray(v.children));
+        }),
+        code: React.statelessComponent(function (v) {
+          var codeProps = function () {
+            var v1 = Data_Nullable.toMaybe(v.language);
+
+            if (v1 instanceof Data_Maybe.Nothing) {
+              return [];
+            }
+
+            ;
+
+            if (v1 instanceof Data_Maybe.Just) {
+              return [React_DOM_Props.className("language-" + v1.value0)];
+            }
+
+            ;
+            throw new Error("Failed pattern match at MaterialUI.Markdown (line 39, column 23 - line 41, column 56): " + [v1.constructor.name]);
+          }();
+
+          var code = React_DOM.code(codeProps)(React.childrenToArray(v.value));
+          return React_DOM.pre([React_DOM_Props.style({
+            border: "1px solid #ddd"
+          })])([code]);
+        })
+      }
     });
   };
 
@@ -15375,7 +15527,8 @@ var PS = {};
                 return MaterialUI_Dialog["dialog''"]()({
                   onClose: Effect_Uncurried.mkEffectFn1(Data_Function["const"](close)),
                   open: v1.open,
-                  "aria-labelledby": "timeSpaceNameedit-dialog-title"
+                  "aria-labelledby": "timeSpaceNameedit-dialog-title",
+                  fullWidth: true
                 })(function () {
                   var notEditable = [MaterialUI_DialogTitle.dialogTitle()({
                     id: "timeSpaceNameedit-dialog-title"

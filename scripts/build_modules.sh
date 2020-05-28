@@ -6,7 +6,7 @@ MODULESOUT=./graphs/modules.svg
 
 # build graph
 find src -name '*.purs' | xargs $GRAPHMOD -q \
-  -R 'MaterialUI' -R 'React' -d 12,8 > $MODULES
+  -R 'MaterialUI.Icons' -R 'React' -d 12,8 > $MODULES
 # rename graph
 sed -i 's/digraph G/digraph Modules/' $MODULES
 # redirect nodes - "is imported by"

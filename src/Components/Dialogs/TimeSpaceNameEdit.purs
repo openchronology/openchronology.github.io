@@ -131,6 +131,7 @@ timeSpaceNameEditDialog { timeSpaceNameSignal
                     { onClose: mkEffectFn1 (const close)
                     , open
                     , "aria-labelledby": "timeSpaceNameedit-dialog-title"
+                    , fullWidth: true
                     }
                 $ let
                     editable =
