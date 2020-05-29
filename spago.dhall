@@ -6,6 +6,7 @@ You can edit this file as you like.
 , dependencies =
   [ "argonaut"
   , "arraybuffer-class"
+  , "data-default"
   , "debug"
   , "file-store"
   , "fixed-precision"

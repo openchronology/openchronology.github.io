@@ -7,6 +7,7 @@ import React (ReactElement, createLeafElement, statelessComponent, childrenToArr
 import React.DOM (code, pre, ul, ol, blockquote) as R
 import React.DOM.Props (style, className) as RP
 import React.DOM.Markdown (markdown) as RM
+import React.DOM.Highlight (highlight)
 import MaterialUI.Typography (typography)
 import MaterialUI.Divider (divider')
 import MaterialUI.Enums (headline, title, subheading, display1, display2, display3, body1, caption)
@@ -44,13 +45,18 @@ markdown source =
         , inlineCode: statelessComponent \{ children } -> R.code [ RP.style { border: "1px solid #ddd" } ] (childrenToArray children)
         , code:
             statelessComponent \{ language, value } ->
-              let
-                codeProps = case toMaybe language of
-                  Nothing -> []
-                  Just l -> [ RP.className ("language-" <> l) ]
+              let codeProps = case toMaybe language of
+                    Nothing -> {language: ""}
+                    Just l -> {language: l}
 
-                code = R.code codeProps (childrenToArray value)
-              in
-                R.pre [ RP.style { border: "1px solid #ddd" } ] [ code ]
+              in  highlight codeProps (childrenToArray value)
+              -- let
+              --   codeProps = case toMaybe language of
+              --     Nothing -> []
+              --     Just l -> [ RP.className ("language-" <> l) ]
+
+              --   code = R.code codeProps (childrenToArray value)
+              -- in
+              --   R.pre [ RP.style { border: "1px solid #ddd" } ] [ code ]
         }
     }

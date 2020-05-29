@@ -29,6 +29,8 @@ import MaterialUI.Styles (withStyles)
 import MaterialUI.TextField (textField')
 import MaterialUI.Typography (typography)
 import MaterialUI.Enums (primary, secondary, body2)
+import MaterialUI.Divider (divider')
+import MaterialUI.Markdown (markdown)
 import Queue.One (Queue, put)
 import IOQueues (IOQueues(..))
 import Zeta.Types (READ) as S
@@ -148,6 +150,7 @@ timeScaleEditDialog { timeScaleSignal
                     { onClose: mkEffectFn1 (const close)
                     , open
                     , "aria-labelledby": "timescaleedit-dialog-title"
+                    , fullWidth: true
                     }
                 $ let
                     editable =
@@ -191,9 +194,8 @@ timeScaleEditDialog { timeScaleSignal
                       [ dialogTitle { id: "timescaleedit-dialog-title" } [ text name ]
                       , dialogContent_
                           $ [ typography { gutterBottom: true, variant: body2 } [ text $ "Units: " <> units ]
-                            , hr []
-                            -- FIXME use markdown
-                            , typography { gutterBottom: true, variant: body2 } [ text description ]
+                            , divider' {style: {margin: "1em 0"}}
+                            , markdown description
                             ] -- <> case viewIndicies of
                       -- Nothing -> []
                       -- Just {beginIndex, endIndex} -> [beginIndex, endIndex]

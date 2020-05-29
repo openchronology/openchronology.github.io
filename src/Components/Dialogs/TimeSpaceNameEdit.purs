@@ -4,8 +4,9 @@ import Timeline.UI.TimeSpaceName (TimeSpaceName(..))
 import Settings (Settings(..))
 import Prelude
 import Data.Maybe (Maybe(..))
+import Data.TSCompat (Any)
 import Effect (Effect)
-import Effect.Uncurried (mkEffectFn1)
+import Effect.Uncurried (mkEffectFn1, mkEffectFn2)
 import React
   ( ReactClass
   , ReactClassConstructor
@@ -20,6 +21,7 @@ import React.DOM (text)
 import React.SyntheticEvent (target)
 import React.Queue.WhileMounted (whileMountedOne)
 import React.Signal.WhileMounted (whileMountedIx)
+import Markdown.Editor (editor)
 import MaterialUI.Dialog (dialog'')
 import MaterialUI.DialogTitle (dialogTitle)
 import MaterialUI.DialogContent (dialogContent_)
@@ -28,9 +30,11 @@ import MaterialUI.Button (button)
 import MaterialUI.Styles (withStyles)
 import MaterialUI.TextField (textField')
 import MaterialUI.Typography (typography)
-import MaterialUI.Enums (primary, secondary, body2)
 import MaterialUI.Theme (Theme)
 import MaterialUI.Markdown (markdown)
+import MaterialUI.Tabs (tabs)
+import MaterialUI.Tab (tab')
+import MaterialUI.Enums (primary, secondary, body2)
 import Queue.One (Queue, put)
 import IOQueues (IOQueues(..))
 import Zeta.Types (READ) as S
@@ -42,6 +46,7 @@ type State
     , isEditable :: Boolean
     , title :: String
     , description :: String
+    , wysiwyg :: Boolean
     }
 
 initialState ::
@@ -56,6 +61,7 @@ initialState timeSpaceNameSignal settingsSignal = do
     , isEditable
     , title
     , description
+    , wysiwyg: true
     }
 
 styles :: Theme -> _
@@ -124,7 +130,14 @@ timeSpaceNameEditDialog { timeSpaceNameSignal
                 changeDescription e = do
                   t <- target e
                   setState this { description: (unsafeCoerce t).value }
-              { open, isEditable, title, description } <- getState this
+
+                changeDescription' x = do
+                  s <- x
+                  setState this { description: s }
+
+                changeEditor _ val =
+                  setState this { wysiwyg: if unsafeCoerce val == 0 then true else false }
+              { open, isEditable, title, description, wysiwyg } <- getState this
               props <- getProps this
               pure
                 $ dialog''
@@ -143,14 +156,25 @@ timeSpaceNameEditDialog { timeSpaceNameSignal
                               , onChange: mkEffectFn1 changeTitle
                               , fullWidth: true
                               }
-                          , textField'
-                              { label: "Description"
-                              , value: description
-                              , onChange: mkEffectFn1 changeDescription
-                              , multiline: true
-                              , fullWidth: true
-                              , rowsMax: 4
-                              }
+                          , tabs
+                            { value: (unsafeCoerce (if wysiwyg then 0 else 1) :: Any)
+                            , indicatorColor: primary
+                            , textColor: primary
+                            , onChange: mkEffectFn2 changeEditor
+                            }
+                            [ tab' {label: "Editor"}
+                            , tab' {label: "Plain"}
+                            ]
+                          , if wysiwyg
+                              then editor {defaultValue: description, onChange: mkEffectFn1 changeDescription' }
+                              else textField'
+                                      { label: "Description"
+                                      , value: description
+                                      , onChange: mkEffectFn1 changeDescription
+                                      , multiline: true
+                                      , fullWidth: true
+                                      , rowsMax: 4
+                                      }
                           ]
                       , dialogActions { className: props.classes.buttons }
                           [ button { onClick: mkEffectFn1 (const close) } [ text "Cancel" ]
@@ -165,8 +189,7 @@ timeSpaceNameEditDialog { timeSpaceNameSignal
 
                     notEditable =
                       [ dialogTitle { id: "timeSpaceNameedit-dialog-title" } [ text title ]
-                      , dialogContent_ -- FIXME use markdown
-                          -- [ typography { gutterBottom: true, variant: body2 } [ text description ] ]
+                      , dialogContent_
                           [ markdown description ]
                       , dialogActions { className: props.classes.buttons }
                           [ button { onClick: mkEffectFn1 (const close) } [ text "Close" ] ]

@@ -17,6 +17,7 @@ import Data.Argonaut
   , stringify
   , jsonParser
   )
+import Data.Default (class Default, def)
 import Web.HTML (window)
 import Web.HTML.Window (localStorage)
 import Web.Storage.Storage (setItem, getItem, removeItem)
@@ -60,7 +61,12 @@ instance arbitraryTimeSpaceName :: Arbitrary TimeSpaceName where
     description <- genString
     pure (TimeSpaceName { title, description })
 
--- TODO validate filename? Meh
+instance defaultTimeSpaceName :: Default TimeSpaceName where
+  def = TimeSpaceName
+    { title: "TimeSpace Name"
+    , description: ""
+    }
+
 localstorageSignalKey :: String
 localstorageSignalKey = "localstorage"
 
@@ -76,12 +82,7 @@ newTimeSpaceNameSignal settingsSignal = do
   store <- window >>= localStorage
   mItem <- getItem localstorageKey store
   item <- case mItem of
-    Nothing ->
-      pure
-        $ TimeSpaceName
-            { title: "TimeSpace Name"
-            , description: ""
-            }
+    Nothing -> pure def
     Just s -> case jsonParser s >>= decodeJson of
       Left e -> throw $ "Couldn't parse TimeSpaceName: " <> e
       Right x -> pure x
@@ -102,5 +103,4 @@ clearTimeSpaceNameCache = do
 setDefaultTimeSpaceName ::
   IxSignal ( write :: S.WRITE ) TimeSpaceName ->
   Effect Unit
-setDefaultTimeSpaceName timeSpaceNameSignal = do
-  set (TimeSpaceName { title: "TimeSpace Name", description: "" }) timeSpaceNameSignal
+setDefaultTimeSpaceName timeSpaceNameSignal = set def timeSpaceNameSignal

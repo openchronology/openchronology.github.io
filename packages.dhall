@@ -188,6 +188,11 @@ let additions =
     , repo = "https://github.com/openchronology/purescript-react-markdown.git"
     , version = "master"
     }
+  , data-default =
+    { dependencies = [ "maybe", "record", "lists" ]
+    , repo = "https://github.com/thought2/purescript-data-default.git"
+    , version = "v0.3.2"
+    }
   }
 
 in  upstream // overrides // additions
