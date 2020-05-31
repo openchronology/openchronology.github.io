@@ -1,5 +1,7 @@
 module Components.Drawers.Timelines where
 
+import Timeline.UI.Timeline (Timeline (..))
+import Timeline.UI.Timelines (Timelines (..))
 import Settings (Settings(..))
 import Prelude
 import Data.Maybe (Maybe(..), isJust)
@@ -32,37 +34,35 @@ import MaterialUI.Icons.MoreHorizIcon (moreHorizIcon)
 import MaterialUI.Button (button)
 import MaterialUI.Menu (menu)
 import MaterialUI.MenuItem (menuItem)
-import MaterialUI.Enums (title, small, raised, primary)
+import MaterialUI.Enums (title, small, contained, primary)
 import MaterialUI.Theme (Theme)
 import Zeta.Types (READ) as S
 import IxZeta (IxSignal, get) as IxSig
+import Partial.Unsafe (unsafePartial)
 
 
 
 
 
 type State
-  = { elements :: Array String -- FIXME time-sorted mapping?
+  = { elements :: Timelines
     , selected :: Maybe Int
-    , menuAnchor :: Maybe NativeEventTarget
+    , menuAnchor :: Maybe
+      { target :: NativeEventTarget
+      , index :: Int
+      }
     , isEditable :: Boolean
     }
 
 initialState ::
   IxSig.IxSignal ( read :: S.READ ) Settings ->
+  IxSig.IxSignal (read :: S.READ) Timelines ->
   Effect State
-initialState settingsSignal = do
+initialState settingsSignal timelinesSignal = do
   Settings { isEditable } <- IxSig.get settingsSignal
+  timelines <- IxSig.get timelinesSignal
   pure
-    { elements:
-        [ "Timeline A"
-        , "Timeline B"
-        , "Timeline C"
-        , "Timeline D"
-        , "Timeline E"
-        , "Timeline F"
-        , "Timeline G"
-        ]
+    { elements: timelines
     , selected: Nothing
     , menuAnchor: Nothing
     , isEditable
@@ -78,9 +78,19 @@ styles theme =
 
 timelinesDrawer ::
   { settingsSignal :: IxSig.IxSignal ( read :: S.READ ) Settings
+  , timelinesSignal :: IxSig.IxSignal (read :: S.READ) Timelines
+  , onClickedNewTimeline :: Effect Unit
+  , onClickedEditTimeline :: Int -> Effect Unit
+  , onClickedDeleteTimeline :: Int -> Effect Unit
   } ->
   ReactElement
-timelinesDrawer { settingsSignal } = createLeafElement c {}
+timelinesDrawer
+  { settingsSignal
+  , timelinesSignal
+  , onClickedNewTimeline
+  , onClickedEditTimeline
+  , onClickedDeleteTimeline
+  } = createLeafElement c {}
   where
   c :: ReactClass {}
   c = withStyles styles c'
@@ -97,11 +107,13 @@ timelinesDrawer { settingsSignal } = createLeafElement c {}
   constructor =
     let
       handleChangeEdit this (Settings { isEditable }) = setState this { isEditable }
+      handleChangeTimelines this ts = setState this { elements: ts }
     in
-      whileMountedIx settingsSignal "TimelinesDrawer" handleChangeEdit constructor'
+      whileMountedIx settingsSignal "TimelinesDrawer" handleChangeEdit $
+      whileMountedIx timelinesSignal "TimelinesDrawer" handleChangeTimelines constructor'
     where
     constructor' this = do
-      state <- initialState settingsSignal
+      state <- initialState settingsSignal timelinesSignal
       pure
         { state
         , componentDidMount: pure unit
@@ -109,26 +121,28 @@ timelinesDrawer { settingsSignal } = createLeafElement c {}
         , render:
             do
               props <- getProps this
-              { elements, selected, menuAnchor, isEditable } <- getState this
+              { elements: Timelines elements, selected, menuAnchor, isEditable } <- getState this
               let
-                handleMenuClick e = do
+                handleMenuClick :: Int -> _ -> Effect Unit
+                handleMenuClick i e = do
                   anchor <- currentTarget e
-                  setState this { menuAnchor: Just anchor }
+                  setState this { menuAnchor: Just {target: anchor, index: i} }
 
                 handleClose = setState this { menuAnchor: Nothing }
 
-                mkTextItem i t =
+                mkTextItem :: Int -> Timeline -> ReactElement
+                mkTextItem i (Timeline {name}) =
                   listItem
                     { button: true
                     , selected: isSelected
                     , onClick: mkEffectFn1 (const select)
                     }
-                    $ [ listItemText' { primary: t }
+                    $ [ listItemText' { primary: name }
                       ]
                     <> ( if isEditable then
                           [ listItemSecondaryAction_
                               [ iconButton
-                                  { onClick: mkEffectFn1 handleMenuClick
+                                  { onClick: mkEffectFn1 (handleMenuClick i)
                                   }
                                   [ moreHorizIcon ]
                               ]
@@ -144,27 +158,44 @@ timelinesDrawer { settingsSignal } = createLeafElement c {}
                 $ [ typography { variant: title } [ text "Timelines" ]
                   ]
                 <> ( if isEditable then
-                      [ button { size: small, variant: raised } [ text "Add" ] ]
+                      [ button
+                        { size: small
+                        , variant: contained
+                        , onClick: mkEffectFn1 (const onClickedNewTimeline)
+                        } [ text "Add" ]
+                      ]
                     else
                       []
                   )
                 <> [ list { className: props.classes.leftDrawerList } (Array.mapWithIndex mkTextItem elements)
                   , menu
                       { id: "timelines-menu"
-                      , anchorEl: toNullable menuAnchor
+                      , anchorEl: toNullable (map _.target menuAnchor)
                       , open: isJust menuAnchor
                       , onClose: mkEffectFn1 (const handleClose)
                       }
                       [ menuItem
-                          { onClick: mkEffectFn1 (const handleClose)
+                          { onClick: mkEffectFn1 \_ -> do
+                              handleClose
+                              {menuAnchor} <- getState this
+                              unsafePartial $ case menuAnchor of
+                                Just {index} ->
+                                  onClickedEditTimeline index
                           }
                           [ text "Edit" ]
                       , menuItem
-                          { onClick: mkEffectFn1 (const handleClose)
+                          { onClick: mkEffectFn1 \_ -> do
+                              handleClose
+                              -- TODO timespace explorer
                           }
                           [ text "Move" ]
                       , menuItem
-                          { onClick: mkEffectFn1 (const handleClose)
+                          { onClick: mkEffectFn1 \_ -> do
+                              handleClose
+                              {menuAnchor} <- getState this
+                              unsafePartial $ case menuAnchor of
+                                Just {index} ->
+                                  onClickedDeleteTimeline index
                           }
                           [ text "Delete" ]
                       ]

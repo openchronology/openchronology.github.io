@@ -23,8 +23,8 @@ u5[label="SettingsEdit",style="filled",fillcolor="#bbbbff",penwidth="0"];
 u6[label="TimeScaleEdit",style="filled",fillcolor="#bbbbff",penwidth="0"];
 u7[label="TimeSpaceNameEdit",style="filled",fillcolor="#bbbbff",penwidth="0"];
 u8[label="Export",style="filled",fillcolor="#bbbbff",penwidth="0"];
-u9[label="NewOrEditTimeline",style="filled",fillcolor="#bbbbff",penwidth="0"];
-u10[label="New",style="filled",fillcolor="#bbbbff",penwidth="0"];
+u9[label="DangerConfirm",style="filled",fillcolor="#bbbbff",penwidth="0"];
+u10[label="NewOrEditTimeline",style="filled",fillcolor="#bbbbff",penwidth="0"];
 
 }
 subgraph cluster_2 {
@@ -39,52 +39,45 @@ u16[label="Timelines",style="filled",fillcolor="#ffbbbb",penwidth="0"];
 
 }
 subgraph cluster_3 {
-label="Markdown";
-color="#0000000F";
-style="filled";
-u33[label="Editor",style="filled",fillcolor="#bbffff",penwidth="0"];
-
-}
-subgraph cluster_4 {
 label="MaterialUI";
 color="#0000000F";
 style="filled";
-u0[label="Markdown",style="filled",fillcolor="#ffbbff",penwidth="0"];
+u0[label="Markdown",style="filled",fillcolor="#bbffff",penwidth="0"];
 
 }
-subgraph cluster_5 {
+subgraph cluster_4 {
 label="Plumbing";
 color="#0000000F";
 style="filled";
 u18[label="Plumbing",style="filled,bold",fillcolor="#bbffbb"];
-u30[label="Logic",style="filled",fillcolor="#77ff77",penwidth="0"];
+u30[label="Logic",style="filled",fillcolor="#ffbbff",penwidth="0"];
 
 }
-subgraph cluster_6 {
+subgraph cluster_5 {
 label="Scripts";
 color="#0000000F";
 style="filled";
-u32[label="TrimDocs",style="filled",fillcolor="#ffff77",penwidth="0"];
+u32[label="TrimDocs",style="filled",fillcolor="#77ff77",penwidth="0"];
 
 }
-subgraph cluster_7 {
+subgraph cluster_6 {
 label="Timeline";
 color="#0000000F";
 style="filled";
-subgraph cluster_8 {
+subgraph cluster_7 {
 label="UI";
 color="#0000000F";
 style="filled";
-u20[label="TimeSpace",style="filled",fillcolor="#ff7777",penwidth="0"];
-u21[label="ExploreTimeSpaces",style="filled",fillcolor="#ff7777",penwidth="0"];
-u22[label="TimeScale",style="filled",fillcolor="#ff7777",penwidth="0"];
-u23[label="Index",style="filled",fillcolor="#ff7777",penwidth="0"];
-u24[label="StoredTimeline",style="filled",fillcolor="#ff7777",penwidth="0"];
-u25[label="TimeSpaceName",style="filled",fillcolor="#ff7777",penwidth="0"];
-u26[label="Event",style="filled",fillcolor="#ff7777",penwidth="0"];
-u27[label="TimeSpan",style="filled",fillcolor="#ff7777",penwidth="0"];
-u28[label="Timelines",style="filled",fillcolor="#ff7777",penwidth="0"];
-u29[label="Timeline",style="filled",fillcolor="#ff7777",penwidth="0"];
+u20[label="TimeSpace",style="filled",fillcolor="#7777ff",penwidth="0"];
+u21[label="ExploreTimeSpaces",style="filled",fillcolor="#7777ff",penwidth="0"];
+u22[label="TimeScale",style="filled",fillcolor="#7777ff",penwidth="0"];
+u23[label="Index",style="filled",fillcolor="#7777ff",penwidth="0"];
+u24[label="StoredTimeline",style="filled",fillcolor="#7777ff",penwidth="0"];
+u25[label="TimeSpaceName",style="filled",fillcolor="#7777ff",penwidth="0"];
+u26[label="Event",style="filled",fillcolor="#7777ff",penwidth="0"];
+u27[label="TimeSpan",style="filled",fillcolor="#7777ff",penwidth="0"];
+u28[label="Timelines",style="filled",fillcolor="#7777ff",penwidth="0"];
+u29[label="Timeline",style="filled",fillcolor="#7777ff",penwidth="0"];
 
 }
 
@@ -98,7 +91,7 @@ u22 -> u6;
 u0 -> u7;
 u17 -> u7;
 u25 -> u7;
-u33 -> u7;
+u29 -> u10;
 u17 -> u11;
 u25 -> u11;
 u1 -> u12;
@@ -109,6 +102,7 @@ u5 -> u12;
 u6 -> u12;
 u7 -> u12;
 u8 -> u12;
+u9 -> u12;
 u10 -> u12;
 u11 -> u12;
 u13 -> u12;
@@ -121,13 +115,19 @@ u31 -> u12;
 u17 -> u14;
 u17 -> u15;
 u17 -> u16;
+u28 -> u16;
+u29 -> u16;
 u3 -> u18;
 u8 -> u18;
+u9 -> u18;
+u10 -> u18;
 u13 -> u18;
 u17 -> u18;
 u21 -> u18;
 u22 -> u18;
 u25 -> u18;
+u28 -> u18;
+u29 -> u18;
 u30 -> u18;
 u12 -> u19;
 u18 -> u19;
@@ -137,9 +137,13 @@ u17 -> u28;
 u29 -> u28;
 u3 -> u30;
 u8 -> u30;
+u9 -> u30;
+u10 -> u30;
 u13 -> u30;
 u17 -> u30;
 u22 -> u30;
 u25 -> u30;
+u28 -> u30;
+u29 -> u30;
 
 }

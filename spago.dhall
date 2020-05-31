@@ -11,6 +11,7 @@ You can edit this file as you like.
   , "file-store"
   , "fixed-precision"
   , "indexed-demiset"
+  , "js-timers"
   , "node-fs-aff"
   , "promises"
   , "psci-support"

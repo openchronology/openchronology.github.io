@@ -16,7 +16,7 @@ import React
   , component
   , createLeafElement
   )
-import React.DOM (text, div)
+import React.DOM (text, div, br)
 import React.DOM.Props (style) as RP
 import React.DOM.NonBlockingSpace (nbsp)
 import React.Queue.WhileMounted (whileMountedOne)
@@ -33,7 +33,6 @@ import MaterialUI.FormControlLabel (formControlLabel')
 import MaterialUI.Icon (icon')
 import MaterialUI.Icons.GetAppIcon (getAppIcon)
 import MaterialUI.Switch (switch')
-import MaterialUI.Divider (divider_)
 import MaterialUI.Enums (primary, secondary, contained)
 import MaterialUI.Theme (Theme)
 import Queue.One (Queue, put)
@@ -174,7 +173,7 @@ settingsEditDialog { settingsSignal
                             , onClick: mkEffectFn1 (const onReadEULA)
                             }
                             [ text "Read EULA" ]
-                        , divider_ []
+                        , br []
                         , formGroup_
                             [ formControlLabel'
                                 { control:
@@ -202,7 +201,7 @@ settingsEditDialog { settingsSignal
                                 , label: (unsafeCoerce "Local Cache until Export") :: ReactNode
                                 }
                             ]
-                        , divider_ []
+                        , br []
                         , button
                             { variant: contained
                             , color: primary

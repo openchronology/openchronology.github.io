@@ -36,7 +36,7 @@ markdown source =
                 [ R.blockquote [] (childrenToArray children) ]
         , list:
             statelessComponent \{ children, ordered } ->
-              typography { variant: body1 }
+              typography { variant: body1, component: "div" }
                 [ if ordered then
                     R.ol [] (childrenToArray children)
                   else
@@ -47,16 +47,10 @@ markdown source =
             statelessComponent \{ language, value } ->
               let codeProps = case toMaybe language of
                     Nothing -> {language: ""}
-                    Just l -> {language: l}
+                    Just l
+                      | l == "purescript" -> {language: "haskell"}
+                      | otherwise -> {language: l}
 
               in  highlight codeProps (childrenToArray value)
-              -- let
-              --   codeProps = case toMaybe language of
-              --     Nothing -> []
-              --     Just l -> [ RP.className ("language-" <> l) ]
-
-              --   code = R.code codeProps (childrenToArray value)
-              -- in
-              --   R.pre [ RP.style { border: "1px solid #ddd" } ] [ code ]
         }
     }

@@ -38,16 +38,24 @@ import Plumbing.Logic
   , onSettingsEdit
   , onReadEULA
   , onExploreTimeSpaces
+  , onClickedNewTimeline
+  , onClickedEditTimeline
+  , onClickedDeleteTimeline
   )
 import Components.Dialogs.Import (ImportDialog) as Import
 import Components.Dialogs.Export (ExportDialog) as Export
+import Components.Dialogs.DangerConfirm (DangerConfirm)
+import Components.Dialogs.NewOrEditTimeline (NewOrEditTimelineResult)
+import Components.Snackbar (SnackbarContent)
 import Timeline.UI.TimeSpaceName (TimeSpaceName, newTimeSpaceNameSignal)
 import Timeline.UI.TimeScale (TimeScale, newTimeScaleSignal)
 import Timeline.UI.ExploreTimeSpaces (ExploreTimeSpaces, WithSpanOfTime, newExploreTimeSpacesSignal)
-import Components.Snackbar (SnackbarContent)
+import Timeline.UI.Timeline (Timeline)
+import Timeline.UI.Timelines (Timelines, newTimelinesSignal)
 import Settings (Settings, newSettingsSignal)
 import Prelude
 import Data.Maybe (Maybe)
+import Data.Either (Either)
 import Data.IxSet.Demi (Index)
 import Effect (Effect)
 import Queue.One (Queue, new) as Q
@@ -62,13 +70,14 @@ import Web.File.File (File)
 type PrimaryQueues
   = { importQueues :: IOQueues Q.Queue Import.ImportDialog (Maybe File)
     , exportQueue :: Q.Queue ( write :: Q.WRITE ) Export.ExportDialog
-    , newQueues :: IOQueues Q.Queue Unit Boolean
     , settingsEditQueues :: IOQueues Q.Queue Unit (Maybe Settings)
     , timeSpaceNameEditQueues :: IOQueues Q.Queue Unit (Maybe TimeSpaceName)
     , timeScaleEditQueues :: IOQueues Q.Queue Unit (Maybe TimeScale)
     , snackbarQueue :: Q.Queue ( write :: Q.WRITE ) SnackbarContent
     , eulaQueue :: Q.Queue ( write :: Q.WRITE ) Unit
     , exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array Index))
+    , dangerConfirmQueues :: IOQueues Q.Queue DangerConfirm Boolean
+    , newOrEditTimelineQueues :: IOQueues Q.Queue (Maybe Timeline) (Maybe NewOrEditTimelineResult)
     }
 
 -- | Created only on boot of the program
@@ -80,9 +89,6 @@ newPrimaryQueues = do
   ( exportQueue :: Q.Queue ( write :: Q.WRITE ) Export.ExportDialog
   ) <-
     Q.writeOnly <$> Q.new
-  ( newQueues :: IOQueues Q.Queue Unit Boolean
-  ) <-
-    IOQueues.new
   ( settingsEditQueues :: IOQueues Q.Queue Unit (Maybe Settings)
   ) <-
     IOQueues.new
@@ -102,16 +108,23 @@ newPrimaryQueues = do
   ( exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array Index))
   ) <-
     IOQueues.new
+  ( dangerConfirmQueues :: IOQueues Q.Queue DangerConfirm Boolean
+  ) <-
+    IOQueues.new
+  ( newOrEditTimelineQueues :: IOQueues Q.Queue (Maybe Timeline) (Maybe NewOrEditTimelineResult)
+  ) <-
+    IOQueues.new
   pure
     { importQueues
     , exportQueue
-    , newQueues
     , settingsEditQueues
     , timeSpaceNameEditQueues
     , timeScaleEditQueues
     , snackbarQueue
     , eulaQueue
     , exploreTimeSpacesQueues
+    , dangerConfirmQueues
+    , newOrEditTimelineQueues
     }
 
 -- | shared state signals
@@ -125,6 +138,7 @@ type PrimarySignals
     , zoomSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Number
     , exploreTimeSpacesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (WithSpanOfTime ExploreTimeSpaces)
     , timeSpaceSelectedSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (Array Index)
+    , timelinesSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) Timelines
     }
 
 -- | Created only on boot of the program
@@ -151,6 +165,9 @@ newPrimarySignals = do
   ( timeSpaceSelectedSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (Array Index)
   ) <-
     IxSig.make []
+  ( timelinesSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) Timelines
+  ) <-
+    newTimelinesSignal (S.readOnly settingsSignal)
   pure
     { settingsSignal
     , timeSpaceNameSignal
@@ -158,6 +175,7 @@ newPrimarySignals = do
     , zoomSignal
     , exploreTimeSpacesSignal
     , timeSpaceSelectedSignal
+    , timelinesSignal
     }
 
 -- | Functions given to the React.js components, to interact with the async devices.
@@ -172,24 +190,29 @@ type LogicFunctions
     , onSettingsEdit :: Effect Unit
     , onReadEULA :: Effect Unit
     , onExploreTimeSpaces :: Effect Unit
+    , onClickedNewTimeline :: Effect Unit
+    , onClickedEditTimeline :: Int -> Effect Unit
+    , onClickedDeleteTimeline :: Either Int (Effect Unit) -> Effect Unit
     }
 
 -- | Create the logical functions
 logic :: PrimaryQueues -> PrimarySignals -> LogicFunctions
 logic { importQueues
 , exportQueue
-, newQueues
 , settingsEditQueues
 , timeSpaceNameEditQueues
 , timeScaleEditQueues
 , snackbarQueue
 , eulaQueue
 , exploreTimeSpacesQueues
+, dangerConfirmQueues
+, newOrEditTimelineQueues
 } { settingsSignal
 , timeSpaceNameSignal
 , timeScaleSignal
 , zoomSignal
 , timeSpaceSelectedSignal
+, timelinesSignal
 } =
   { onImport:
       onImport
@@ -201,7 +224,7 @@ logic { importQueues
   , onClickedExport: onClickedExport { snackbarQueue }
   , onNew:
       onNew
-        { newQueues
+        { dangerConfirmQueues
         , timeScaleSignal: S.writeOnly timeScaleSignal
         , timeSpaceNameSignal: S.writeOnly timeSpaceNameSignal
         }
@@ -210,4 +233,7 @@ logic { importQueues
   , onSettingsEdit: onSettingsEdit { settingsEditQueues, settingsSignal }
   , onReadEULA: onReadEULA { eulaQueue }
   , onExploreTimeSpaces: onExploreTimeSpaces { exploreTimeSpacesQueues, timeSpaceSelectedSignal }
+  , onClickedNewTimeline: onClickedNewTimeline { newOrEditTimelineQueues, timelinesSignal }
+  , onClickedEditTimeline: onClickedEditTimeline { newOrEditTimelineQueues, timelinesSignal }
+  , onClickedDeleteTimeline: onClickedDeleteTimeline { dangerConfirmQueues, timelinesSignal }
   }

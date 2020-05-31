@@ -32,7 +32,7 @@ import MaterialUI.Icons.MoreHorizIcon (moreHorizIcon)
 import MaterialUI.Button (button)
 import MaterialUI.Menu (menu)
 import MaterialUI.MenuItem (menuItem)
-import MaterialUI.Enums (title, subheading, small, raised, primary)
+import MaterialUI.Enums (title, subheading, small, contained, primary)
 import MaterialUI.Theme (Theme)
 import Zeta.Types (READ) as S
 import IxZeta (IxSignal, get) as IxSig
@@ -140,7 +140,7 @@ siblingsDrawer { settingsSignal } = createLeafElement c {}
                   , typography { variant: subheading } [ text "For Multiple Timelines" ]
                   ]
                 <> ( if isEditable then
-                      [ button { size: small, variant: raised } [ text "Add" ] ]
+                      [ button { size: small, variant: contained } [ text "Add" ] ]
                     else
                       []
                   )

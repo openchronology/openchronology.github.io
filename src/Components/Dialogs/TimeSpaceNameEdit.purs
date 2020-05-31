@@ -21,7 +21,7 @@ import React.DOM (text)
 import React.SyntheticEvent (target)
 import React.Queue.WhileMounted (whileMountedOne)
 import React.Signal.WhileMounted (whileMountedIx)
-import Markdown.Editor (editor)
+-- import Markdown.Editor (editor)
 import MaterialUI.Dialog (dialog'')
 import MaterialUI.DialogTitle (dialogTitle)
 import MaterialUI.DialogContent (dialogContent_)
@@ -151,31 +151,40 @@ timeSpaceNameEditDialog { timeSpaceNameSignal
                       [ dialogTitle { id: "timeSpaceNameedit-dialog-title" } [ text "TimeSpace Name" ]
                       , dialogContent_
                           [ textField'
-                              { label: "Title"
-                              , value: title
-                              , onChange: mkEffectFn1 changeTitle
-                              , fullWidth: true
-                              }
-                          , tabs
-                            { value: (unsafeCoerce (if wysiwyg then 0 else 1) :: Any)
-                            , indicatorColor: primary
-                            , textColor: primary
-                            , onChange: mkEffectFn2 changeEditor
+                            { label: "Description"
+                            , value: description
+                            , onChange: mkEffectFn1 changeDescription
+                            , multiline: true
+                            , fullWidth: true
+                            , rows: 4
                             }
-                            [ tab' {label: "Editor"}
-                            , tab' {label: "Plain"}
-                            ]
-                          , if wysiwyg
-                              then editor {defaultValue: description, onChange: mkEffectFn1 changeDescription' }
-                              else textField'
-                                      { label: "Description"
-                                      , value: description
-                                      , onChange: mkEffectFn1 changeDescription
-                                      , multiline: true
-                                      , fullWidth: true
-                                      , rowsMax: 4
-                                      }
                           ]
+                          -- [ textField'
+                          --     { label: "Title"
+                          --     , value: title
+                          --     , onChange: mkEffectFn1 changeTitle
+                          --     , fullWidth: true
+                          --     }
+                          -- , tabs
+                          --   { value: (unsafeCoerce (if wysiwyg then 0 else 1) :: Any)
+                          --   , indicatorColor: primary
+                          --   , textColor: primary
+                          --   , onChange: mkEffectFn2 changeEditor
+                          --   }
+                          --   [ tab' {label: "Editor"}
+                          --   , tab' {label: "Plain"}
+                          --   ]
+                          -- , if wysiwyg
+                          --     then editor {defaultValue: description, onChange: mkEffectFn1 changeDescription' }
+                          --     else textField'
+                          --             { label: "Description"
+                          --             , value: description
+                          --             , onChange: mkEffectFn1 changeDescription
+                          --             , multiline: true
+                          --             , fullWidth: true
+                          --             , rows: 4
+                          --             }
+                          -- ]
                       , dialogActions { className: props.classes.buttons }
                           [ button { onClick: mkEffectFn1 (const close) } [ text "Cancel" ]
                           , button

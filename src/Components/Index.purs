@@ -14,16 +14,18 @@ import Components.Drawers.Siblings (siblingsDrawer)
 import Components.Drawers.Children (childrenDrawer)
 import Components.Dialogs.Import (importDialog)
 import Components.Dialogs.Export (exportDialog)
-import Components.Dialogs.New (newDialog)
 import Components.Dialogs.TimeSpaceNameEdit (timeSpaceNameEditDialog)
 import Components.Dialogs.TimeScaleEdit (timeScaleEditDialog)
 import Components.Dialogs.SettingsEdit (settingsEditDialog)
 import Components.Dialogs.EULA (eulaDialog)
 import Components.Dialogs.ExploreTimeSpaces (exploreTimeSpacesDialog)
+import Components.Dialogs.DangerConfirm (dangerConfirmDialog)
+import Components.Dialogs.NewOrEditTimeline (newOrEditTimelineDialog)
 import Components.Snackbar (snackbars)
 import WithRoot (withRoot)
 import Plumbing (PrimaryQueues, PrimarySignals, LogicFunctions)
 import Prelude hiding (div)
+import Data.Either (Either (..))
 import Effect (Effect)
 import Effect.Ref (Ref)
 import Queue.Types (allowReading, readOnly) as Q
@@ -109,13 +111,14 @@ index { stateRef
 , primaryQueues:
     { importQueues
     , exportQueue
-    , newQueues
     , settingsEditQueues
     , timeSpaceNameEditQueues
     , timeScaleEditQueues
     , snackbarQueue
     , eulaQueue
     , exploreTimeSpacesQueues
+    , dangerConfirmQueues
+    , newOrEditTimelineQueues
     }
 , primarySignals:
     { settingsSignal
@@ -124,6 +127,7 @@ index { stateRef
     , zoomSignal
     , exploreTimeSpacesSignal
     , timeSpaceSelectedSignal
+    , timelinesSignal
     }
 , logicFunctions:
     { onImport
@@ -135,6 +139,9 @@ index { stateRef
     , onSettingsEdit
     , onReadEULA
     , onExploreTimeSpaces
+    , onClickedNewTimeline
+    , onClickedEditTimeline
+    , onClickedDeleteTimeline
     }
 } = withRoot e
   where
@@ -179,7 +186,13 @@ index { stateRef
                         , variant: permanent
                         , classes: { paper: props.classes.drawerPaper }
                         }
-                        [ timelinesDrawer { settingsSignal: S.readOnly settingsSignal }
+                        [ timelinesDrawer
+                          { settingsSignal: S.readOnly settingsSignal
+                          , timelinesSignal: S.readOnly timelinesSignal
+                          , onClickedNewTimeline
+                          , onClickedEditTimeline
+                          , onClickedDeleteTimeline: onClickedDeleteTimeline <<< Left
+                          }
                         , divider_ []
                         , siblingsDrawer { settingsSignal: S.readOnly settingsSignal }
                         ]
@@ -233,7 +246,6 @@ index { stateRef
                       { exportQueue: Q.readOnly (Q.allowReading exportQueue)
                       , onClickedExport
                       }
-                  , newDialog { newQueues }
                   , timeSpaceNameEditDialog
                       { timeSpaceNameSignal: S.readOnly timeSpaceNameSignal
                       , settingsSignal: S.readOnly settingsSignal
@@ -250,12 +262,17 @@ index { stateRef
                       , onNew
                       , onReadEULA
                       }
+                  , newOrEditTimelineDialog
+                      { onDelete: onClickedDeleteTimeline <<< Right
+                      , newOrEditTimelineQueues
+                      }
                   , eulaDialog { eulaQueue: Q.readOnly (Q.allowReading eulaQueue) }
                   , exploreTimeSpacesDialog
                       { exploreTimeSpacesSignal: S.readOnly exploreTimeSpacesSignal
                       , timeSpaceSelectedSignal: S.readOnly timeSpaceSelectedSignal
                       , exploreTimeSpacesQueues
                       }
+                  , dangerConfirmDialog {dangerConfirmQueues}
                   , snackbars (Q.readOnly (Q.allowReading snackbarQueue))
                   ]
         }

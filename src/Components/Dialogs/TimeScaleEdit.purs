@@ -174,7 +174,7 @@ timeScaleEditDialog { timeScaleSignal
                                 , onChange: mkEffectFn1 changeDescription
                                 , multiline: true
                                 , fullWidth: true
-                                , rowsMax: 4
+                                , rows: 4
                                 }
                             ] -- <> case editIndicies of
                       -- Nothing -> []
