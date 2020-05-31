@@ -194,7 +194,7 @@ timeScaleEditDialog { timeScaleSignal
                       [ dialogTitle { id: "timescaleedit-dialog-title" } [ text name ]
                       , dialogContent_
                           $ [ typography { gutterBottom: true, variant: body2 } [ text $ "Units: " <> units ]
-                            , divider' {style: {margin: "1em 0"}}
+                            , divider' { style: { margin: "1em 0" } }
                             , markdown description
                             ] -- <> case viewIndicies of
                       -- Nothing -> []

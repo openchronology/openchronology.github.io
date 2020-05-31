@@ -138,7 +138,7 @@ type PrimarySignals
     , zoomSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Number
     , exploreTimeSpacesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (WithSpanOfTime ExploreTimeSpaces)
     , timeSpaceSelectedSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (Array Index)
-    , timelinesSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) Timelines
+    , timelinesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Timelines
     }
 
 -- | Created only on boot of the program
@@ -165,7 +165,7 @@ newPrimarySignals = do
   ( timeSpaceSelectedSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (Array Index)
   ) <-
     IxSig.make []
-  ( timelinesSignal :: IxSig.IxSignal (write :: S.WRITE, read :: S.READ) Timelines
+  ( timelinesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Timelines
   ) <-
     newTimelinesSignal (S.readOnly settingsSignal)
   pure

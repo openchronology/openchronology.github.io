@@ -135,8 +135,7 @@ timeSpaceNameEditDialog { timeSpaceNameSignal
                   s <- x
                   setState this { description: s }
 
-                changeEditor _ val =
-                  setState this { wysiwyg: if unsafeCoerce val == 0 then true else false }
+                changeEditor _ val = setState this { wysiwyg: if unsafeCoerce val == 0 then true else false }
               { open, isEditable, title, description, wysiwyg } <- getState this
               props <- getProps this
               pure
@@ -151,40 +150,40 @@ timeSpaceNameEditDialog { timeSpaceNameSignal
                       [ dialogTitle { id: "timeSpaceNameedit-dialog-title" } [ text "TimeSpace Name" ]
                       , dialogContent_
                           [ textField'
-                            { label: "Description"
-                            , value: description
-                            , onChange: mkEffectFn1 changeDescription
-                            , multiline: true
-                            , fullWidth: true
-                            , rows: 4
-                            }
+                              { label: "Description"
+                              , value: description
+                              , onChange: mkEffectFn1 changeDescription
+                              , multiline: true
+                              , fullWidth: true
+                              , rows: 4
+                              }
                           ]
-                          -- [ textField'
-                          --     { label: "Title"
-                          --     , value: title
-                          --     , onChange: mkEffectFn1 changeTitle
-                          --     , fullWidth: true
-                          --     }
-                          -- , tabs
-                          --   { value: (unsafeCoerce (if wysiwyg then 0 else 1) :: Any)
-                          --   , indicatorColor: primary
-                          --   , textColor: primary
-                          --   , onChange: mkEffectFn2 changeEditor
-                          --   }
-                          --   [ tab' {label: "Editor"}
-                          --   , tab' {label: "Plain"}
-                          --   ]
-                          -- , if wysiwyg
-                          --     then editor {defaultValue: description, onChange: mkEffectFn1 changeDescription' }
-                          --     else textField'
-                          --             { label: "Description"
-                          --             , value: description
-                          --             , onChange: mkEffectFn1 changeDescription
-                          --             , multiline: true
-                          --             , fullWidth: true
-                          --             , rows: 4
-                          --             }
-                          -- ]
+                      -- [ textField'
+                      --     { label: "Title"
+                      --     , value: title
+                      --     , onChange: mkEffectFn1 changeTitle
+                      --     , fullWidth: true
+                      --     }
+                      -- , tabs
+                      --   { value: (unsafeCoerce (if wysiwyg then 0 else 1) :: Any)
+                      --   , indicatorColor: primary
+                      --   , textColor: primary
+                      --   , onChange: mkEffectFn2 changeEditor
+                      --   }
+                      --   [ tab' {label: "Editor"}
+                      --   , tab' {label: "Plain"}
+                      --   ]
+                      -- , if wysiwyg
+                      --     then editor {defaultValue: description, onChange: mkEffectFn1 changeDescription' }
+                      --     else textField'
+                      --             { label: "Description"
+                      --             , value: description
+                      --             , onChange: mkEffectFn1 changeDescription
+                      --             , multiline: true
+                      --             , fullWidth: true
+                      --             , rows: 4
+                      --             }
+                      -- ]
                       , dialogActions { className: props.classes.buttons }
                           [ button { onClick: mkEffectFn1 (const close) } [ text "Cancel" ]
                           , button

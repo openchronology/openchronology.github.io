@@ -25,7 +25,7 @@ import Components.Snackbar (snackbars)
 import WithRoot (withRoot)
 import Plumbing (PrimaryQueues, PrimarySignals, LogicFunctions)
 import Prelude hiding (div)
-import Data.Either (Either (..))
+import Data.Either (Either(..))
 import Effect (Effect)
 import Effect.Ref (Ref)
 import Queue.Types (allowReading, readOnly) as Q
@@ -187,12 +187,12 @@ index { stateRef
                         , classes: { paper: props.classes.drawerPaper }
                         }
                         [ timelinesDrawer
-                          { settingsSignal: S.readOnly settingsSignal
-                          , timelinesSignal: S.readOnly timelinesSignal
-                          , onClickedNewTimeline
-                          , onClickedEditTimeline
-                          , onClickedDeleteTimeline: onClickedDeleteTimeline <<< Left
-                          }
+                            { settingsSignal: S.readOnly settingsSignal
+                            , timelinesSignal: S.readOnly timelinesSignal
+                            , onClickedNewTimeline
+                            , onClickedEditTimeline
+                            , onClickedDeleteTimeline: onClickedDeleteTimeline <<< Left
+                            }
                         , divider_ []
                         , siblingsDrawer { settingsSignal: S.readOnly settingsSignal }
                         ]
@@ -272,7 +272,7 @@ index { stateRef
                       , timeSpaceSelectedSignal: S.readOnly timeSpaceSelectedSignal
                       , exploreTimeSpacesQueues
                       }
-                  , dangerConfirmDialog {dangerConfirmQueues}
+                  , dangerConfirmDialog { dangerConfirmQueues }
                   , snackbars (Q.readOnly (Q.allowReading snackbarQueue))
                   ]
         }

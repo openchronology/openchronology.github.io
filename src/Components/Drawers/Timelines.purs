@@ -1,7 +1,7 @@
 module Components.Drawers.Timelines where
 
-import Timeline.UI.Timeline (Timeline (..))
-import Timeline.UI.Timelines (Timelines (..))
+import Timeline.UI.Timeline (Timeline(..))
+import Timeline.UI.Timelines (Timelines(..))
 import Settings (Settings(..))
 import Prelude
 import Data.Maybe (Maybe(..), isJust)
@@ -40,23 +40,20 @@ import Zeta.Types (READ) as S
 import IxZeta (IxSignal, get) as IxSig
 import Partial.Unsafe (unsafePartial)
 
-
-
-
-
 type State
   = { elements :: Timelines
     , selected :: Maybe Int
-    , menuAnchor :: Maybe
-      { target :: NativeEventTarget
-      , index :: Int
-      }
+    , menuAnchor ::
+        Maybe
+          { target :: NativeEventTarget
+          , index :: Int
+          }
     , isEditable :: Boolean
     }
 
 initialState ::
   IxSig.IxSignal ( read :: S.READ ) Settings ->
-  IxSig.IxSignal (read :: S.READ) Timelines ->
+  IxSig.IxSignal ( read :: S.READ ) Timelines ->
   Effect State
 initialState settingsSignal timelinesSignal = do
   Settings { isEditable } <- IxSig.get settingsSignal
@@ -78,19 +75,18 @@ styles theme =
 
 timelinesDrawer ::
   { settingsSignal :: IxSig.IxSignal ( read :: S.READ ) Settings
-  , timelinesSignal :: IxSig.IxSignal (read :: S.READ) Timelines
+  , timelinesSignal :: IxSig.IxSignal ( read :: S.READ ) Timelines
   , onClickedNewTimeline :: Effect Unit
   , onClickedEditTimeline :: Int -> Effect Unit
   , onClickedDeleteTimeline :: Int -> Effect Unit
   } ->
   ReactElement
-timelinesDrawer
-  { settingsSignal
-  , timelinesSignal
-  , onClickedNewTimeline
-  , onClickedEditTimeline
-  , onClickedDeleteTimeline
-  } = createLeafElement c {}
+timelinesDrawer { settingsSignal
+, timelinesSignal
+, onClickedNewTimeline
+, onClickedEditTimeline
+, onClickedDeleteTimeline
+} = createLeafElement c {}
   where
   c :: ReactClass {}
   c = withStyles styles c'
@@ -107,10 +103,11 @@ timelinesDrawer
   constructor =
     let
       handleChangeEdit this (Settings { isEditable }) = setState this { isEditable }
+
       handleChangeTimelines this ts = setState this { elements: ts }
     in
-      whileMountedIx settingsSignal "TimelinesDrawer" handleChangeEdit $
-      whileMountedIx timelinesSignal "TimelinesDrawer" handleChangeTimelines constructor'
+      whileMountedIx settingsSignal "TimelinesDrawer" handleChangeEdit
+        $ whileMountedIx timelinesSignal "TimelinesDrawer" handleChangeTimelines constructor'
     where
     constructor' this = do
       state <- initialState settingsSignal timelinesSignal
@@ -126,12 +123,12 @@ timelinesDrawer
                 handleMenuClick :: Int -> _ -> Effect Unit
                 handleMenuClick i e = do
                   anchor <- currentTarget e
-                  setState this { menuAnchor: Just {target: anchor, index: i} }
+                  setState this { menuAnchor: Just { target: anchor, index: i } }
 
                 handleClose = setState this { menuAnchor: Nothing }
 
                 mkTextItem :: Int -> Timeline -> ReactElement
-                mkTextItem i (Timeline {name}) =
+                mkTextItem i (Timeline { name }) =
                   listItem
                     { button: true
                     , selected: isSelected
@@ -159,10 +156,11 @@ timelinesDrawer
                   ]
                 <> ( if isEditable then
                       [ button
-                        { size: small
-                        , variant: contained
-                        , onClick: mkEffectFn1 (const onClickedNewTimeline)
-                        } [ text "Add" ]
+                          { size: small
+                          , variant: contained
+                          , onClick: mkEffectFn1 (const onClickedNewTimeline)
+                          }
+                          [ text "Add" ]
                       ]
                     else
                       []
@@ -175,27 +173,30 @@ timelinesDrawer
                       , onClose: mkEffectFn1 (const handleClose)
                       }
                       [ menuItem
-                          { onClick: mkEffectFn1 \_ -> do
-                              handleClose
-                              {menuAnchor} <- getState this
-                              unsafePartial $ case menuAnchor of
-                                Just {index} ->
-                                  onClickedEditTimeline index
+                          { onClick:
+                              mkEffectFn1 \_ -> do
+                                handleClose
+                                { menuAnchor } <- getState this
+                                unsafePartial
+                                  $ case menuAnchor of
+                                      Just { index } -> onClickedEditTimeline index
                           }
                           [ text "Edit" ]
                       , menuItem
-                          { onClick: mkEffectFn1 \_ -> do
-                              handleClose
-                              -- TODO timespace explorer
+                          { onClick:
+                              mkEffectFn1 \_ -> do
+                                handleClose
+                          -- TODO timespace explorer
                           }
                           [ text "Move" ]
                       , menuItem
-                          { onClick: mkEffectFn1 \_ -> do
-                              handleClose
-                              {menuAnchor} <- getState this
-                              unsafePartial $ case menuAnchor of
-                                Just {index} ->
-                                  onClickedDeleteTimeline index
+                          { onClick:
+                              mkEffectFn1 \_ -> do
+                                handleClose
+                                { menuAnchor } <- getState this
+                                unsafePartial
+                                  $ case menuAnchor of
+                                      Just { index } -> onClickedDeleteTimeline index
                           }
                           [ text "Delete" ]
                       ]

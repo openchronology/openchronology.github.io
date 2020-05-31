@@ -62,10 +62,11 @@ instance arbitraryTimeSpaceName :: Arbitrary TimeSpaceName where
     pure (TimeSpaceName { title, description })
 
 instance defaultTimeSpaceName :: Default TimeSpaceName where
-  def = TimeSpaceName
-    { title: "TimeSpace Name"
-    , description: ""
-    }
+  def =
+    TimeSpaceName
+      { title: "TimeSpace Name"
+      , description: ""
+      }
 
 localstorageSignalKey :: String
 localstorageSignalKey = "localstorage"

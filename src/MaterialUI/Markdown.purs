@@ -45,12 +45,13 @@ markdown source =
         , inlineCode: statelessComponent \{ children } -> R.code [ RP.style { border: "1px solid #ddd" } ] (childrenToArray children)
         , code:
             statelessComponent \{ language, value } ->
-              let codeProps = case toMaybe language of
-                    Nothing -> {language: ""}
-                    Just l
-                      | l == "purescript" -> {language: "haskell"}
-                      | otherwise -> {language: l}
-
-              in  highlight codeProps (childrenToArray value)
+              let
+                codeProps = case toMaybe language of
+                  Nothing -> { language: "" }
+                  Just l
+                    | l == "purescript" -> { language: "haskell" }
+                    | otherwise -> { language: l }
+              in
+                highlight codeProps (childrenToArray value)
         }
     }
