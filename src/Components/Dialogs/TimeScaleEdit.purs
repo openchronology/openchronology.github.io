@@ -1,5 +1,6 @@
 module Components.Dialogs.TimeScaleEdit (timeScaleEditDialog) where
 
+import Timeline.UI.Index (DecidedMaybeLimit (DecidedMaybeLimitNumber), MaybeLimit (NothingLimit))
 import Timeline.UI.TimeScale (TimeScale(..))
 import Settings (Settings(..))
 import Prelude
@@ -129,7 +130,7 @@ timeScaleEditDialog { timeScaleSignal
 
                 submit = do
                   { name, units, description } <- getState this
-                  put output (Just (TimeScale { name, units, description }))
+                  put output (Just (TimeScale { name, units, description, limit: DecidedMaybeLimitNumber NothingLimit })) -- FIXME unit-based picker
                   setState this { open: false }
 
                 changeName e = do

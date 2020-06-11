@@ -147,9 +147,15 @@ timeSpaceNameEditDialog { timeSpaceNameSignal
                     }
                 $ let
                     editable =
-                      [ dialogTitle { id: "timeSpaceNameedit-dialog-title" } [ text "TimeSpace Name" ]
+                      [ dialogTitle { id: "timeSpaceNameedit-dialog-title" } [ text "Edit TimeSpace" ] -- FIXME New timespace?
                       , dialogContent_
                           [ textField'
+                              { label: "Title"
+                              , value: title
+                              , onChange: mkEffectFn1 changeTitle
+                              , fullWidth: true
+                              }
+                          , textField'
                               { label: "Description"
                               , value: description
                               , onChange: mkEffectFn1 changeDescription
@@ -158,12 +164,6 @@ timeSpaceNameEditDialog { timeSpaceNameSignal
                               , rows: 4
                               }
                           ]
-                      -- [ textField'
-                      --     { label: "Title"
-                      --     , value: title
-                      --     , onChange: mkEffectFn1 changeTitle
-                      --     , fullWidth: true
-                      --     }
                       -- , tabs
                       --   { value: (unsafeCoerce (if wysiwyg then 0 else 1) :: Any)
                       --   , indicatorColor: primary

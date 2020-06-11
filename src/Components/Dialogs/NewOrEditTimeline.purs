@@ -1,6 +1,7 @@
 module Components.Dialogs.NewOrEditTimeline where
 
 import Timeline.UI.Timeline (Timeline(..))
+import Settings (Settings (..))
 import Prelude
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
@@ -18,6 +19,7 @@ import React
   )
 import React.DOM (text, br)
 import React.Queue.WhileMounted (whileMountedOne)
+import React.Signal.WhileMounted (whileMountedIx)
 import React.SyntheticEvent (target)
 import MaterialUI.Colors (red)
 import MaterialUI.Button (button)
@@ -29,8 +31,11 @@ import MaterialUI.TextField (textField')
 import MaterialUI.Styles (withStyles)
 import MaterialUI.Theme (Theme)
 import MaterialUI.Enums (secondary)
+import MaterialUI.Markdown (markdown)
 import IOQueues (IOQueues(..))
 import Queue.One (Queue, put)
+import Zeta.Types (READ) as S
+import IxZeta (IxSignal, get) as IxSig
 import Unsafe.Coerce (unsafeCoerce)
 
 data NewOrEditTimelineResult
@@ -42,15 +47,20 @@ type State
     , name :: String
     , description :: String
     , new :: Boolean
+    , isEditable :: Boolean
     }
 
-initialState :: State
-initialState =
-  { open: false
-  , name: ""
-  , description: ""
-  , new: true
-  }
+initialState :: IxSig.IxSignal (read :: S.READ) Settings
+             -> Effect State
+initialState settingsSignal = do
+  Settings {isEditable} <- IxSig.get settingsSignal
+  pure
+    { open: false
+    , name: ""
+    , description: ""
+    , new: true
+    , isEditable
+    }
 
 styles :: Theme -> _
 styles theme =
@@ -66,10 +76,12 @@ styles theme =
 newOrEditTimelineDialog ::
   { onDelete :: Effect Unit -> Effect Unit
   , newOrEditTimelineQueues :: IOQueues Queue (Maybe Timeline) (Maybe NewOrEditTimelineResult)
+  , settingsSignal :: IxSig.IxSignal (read :: S.READ) Settings
   } ->
   ReactElement
 newOrEditTimelineDialog { onDelete
 , newOrEditTimelineQueues: IOQueues { input, output }
+, settingsSignal
 } = createLeafElement c {}
   where
   c :: ReactClass {}
@@ -85,21 +97,29 @@ newOrEditTimelineDialog { onDelete
       handlerOpen this mT = do
         _ <- setTimeout 250 (setState this { open: true })
         case mT of
-          Nothing -> setState this initialState
+          Nothing -> do
+            state <- initialState settingsSignal
+            setState this state
           Just (Timeline { name, description }) -> do
             setState this
               { name
               , description
               , new: false
               }
+
+      handlerChangeEdit :: _ -> Settings -> Effect Unit
+      handlerChangeEdit this (Settings {isEditable}) =
+        setState this {isEditable}
     in
-      whileMountedOne input handlerOpen constructor
+      whileMountedOne input handlerOpen $
+      whileMountedIx settingsSignal "NewOrEditTimelineDialog" handlerChangeEdit constructor
     where
-    constructor this =
+    constructor this = do
+      state <- initialState settingsSignal
       pure
         { componentDidMount: pure unit
         , componentWillUnmount: pure unit
-        , state: initialState
+        , state
         , render:
             do
               let
@@ -115,7 +135,7 @@ newOrEditTimelineDialog { onDelete
                 delete =
                   onDelete do
                     put output (Just DeleteTimeline)
-                    setState this { open: false }
+                    setState this { open: false}
 
                 changeName e = do
                   t <- target e
@@ -124,7 +144,7 @@ newOrEditTimelineDialog { onDelete
                 changeDescription e = do
                   t <- target e
                   setState this { description: (unsafeCoerce t).value }
-              { open, name, description, new } <- getState this
+              { open, name, description, new, isEditable } <- getState this
               props <- getProps this
               pure
                 $ dialog''
@@ -132,45 +152,55 @@ newOrEditTimelineDialog { onDelete
                     , open
                     , "aria-labelledby": "newOrEditTimeline-dialog-title"
                     , fullWidth: true
-                    }
-                    [ dialogTitle { id: "newOrEditTimeline-dialog-title" }
-                        [ text $ if new then "New Timeline" else "Edit Timeline" ]
-                    , dialogContent_
-                        $ [ textField'
-                              { label: "Name"
-                              , value: name
-                              , onChange: mkEffectFn1 changeName
-                              , fullWidth: true
-                              }
-                          , textField'
-                              { label: "Description"
-                              , value: description
-                              , onChange: mkEffectFn1 changeDescription
-                              , multiline: true
-                              , fullWidth: true
-                              , rows: 4
-                              }
-                          ]
-                        <> if new then
-                            []
-                          else
-                            [ br []
-                            , br []
-                            , button
-                                { onClick: mkEffectFn1 (const delete)
-                                , className: props.classes.deleteButton
+                    } $
+                    if isEditable
+                      then
+                        [ dialogTitle { id: "newOrEditTimeline-dialog-title" }
+                            [ text $ if new then "New Timeline" else "Edit Timeline" ]
+                        , dialogContent_ $
+                            [ textField'
+                                { label: "Name"
+                                , value: name
+                                , onChange: mkEffectFn1 changeName
                                 , fullWidth: true
                                 }
-                                [ text "Delete" ]
+                            , textField'
+                                { label: "Description"
+                                , value: description
+                                , onChange: mkEffectFn1 changeDescription
+                                , multiline: true
+                                , fullWidth: true
+                                , rows: 4
+                                }
                             ]
-                    , dialogActions_
-                        [ button { onClick: mkEffectFn1 (const close) } [ text "Cancel" ]
-                        , button
-                            { onClick: mkEffectFn1 (const submit)
-                            , color: secondary
-                            , autoFocus: true
-                            }
-                            [ text $ if new then "Submit" else "Save" ]
+                          <> if new then
+                              []
+                            else
+                              [ br []
+                              , br []
+                              , button
+                                  { onClick: mkEffectFn1 (const delete)
+                                  , className: props.classes.deleteButton
+                                  , fullWidth: true
+                                  }
+                                  [ text "Delete" ]
+                              ]
+                        , dialogActions_
+                            [ button { onClick: mkEffectFn1 (const close) } [ text "Cancel" ]
+                            , button
+                                { onClick: mkEffectFn1 (const submit)
+                                , color: secondary
+                                , autoFocus: true
+                                }
+                                [ text $ if new then "Submit" else "Save" ]
+                            ]
                         ]
-                    ]
+                      else
+                        [ dialogTitle { id: "newOrEditTimeline-dialog-title" }
+                            [ text name ]
+                        , dialogContent_ $
+                            [ markdown description ]
+                        , dialogActions_
+                            [ button { onClick: mkEffectFn1 (const close) } [ text "Close" ] ]
+                        ]
         }

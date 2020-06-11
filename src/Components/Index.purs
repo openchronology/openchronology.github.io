@@ -265,6 +265,7 @@ index { stateRef
                   , newOrEditTimelineDialog
                       { onDelete: onClickedDeleteTimeline <<< Right
                       , newOrEditTimelineQueues
+                      , settingsSignal: S.readOnly settingsSignal
                       }
                   , eulaDialog { eulaQueue: Q.readOnly (Q.allowReading eulaQueue) }
                   , exploreTimeSpacesDialog

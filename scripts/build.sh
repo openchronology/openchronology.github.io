@@ -24,7 +24,7 @@ STATICSTYLES=./build/staticstyles.html
 STATICSCRIPTS=./build/staticscripts.html
 DYNAMICSTYLES=./build/dynamicstyles.html
 
-LTEXT=./ltext/.stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/ltext/ltext
+LTEXT=./ltext/.stack-work/dist/*/Cabal-2.2.0.1/build/ltext/ltext
 
 # Dynamic scripts will use external CDN sources when in production,
 # but local ones when built statically
@@ -57,7 +57,8 @@ echo "Bundled"
 
 # ----------- update module graph
 
-./scripts/build_modules.sh
+./scripts/build_modules.sh \
+     || { echo "Module Graph Failed"; exit 1; }
 echo "Module Graph Built"
 
 

@@ -1,9 +1,15 @@
 module Timeline.UI.TimeScale where
 
+import Timeline.UI.Index
+  ( DecidedMaybeLimit (DecidedMaybeLimitNumber)
+  , MaybeLimit (NothingLimit)
+  )
+
 import Settings (Settings(..))
 import Prelude
 import Data.Maybe (Maybe(..))
 import Data.Either (Either(..))
+import Data.Default (class Default, def)
 import Data.Generic.Rep (class Generic)
 import Data.Argonaut
   ( class EncodeJson
@@ -24,7 +30,7 @@ import Effect (Effect)
 import Effect.Exception (throw)
 import Zeta.Types (READ, WRITE) as S
 import IxZeta (IxSignal, make, get, set, subscribeDiffLight)
-import Test.QuickCheck (class Arbitrary)
+import Test.QuickCheck (class Arbitrary, arbitrary)
 import Test.QuickCheck.UTF8String (genString)
 
 newtype TimeScale
@@ -32,9 +38,8 @@ newtype TimeScale
   { name :: String
   , units :: String
   , description :: String
+  , limit :: DecidedMaybeLimit -- Commands the consistency throughout the rest of the sibling data
   -- , morphism :: Equation -- change this for different mappings - for now, we're linear
-  -- , beginIndex  :: a
-  -- , endIndex    :: a
   }
 
 derive instance genericTimeScale :: Generic TimeScale _
@@ -48,15 +53,18 @@ instance arbitraryTimeScale :: Arbitrary TimeScale where
     name <- genString
     units <- genString
     description <- genString
-    pure (TimeScale { name, units, description })
+    limit <- arbitrary
+    pure (TimeScale { name, units, description, limit })
 
 instance encodeJsonTimeScale :: EncodeJson TimeScale where
-  encodeJson (TimeScale { name, units, description }) =
+  encodeJson (TimeScale { name, units, description, limit }) =
     "name" := name
       ~> "units"
       := units
       ~> "description"
       := description
+      ~> "limit"
+      := limit
       ~> jsonEmptyObject
 
 instance decodeJsonTimeScale :: DecodeJson TimeScale where
@@ -65,7 +73,16 @@ instance decodeJsonTimeScale :: DecodeJson TimeScale where
     name <- o .: "name"
     units <- o .: "units"
     description <- o .: "description"
-    pure (TimeScale { name, units, description })
+    limit <- o .: "limit"
+    pure (TimeScale { name, units, description, limit })
+
+instance defaultTimeScale :: Default TimeScale where
+  def = TimeScale
+    { name: "TimeScale Name"
+    , units: "Years"
+    , description: ""
+    , limit: DecidedMaybeLimitNumber NothingLimit
+    }
 
 localstorageSignalKey :: String
 localstorageSignalKey = "localstorage"
@@ -81,12 +98,7 @@ newTimeScaleSignal settingsSignal = do
   mItem <- getItem localstorageKey store
   item <- case mItem of
     Nothing ->
-      pure
-        $ TimeScale
-            { name: "TimeScale Name"
-            , units: "Years"
-            , description: ""
-            }
+      pure def
     Just s -> case jsonParser s >>= decodeJson of
       Left e -> throw $ "Couldn't parse TimeScale: " <> e
       Right x -> pure x
@@ -107,4 +119,4 @@ clearTimeScaleCache = do
 setDefaultTimeScale ::
   IxSignal ( write :: S.WRITE ) TimeScale ->
   Effect Unit
-setDefaultTimeScale timeScaleSignal = set (TimeScale { name: "TimeScale Name", units: "Years", description: "" }) timeScaleSignal
+setDefaultTimeScale timeScaleSignal = set def timeScaleSignal
