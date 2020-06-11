@@ -167,47 +167,47 @@ timelinesDrawer { settingsSignal
                       , anchorEl: toNullable (map _.target menuAnchor)
                       , open: isJust menuAnchor
                       , onClose: mkEffectFn1 (const handleClose)
-                      } $ if isEditable
-                            then
-                              [ menuItem
-                                  { onClick:
-                                      mkEffectFn1 \_ -> do
-                                        handleClose
-                                        { menuAnchor } <- getState this
-                                        unsafePartial
-                                          $ case menuAnchor of
-                                              Just { index } -> onClickedEditTimeline index
-                                  }
-                                  [ text "Edit" ]
-                              , menuItem
-                                  { onClick:
-                                      mkEffectFn1 \_ -> do
-                                        handleClose
-                                  -- TODO timespace explorer
-                                  }
-                                  [ text "Move" ]
-                              , menuItem
-                                  { onClick:
-                                      mkEffectFn1 \_ -> do
-                                        handleClose
-                                        { menuAnchor } <- getState this
-                                        unsafePartial
-                                          $ case menuAnchor of
-                                              Just { index } -> onClickedDeleteTimeline index
-                                  }
-                                  [ text "Delete" ]
-                              ]
-                            else
-                              [ menuItem
-                                  { onClick:
-                                      mkEffectFn1 \_ -> do
-                                        handleClose
-                                        { menuAnchor } <- getState this
-                                        unsafePartial
-                                          $ case menuAnchor of
-                                              Just { index } -> onClickedEditTimeline index
-                                  }
-                                  [ text "Details" ]
-                              ]
+                      }
+                      $ if isEditable then
+                          [ menuItem
+                              { onClick:
+                                  mkEffectFn1 \_ -> do
+                                    handleClose
+                                    { menuAnchor } <- getState this
+                                    unsafePartial
+                                      $ case menuAnchor of
+                                          Just { index } -> onClickedEditTimeline index
+                              }
+                              [ text "Edit" ]
+                          , menuItem
+                              { onClick:
+                                  mkEffectFn1 \_ -> do
+                                    handleClose
+                              -- TODO timespace explorer
+                              }
+                              [ text "Move" ]
+                          , menuItem
+                              { onClick:
+                                  mkEffectFn1 \_ -> do
+                                    handleClose
+                                    { menuAnchor } <- getState this
+                                    unsafePartial
+                                      $ case menuAnchor of
+                                          Just { index } -> onClickedDeleteTimeline index
+                              }
+                              [ text "Delete" ]
+                          ]
+                        else
+                          [ menuItem
+                              { onClick:
+                                  mkEffectFn1 \_ -> do
+                                    handleClose
+                                    { menuAnchor } <- getState this
+                                    unsafePartial
+                                      $ case menuAnchor of
+                                          Just { index } -> onClickedEditTimeline index
+                              }
+                              [ text "Details" ]
+                          ]
                   ]
         }

@@ -1,10 +1,9 @@
 module Timeline.UI.TimeScale where
 
 import Timeline.UI.Index
-  ( DecidedMaybeLimit (DecidedMaybeLimitNumber)
-  , MaybeLimit (NothingLimit)
+  ( DecidedMaybeLimit(DecidedMaybeLimitNumber)
+  , MaybeLimit(NothingLimit)
   )
-
 import Settings (Settings(..))
 import Prelude
 import Data.Maybe (Maybe(..))
@@ -77,12 +76,13 @@ instance decodeJsonTimeScale :: DecodeJson TimeScale where
     pure (TimeScale { name, units, description, limit })
 
 instance defaultTimeScale :: Default TimeScale where
-  def = TimeScale
-    { name: "TimeScale Name"
-    , units: "Years"
-    , description: ""
-    , limit: DecidedMaybeLimitNumber NothingLimit
-    }
+  def =
+    TimeScale
+      { name: "TimeScale Name"
+      , units: "Years"
+      , description: ""
+      , limit: DecidedMaybeLimitNumber NothingLimit
+      }
 
 localstorageSignalKey :: String
 localstorageSignalKey = "localstorage"
@@ -97,8 +97,7 @@ newTimeScaleSignal settingsSignal = do
   store <- window >>= localStorage
   mItem <- getItem localstorageKey store
   item <- case mItem of
-    Nothing ->
-      pure def
+    Nothing -> pure def
     Just s -> case jsonParser s >>= decodeJson of
       Left e -> throw $ "Couldn't parse TimeScale: " <> e
       Right x -> pure x

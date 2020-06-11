@@ -1,6 +1,6 @@
 module Components.Dialogs.TimeScaleEdit (timeScaleEditDialog) where
 
-import Timeline.UI.Index (DecidedMaybeLimit (DecidedMaybeLimitNumber), MaybeLimit (NothingLimit))
+import Timeline.UI.Index (DecidedMaybeLimit(DecidedMaybeLimitNumber), MaybeLimit(NothingLimit))
 import Timeline.UI.TimeScale (TimeScale(..))
 import Settings (Settings(..))
 import Prelude
