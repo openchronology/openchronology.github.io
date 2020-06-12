@@ -1,6 +1,7 @@
 module Timeline.UI.Index where
 
 import Prelude
+import Data.Maybe (Maybe (..))
 import Data.Tuple (Tuple(..))
 import Data.Either (Either)
 import Data.NonEmpty (NonEmpty(..))
@@ -77,6 +78,12 @@ instance arbitraryDecidedValue :: Arbitrary DecidedValue where
 data DecidedSpan
   = DecidedSpanNumber (Span Number)
 
+makeDecidedSpan :: {start :: DecidedValue, stop :: DecidedValue} -> Maybe DecidedSpan
+makeDecidedSpan {start,stop} = case Tuple start stop of
+  Tuple (DecidedValueNumber start') (DecidedValueNumber stop') ->
+    Just (DecidedSpanNumber {start: start', stop: stop'})
+  _ -> Nothing
+
 derive instance genericDecidedSpan :: Generic DecidedSpan _
 
 instance eqDecidedSpan :: Eq DecidedSpan where
@@ -103,6 +110,12 @@ instance arbitraryDecidedSpan :: Arbitrary DecidedSpan where
 
 data DecidedBounds
   = DecidedBoundsNumber (Bounds Number)
+
+makeDecidedBounds :: {begin :: DecidedValue, end :: DecidedValue} -> Maybe DecidedBounds
+makeDecidedBounds {begin,end} = case Tuple begin end of
+  Tuple (DecidedValueNumber begin') (DecidedValueNumber end') ->
+    Just (DecidedBoundsNumber {begin: begin', end: end'})
+  _ -> Nothing
 
 derive instance genericDecidedBounds :: Generic DecidedBounds _
 
