@@ -32,9 +32,10 @@ initialState = { value: Nothing }
 
 unitPicker ::
   { onUnitPicked :: DecidedUnit -> Effect Unit
+  , initialUnitPicked :: Maybe DecidedUnit
   } ->
   ReactElement
-unitPicker { onUnitPicked } = createLeafElement c {}
+unitPicker { onUnitPicked, initialUnitPicked } = createLeafElement c {}
   where
   c :: ReactClass {}
   c = component "UnitPicker" constructor'
@@ -44,7 +45,7 @@ unitPicker { onUnitPicked } = createLeafElement c {}
     pure
       { componentDidMount: pure unit
       , componentWillUnmount: pure unit
-      , state: initialState
+      , state: initialState { value = initialUnitPicked }
       , render:
           do
             let
@@ -54,6 +55,7 @@ unitPicker { onUnitPicked } = createLeafElement c {}
                   val = (unsafeCoerce t).value
                 val' <- case val of
                   "DecidedUnitNumber" -> pure DecidedUnitNumber
+                  "DecidedUnitFoo" -> pure DecidedUnitFoo
                   _ -> throw $ "Can't determine shown DecidedUnit: " <> val
                 setState this { value: Just val' }
                 onUnitPicked val'
@@ -67,11 +69,15 @@ unitPicker { onUnitPicked } = createLeafElement c {}
                       , inputProps: { id: "unit-picker" }
                       }
                       $ let
-                          makeMenuItem v = menuItem { value: show v } [ text (show v) ]
+                          pretty u = case u of
+                            DecidedUnitNumber -> "Number"
+                            DecidedUnitFoo -> "Foo"
+
+                          makeMenuItem v = menuItem { value: show v } [ text (pretty v) ]
                         in
                           map makeMenuItem allUnits
                   ]
       }
 
   allUnits :: Array DecidedUnit
-  allUnits = [ DecidedUnitNumber ]
+  allUnits = [ DecidedUnitNumber, DecidedUnitFoo ]

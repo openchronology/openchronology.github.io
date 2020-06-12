@@ -1,7 +1,12 @@
 module Components.Dialogs.TimeScaleEdit (timeScaleEditDialog) where
 
-import Timeline.UI.Index (DecidedMaybeLimit(DecidedMaybeLimitNumber), MaybeLimit(NothingLimit))
+import Timeline.UI.Index
+  ( DecidedMaybeLimit(DecidedMaybeLimitNumber)
+  , MaybeLimit(NothingLimit)
+  , DecidedUnit(DecidedUnitNumber)
+  )
 import Timeline.UI.TimeScale (TimeScale(..))
+import Components.Time.Unit (unitPicker)
 import Settings (Settings(..))
 import Prelude
 import Data.Maybe (Maybe(..))
@@ -53,6 +58,7 @@ type State
     , name :: String
     , units :: String
     , description :: String
+    , decidedUnit :: DecidedUnit
     -- , editIndicies :: Maybe {beginIndex :: ReactElement, endIndex :: ReactElement}
     -- , viewIndicies :: Maybe {beginIndex :: ReactElement, endIndex :: ReactElement}
     }
@@ -70,6 +76,7 @@ initialState timeScaleSignal settingsSignal = do
     , name
     , units
     , description
+    , decidedUnit: DecidedUnitNumber
     -- , editIndicies: Nothing
     -- , viewIndicies: Nothing
     }
@@ -144,7 +151,9 @@ timeScaleEditDialog { timeScaleSignal
                 changeDescription e = do
                   t <- target e
                   setState this { description: (unsafeCoerce t).value }
-              { open, isEditable, name, units, description } <- getState this
+
+                changeDecidedUnit u = setState this { decidedUnit: u }
+              { open, isEditable, name, units, description, decidedUnit } <- getState this
               props <- getProps this
               pure
                 $ dialog''
@@ -176,6 +185,10 @@ timeScaleEditDialog { timeScaleSignal
                                 , multiline: true
                                 , fullWidth: true
                                 , rows: 4
+                                }
+                            , unitPicker
+                                { onUnitPicked: changeDecidedUnit
+                                , initialUnitPicked: Just decidedUnit
                                 }
                             ] -- <> case editIndicies of
                       -- Nothing -> []

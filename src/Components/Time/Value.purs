@@ -16,6 +16,7 @@ import React
   , getState
   , setState
   )
+import React.DOM (text)
 import React.SyntheticEvent (target)
 import MaterialUI.TextField (textField')
 import Unsafe.Coerce (unsafeCoerce)
@@ -41,6 +42,7 @@ valuePicker { onValuePicked, decidedUnit } =
     , decidedUnitLabel:
         \u -> case u of
           DecidedUnitNumber -> "Number"
+          DecidedUnitFoo -> "Foo"
     }
 
 valuePicker' ::
@@ -81,6 +83,7 @@ valuePicker' { onValuePicked, decidedUnit, name, decidedUnitLabel } = createLeaf
                           Nothing -> pure unit -- wait until it can parse
                           Just n -> onValuePicked (DecidedValueNumber n)
                         setState this { pending: Nothing }
+                      _ -> pure unit -- FIXME
                 setState this { value: val, pending: Just id }
             pure
               $ case decidedUnit of
@@ -91,4 +94,5 @@ valuePicker' { onValuePicked, decidedUnit, name, decidedUnitLabel } = createLeaf
                       , onChange: mkEffectFn1 handleChange
                       , "type": "number"
                       }
+                  _ -> text "" -- FIXME
       }

@@ -27,6 +27,7 @@ import Type.Proxy (Proxy(..))
 
 data DecidedUnit
   = DecidedUnitNumber
+  | DecidedUnitFoo
 
 derive instance genericDecidedUnit :: Generic DecidedUnit _
 
@@ -39,16 +40,18 @@ instance showDecidedUnit :: Show DecidedUnit where
 instance encodeJsonDecidedUnit :: EncodeJson DecidedUnit where
   encodeJson x = case x of
     DecidedUnitNumber -> encodeJson "number"
+    DecidedUnitFoo -> encodeJson "foo"
 
 instance decodeJsonDecidedUnit :: DecodeJson DecidedUnit where
   decodeJson json = do
     s <- decodeJson json
     case s of
       "number" -> pure DecidedUnitNumber
+      "foo" -> pure DecidedUnitFoo
       _ -> fail $ "Unrecognized DecidedUnit: " <> s
 
 instance arbitraryDecidedUnit :: Arbitrary DecidedUnit where
-  arbitrary = elements $ NonEmpty DecidedUnitNumber []
+  arbitrary = elements $ NonEmpty DecidedUnitNumber [ DecidedUnitFoo ]
 
 data DecidedValue
   = DecidedValueNumber Number

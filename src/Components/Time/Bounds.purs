@@ -68,6 +68,7 @@ spanPicker { onBoundsPicked, decidedUnit } = createLeafElement c {}
                       , decidedUnitLabel:
                           \u -> case u of
                             DecidedUnitNumber -> "Begin"
+                            DecidedUnitFoo -> "Begin"
                       }
                   , valuePicker'
                       { onValuePicked: handleEnd
@@ -76,6 +77,7 @@ spanPicker { onBoundsPicked, decidedUnit } = createLeafElement c {}
                       , decidedUnitLabel:
                           \u -> case u of
                             DecidedUnitNumber -> "End"
+                            DecidedUnitFoo -> "End"
                       }
                   ]
       }
