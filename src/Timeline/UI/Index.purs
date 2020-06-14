@@ -56,6 +56,12 @@ instance arbitraryDecidedUnit :: Arbitrary DecidedUnit where
 data DecidedValue
   = DecidedValueNumber Number
 
+-- | Creates a string out of a `DecidedValue`, to be used in a text field.
+intermediaryDecidedValue :: DecidedValue -> String
+intermediaryDecidedValue v = case v of
+  DecidedValueNumber n -> show n
+
+-- FIXME date picker?
 derive instance genericDecidedValue :: Generic DecidedValue _
 
 instance eqDecidedValue :: Eq DecidedValue where
@@ -118,6 +124,10 @@ makeDecidedBounds { begin, end } = case Tuple begin end of
   Tuple (DecidedValueNumber begin') (DecidedValueNumber end') -> Just (DecidedBoundsNumber { begin: begin', end: end' })
   _ -> Nothing
 
+unmakeDecidedBounds :: DecidedBounds -> { begin :: DecidedValue, end :: DecidedValue }
+unmakeDecidedBounds b = case b of
+  DecidedBoundsNumber { begin, end } -> { begin: DecidedValueNumber begin, end: DecidedValueNumber end }
+
 derive instance genericDecidedBounds :: Generic DecidedBounds _
 
 instance eqDecidedBounds :: Eq DecidedBounds where
@@ -144,6 +154,10 @@ instance arbitraryDecidedBounds :: Arbitrary DecidedBounds where
 
 data DecidedMax
   = DecidedMaxNumber (Max Number)
+
+makeDecidedMax :: DecidedValue -> DecidedMax
+makeDecidedMax v = case v of
+  DecidedValueNumber n -> DecidedMaxNumber { end: n }
 
 derive instance genericDecidedMax :: Generic DecidedMax _
 
@@ -172,6 +186,10 @@ instance arbitraryDecidedMax :: Arbitrary DecidedMax where
 data DecidedMin
   = DecidedMinNumber (Min Number)
 
+makeDecidedMin :: DecidedValue -> DecidedMin
+makeDecidedMin v = case v of
+  DecidedValueNumber n -> DecidedMinNumber { begin: n }
+
 derive instance genericDecidedMin :: Generic DecidedMin _
 
 instance eqDecidedMin :: Eq DecidedMin where
@@ -199,6 +217,20 @@ instance arbitraryDecidedMin :: Arbitrary DecidedMin where
 data DecidedLimit
   = DecidedLimitNumber (Limit Number)
 
+makeDecidedLimit :: { begin :: Maybe DecidedValue, end :: Maybe DecidedValue } -> Maybe DecidedLimit
+makeDecidedLimit { begin, end } = case Tuple begin end of
+  Tuple (Just (DecidedValueNumber begin')) (Just (DecidedValueNumber end')) -> Just (DecidedLimitNumber (LimitBounds { begin: begin', end: end' }))
+  Tuple (Just (DecidedValueNumber begin')) Nothing -> Just (DecidedLimitNumber (LimitMin { begin: begin' }))
+  Tuple Nothing (Just (DecidedValueNumber end')) -> Just (DecidedLimitNumber (LimitMax { end: end' }))
+  _ -> Nothing -- TODO other units
+
+unmakeDecidedLimit :: DecidedLimit -> { begin :: Maybe DecidedValue, end :: Maybe DecidedValue }
+unmakeDecidedLimit l = case l of
+  DecidedLimitNumber l' -> case l' of
+    LimitBounds { begin, end } -> { begin: Just (DecidedValueNumber begin), end: Just (DecidedValueNumber end) }
+    LimitMin { begin } -> { begin: Just (DecidedValueNumber begin), end: Nothing }
+    LimitMax { end } -> { begin: Nothing, end: Just (DecidedValueNumber end) }
+
 derive instance genericDecidedLimit :: Generic DecidedLimit _
 
 instance eqDecidedLimit :: Eq DecidedLimit where
@@ -223,6 +255,21 @@ instance arbitraryDecidedLimit :: Arbitrary DecidedLimit where
 
 data DecidedMaybeLimit
   = DecidedMaybeLimitNumber (MaybeLimit Number)
+
+makeDecidedMaybeLimit :: { begin :: Maybe DecidedValue, end :: Maybe DecidedValue } -> DecidedMaybeLimit
+makeDecidedMaybeLimit { begin, end } = case Tuple begin end of
+  Tuple (Just (DecidedValueNumber begin')) (Just (DecidedValueNumber end')) -> DecidedMaybeLimitNumber (JustLimitBounds { begin: begin', end: end' })
+  Tuple (Just (DecidedValueNumber begin')) Nothing -> DecidedMaybeLimitNumber (JustLimitMin { begin: begin' })
+  Tuple Nothing (Just (DecidedValueNumber end')) -> DecidedMaybeLimitNumber (JustLimitMax { end: end' })
+  Tuple Nothing Nothing -> DecidedMaybeLimitNumber NothingLimit -- FIXME how would I know the unit?
+
+unmakeDecidedMaybeLimit :: DecidedMaybeLimit -> { begin :: Maybe DecidedValue, end :: Maybe DecidedValue }
+unmakeDecidedMaybeLimit l = case l of
+  DecidedMaybeLimitNumber l' -> case l' of
+    JustLimitBounds { begin, end } -> { begin: Just (DecidedValueNumber begin), end: Just (DecidedValueNumber end) }
+    JustLimitMin { begin } -> { begin: Just (DecidedValueNumber begin), end: Nothing }
+    JustLimitMax { end } -> { begin: Nothing, end: Just (DecidedValueNumber end) }
+    NothingLimit -> { begin: Nothing, end: Nothing } -- FIXME how would I show the unit?
 
 derive instance genericDecidedMaybeLimit :: Generic DecidedMaybeLimit _
 

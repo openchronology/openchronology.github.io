@@ -7,11 +7,18 @@ import Timeline.UI.Index
   )
 import Timeline.UI.TimeScale (TimeScale(..))
 import Components.Time.Unit (unitPicker)
+import Components.Time.MaybeLimit
+  ( DecidedIntermediaryMaybeLimit
+  , initialDecidedIntermediaryMaybeLimit
+  , intermediaryToMaybeLimit
+  , maybeLimitPicker
+  )
 import Settings (Settings(..))
 import Prelude
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Uncurried (mkEffectFn1)
+import Effect.Console (log)
 import React
   ( ReactClass
   , ReactClassConstructor
@@ -43,15 +50,6 @@ import Zeta.Types (READ) as S
 import IxZeta (IxSignal, get) as IxSig
 import Unsafe.Coerce (unsafeCoerce)
 
--- FIXME undo all this shit - the units is part of the state. IOQueues should be `Unit -> TimeScaleDecided`,
--- while TimeScale is a moral polymorphic definition
--- type TimeScaleEdit a =
---   { beginIndexEdit  :: (a -> Effect Unit) -> ReactElement
---   , endIndexEdit    :: (a -> Effect Unit) -> ReactElement
---   , newTimeIndexRef :: Effect (Ref a) -- ^ Necessary because `State` can't be polymorphic
---   , beginIndexView  :: a -> ReactElement
---   , endIndexView    :: a -> ReactElement
---   }
 type State
   = { open :: Boolean
     , isEditable :: Boolean
@@ -59,8 +57,7 @@ type State
     , units :: String
     , description :: String
     , decidedUnit :: DecidedUnit
-    -- , editIndicies :: Maybe {beginIndex :: ReactElement, endIndex :: ReactElement}
-    -- , viewIndicies :: Maybe {beginIndex :: ReactElement, endIndex :: ReactElement}
+    , intermediaryMaybeLimit :: DecidedIntermediaryMaybeLimit
     }
 
 initialState ::
@@ -76,9 +73,8 @@ initialState timeScaleSignal settingsSignal = do
     , name
     , units
     , description
-    , decidedUnit: DecidedUnitNumber
-    -- , editIndicies: Nothing
-    -- , viewIndicies: Nothing
+    , decidedUnit: DecidedUnitNumber -- FIXME get from a signal
+    , intermediaryMaybeLimit: initialDecidedIntermediaryMaybeLimit DecidedUnitNumber
     }
 
 timeScaleEditDialog ::
@@ -136,9 +132,12 @@ timeScaleEditDialog { timeScaleSignal
                   put output Nothing
 
                 submit = do
-                  { name, units, description } <- getState this
-                  put output (Just (TimeScale { name, units, description, limit: DecidedMaybeLimitNumber NothingLimit })) -- FIXME unit-based picker
-                  setState this { open: false }
+                  { name, units, description, intermediaryMaybeLimit } <- getState this
+                  case intermediaryToMaybeLimit intermediaryMaybeLimit of
+                    Nothing -> pure unit -- FIXME throw snackbar
+                    Just limit -> do
+                      put output (Just (TimeScale { name, units, description, limit }))
+                      setState this { open: false }
 
                 changeName e = do
                   t <- target e
@@ -153,7 +152,11 @@ timeScaleEditDialog { timeScaleSignal
                   setState this { description: (unsafeCoerce t).value }
 
                 changeDecidedUnit u = setState this { decidedUnit: u }
-              { open, isEditable, name, units, description, decidedUnit } <- getState this
+
+                changeDecidedMaybeLimit l = do
+                  log $ "is being called: " <> show l
+                  setState this { intermediaryMaybeLimit: l }
+              { open, isEditable, name, units, description, decidedUnit, intermediaryMaybeLimit } <- getState this
               props <- getProps this
               pure
                 $ dialog''
@@ -189,6 +192,11 @@ timeScaleEditDialog { timeScaleSignal
                             , unitPicker
                                 { onUnitPicked: changeDecidedUnit
                                 , initialUnitPicked: Just decidedUnit
+                                }
+                            , maybeLimitPicker
+                                { onChangeIntermediaryMaybeLimit: changeDecidedMaybeLimit
+                                , intermediaryMaybeLimit
+                                , decidedUnit
                                 }
                             ] -- <> case editIndicies of
                       -- Nothing -> []

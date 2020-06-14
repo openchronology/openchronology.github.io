@@ -1,9 +1,26 @@
 module Components.Time.Span where
 
-import Timeline.UI.Index (DecidedUnit(..), DecidedValue(..), DecidedSpan(..), makeDecidedSpan)
-import Components.Time.Value (valuePicker')
+import Timeline.UI.Index
+  ( DecidedUnit(..)
+  , DecidedValue(..)
+  , DecidedSpan(..)
+  , Span
+  , makeDecidedSpan
+  , intermediaryDecidedValue
+  )
+import Components.Time.Value
+  ( DecidedIntermediaryValue(..)
+  , initialDecidedIntermediaryValue
+  , intermediaryToValue
+  , valuePicker'
+  )
 import Prelude
 import Data.Maybe (Maybe(..))
+import Data.Tuple (Tuple(..))
+import Data.Float.Parse (parseFloat)
+import Data.Generic.Rep (class Generic)
+import Data.Generic.Rep.Eq (genericEq)
+import Data.Generic.Rep.Show (genericShow)
 import Effect (Effect)
 import Effect.Ref (new, read, write) as Ref
 import Effect.Exception (throw)
@@ -14,70 +31,148 @@ import React
   , createLeafElement
   , pureComponent
   , toElement
+  , getState
+  , setState
   )
 
-type InternalState
-  = { start :: Maybe DecidedValue
-    , stop :: Maybe DecidedValue
-    }
+data DecidedIntermediarySpan
+  = DecidedIntermediarySpanNumber (Span String)
 
-initialState :: InternalState
-initialState = { start: Nothing, stop: Nothing }
+derive instance genericDecidedIntermediarySpan :: Generic DecidedIntermediarySpan _
+
+instance eqDecidedIntermediarySpan :: Eq DecidedIntermediarySpan where
+  eq = genericEq
+
+instance showDecidedIntermediarySpan :: Show DecidedIntermediarySpan where
+  show = genericShow
+
+getIntermediaryStart :: DecidedIntermediarySpan -> DecidedIntermediaryValue
+getIntermediaryStart s = case s of
+  DecidedIntermediarySpanNumber { start } -> DecidedIntermediaryValueNumber { value: start }
+
+getIntermediaryStop :: DecidedIntermediarySpan -> DecidedIntermediaryValue
+getIntermediaryStop s = case s of
+  DecidedIntermediarySpanNumber { stop } -> DecidedIntermediaryValueNumber { value: stop }
+
+initialDecidedIntermediarySpan :: DecidedUnit -> DecidedIntermediarySpan
+initialDecidedIntermediarySpan u = case u of
+  DecidedUnitNumber -> DecidedIntermediarySpanNumber { start: "", stop: "" }
+  _ -> DecidedIntermediarySpanNumber { start: "", stop: "" } -- FIXME other units
+
+intermediaryToSpan :: DecidedIntermediarySpan -> Maybe DecidedSpan
+intermediaryToSpan i = case i of
+  DecidedIntermediarySpanNumber { start, stop } -> case Tuple <$> parseFloat start <*> parseFloat stop of
+    Nothing -> Nothing
+    Just (Tuple start' stop') -> Just (DecidedSpanNumber { start: start', stop: stop' })
+
+updateIntermediaryStart :: DecidedIntermediaryValue -> DecidedIntermediarySpan -> Maybe DecidedIntermediarySpan
+updateIntermediaryStart v i = case Tuple v i of
+  Tuple (DecidedIntermediaryValueNumber { value: start }) (DecidedIntermediarySpanNumber span) -> Just (DecidedIntermediarySpanNumber (span { start = start }))
+  _ -> Nothing
+
+updateIntermediaryStop :: DecidedIntermediaryValue -> DecidedIntermediarySpan -> Maybe DecidedIntermediarySpan
+updateIntermediaryStop v i = case Tuple v i of
+  Tuple (DecidedIntermediaryValueNumber { value: stop }) (DecidedIntermediarySpanNumber span) -> Just (DecidedIntermediarySpanNumber (span { stop = stop }))
+  _ -> Nothing
 
 spanPicker ::
-  { onSpanPicked :: DecidedSpan -> Effect Unit
+  { onChangeIntermediarySpan :: DecidedIntermediarySpan -> Effect Unit
+  , intermediarySpan :: DecidedIntermediarySpan
   , decidedUnit :: DecidedUnit
   } ->
   ReactElement
-spanPicker { onSpanPicked, decidedUnit } = createLeafElement c {}
+spanPicker { onChangeIntermediarySpan, intermediarySpan, decidedUnit } = createLeafElement c {}
   where
   c :: ReactClass {}
   c = pureComponent "SpanPicker" constructor
 
   constructor :: ReactClassConstructor _ {} _
   constructor this = do
-    stateRef <- Ref.new initialState
     pure
       { state: {}
       , render:
           do
             let
-              handleStart start = do
-                { stop } <- Ref.read stateRef
-                Ref.write { start: Just start, stop } stateRef
-                case stop of
-                  Just stop' -> case makeDecidedSpan { start, stop: stop' } of
-                    Just span -> onSpanPicked span
-                    Nothing -> throw $ "Somehow got different units in span: " <> show { start, stop: stop' }
-                  Nothing -> pure unit
+              handleStart intermediaryStart = case updateIntermediaryStart intermediaryStart intermediarySpan of
+                Nothing -> throw $ "Somehow got different units: " <> show { intermediaryStart, intermediarySpan }
+                Just intermediarySpan' -> onChangeIntermediarySpan intermediarySpan'
 
-              handleStop stop = do
-                { start } <- Ref.read stateRef
-                Ref.write { start, stop: Just stop } stateRef
-                case start of
-                  Just start' -> case makeDecidedSpan { start: start', stop } of
-                    Just span -> onSpanPicked span
-                    Nothing -> throw $ "Somehow got different units in span: " <> show { start: start', stop }
-                  Nothing -> pure unit
+              handleStop intermediaryStop = case updateIntermediaryStop intermediaryStop intermediarySpan of
+                Nothing -> throw $ "Somehow got different units: " <> show { intermediaryStop, intermediarySpan }
+                Just intermediarySpan' -> onChangeIntermediarySpan intermediarySpan'
             pure
               $ toElement
                   [ valuePicker'
-                      { onValuePicked: handleStart
+                      { onChangeIntermediaryValue: handleStart
+                      , intermediaryValue: getIntermediaryStart intermediarySpan
                       , decidedUnit
-                      , name: "Start"
                       , decidedUnitLabel:
                           \u -> case u of
                             DecidedUnitNumber -> "Start"
                             DecidedUnitFoo -> "Start"
+                      , disabled: false
+                      , error:
+                          case getIntermediaryStart intermediarySpan of
+                            DecidedIntermediaryValueNumber { value: s }
+                              | s == "" -> false
+                              | otherwise -> case parseFloat s of
+                                Nothing -> true
+                                Just start -> case getIntermediaryStop intermediarySpan of
+                                  DecidedIntermediaryValueNumber { value: s }
+                                    | s == "" -> false
+                                    | otherwise -> case parseFloat s of
+                                      Nothing -> false -- not the problem
+                                      Just stop -> start > stop
+                      , title:
+                          case getIntermediaryStart intermediarySpan of
+                            DecidedIntermediaryValueNumber { value: s }
+                              | s == "" -> Nothing
+                              | otherwise -> case parseFloat s of
+                                Nothing -> Just "Can't parse Number"
+                                Just start -> case getIntermediaryStop intermediarySpan of
+                                  DecidedIntermediaryValueNumber { value: s }
+                                    | s == "" -> Nothing
+                                    | otherwise -> case parseFloat s of
+                                      Nothing -> Nothing -- not the problem
+                                      Just stop
+                                        | start > stop -> Just "Start is greater than Stop"
+                                        | otherwise -> Nothing
                       }
                   , valuePicker'
-                      { onValuePicked: handleStop
+                      { onChangeIntermediaryValue: handleStop
+                      , intermediaryValue: getIntermediaryStop intermediarySpan
                       , decidedUnit
-                      , name: "Stop"
                       , decidedUnitLabel:
                           \u -> case u of
                             DecidedUnitNumber -> "Stop"
                             DecidedUnitFoo -> "Stop"
+                      , disabled: false
+                      , error:
+                          case getIntermediaryStop intermediarySpan of
+                            DecidedIntermediaryValueNumber { value: s }
+                              | s == "" -> false
+                              | otherwise -> case parseFloat s of
+                                Nothing -> true
+                                Just stop -> case getIntermediaryStart intermediarySpan of
+                                  DecidedIntermediaryValueNumber { value: s }
+                                    | s == "" -> false
+                                    | otherwise -> case parseFloat s of
+                                      Nothing -> false -- not the problem
+                                      Just start -> start > stop
+                      , title:
+                          case getIntermediaryStop intermediarySpan of
+                            DecidedIntermediaryValueNumber { value: s }
+                              | s == "" -> Nothing
+                              | otherwise -> case parseFloat s of
+                                Nothing -> Just "Can't parse Number"
+                                Just stop -> case getIntermediaryStart intermediarySpan of
+                                  DecidedIntermediaryValueNumber { value: s }
+                                    | s == "" -> Nothing
+                                    | otherwise -> case parseFloat s of
+                                      Nothing -> Nothing -- not the problem
+                                      Just start
+                                        | start > stop -> Just "Stop is less than Start"
+                                        | otherwise -> Nothing
                       }
                   ]
       }

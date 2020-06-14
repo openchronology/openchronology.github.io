@@ -4,6 +4,9 @@ import Timeline.UI.Index (DecidedUnit(..), DecidedValue(..))
 import Prelude
 import Data.Maybe (Maybe(..))
 import Data.Float.Parse (parseFloat)
+import Data.Generic.Rep (class Generic)
+import Data.Generic.Rep.Eq (genericEq)
+import Data.Generic.Rep.Show (genericShow)
 import Effect (Effect)
 import Effect.Uncurried (mkEffectFn1)
 import Effect.Timer (TimeoutId, setTimeout, clearTimeout)
@@ -12,7 +15,7 @@ import React
   , ReactClass
   , ReactClassConstructor
   , createLeafElement
-  , component
+  , pureComponent
   , getState
   , setState
   )
@@ -21,78 +24,110 @@ import React.SyntheticEvent (target)
 import MaterialUI.TextField (textField')
 import Unsafe.Coerce (unsafeCoerce)
 
-type State
-  = { value :: String
-    , pending :: Maybe TimeoutId
-    }
+-- | Used to maintain the state of the picker at a higher level
+data DecidedIntermediaryValue
+  = DecidedIntermediaryValueNumber { value :: String }
 
-initialState :: State
-initialState = { value: "", pending: Nothing }
+derive instance genericDecidedIntermediaryValue :: Generic DecidedIntermediaryValue _
+
+instance eqDecidedIntermediaryValue :: Eq DecidedIntermediaryValue where
+  eq = genericEq
+
+instance showDecidedIntermediaryValue :: Show DecidedIntermediaryValue where
+  show = genericShow
+
+initialDecidedIntermediaryValue :: DecidedUnit -> DecidedIntermediaryValue
+initialDecidedIntermediaryValue u = case u of
+  DecidedUnitNumber -> DecidedIntermediaryValueNumber { value: "" }
+  _ -> DecidedIntermediaryValueNumber { value: "" } -- FIXME other units
+
+intermediaryToValue :: DecidedIntermediaryValue -> Maybe DecidedValue
+intermediaryToValue i = case i of
+  DecidedIntermediaryValueNumber { value } -> case parseFloat value of
+    Nothing -> Nothing
+    Just n -> Just (DecidedValueNumber n)
 
 valuePicker ::
-  { onValuePicked :: DecidedValue -> Effect Unit
-  , decidedUnit :: DecidedUnit
+  { decidedUnit :: DecidedUnit
+  , intermediaryValue :: DecidedIntermediaryValue
+  , onChangeIntermediaryValue :: DecidedIntermediaryValue -> Effect Unit
   } ->
   ReactElement
-valuePicker { onValuePicked, decidedUnit } =
+valuePicker { decidedUnit, intermediaryValue, onChangeIntermediaryValue } =
   valuePicker'
-    { onValuePicked
-    , decidedUnit
-    , name: "Value"
+    { decidedUnit
     , decidedUnitLabel:
         \u -> case u of
           DecidedUnitNumber -> "Number"
           DecidedUnitFoo -> "Foo"
+    , disabled: false
+    , intermediaryValue
+    , onChangeIntermediaryValue
+    , error: false
+    , title: Nothing
     }
 
 valuePicker' ::
-  { onValuePicked :: DecidedValue -> Effect Unit
-  , decidedUnit :: DecidedUnit
-  , name :: String
+  { decidedUnit :: DecidedUnit
   , decidedUnitLabel :: DecidedUnit -> String
+  , disabled :: Boolean
+  , intermediaryValue :: DecidedIntermediaryValue
+  , onChangeIntermediaryValue :: DecidedIntermediaryValue -> Effect Unit
+  , error :: Boolean
+  , title :: Maybe String
   } ->
   ReactElement
-valuePicker' { onValuePicked, decidedUnit, name, decidedUnitLabel } = createLeafElement c {}
+valuePicker' { decidedUnit
+, decidedUnitLabel
+, disabled
+, intermediaryValue
+, onChangeIntermediaryValue
+, error
+, title
+} = createLeafElement c {}
   where
   c :: ReactClass {}
-  c = component (name <> "Picker") constructor
+  c = pureComponent "ValuePicker" constructor
 
-  constructor :: ReactClassConstructor _ State _
+  constructor :: ReactClassConstructor _ {} _
   constructor this =
     pure
-      { componentDidMount: pure unit
-      , componentWillUnmount: pure unit
-      , state: initialState
+      { state: {}
       , render:
-          do
-            { value, pending } <- getState this
-            let
-              handleChange e = do
-                t <- target e
-                let
-                  val = (unsafeCoerce t).value
-                case pending of
-                  Just id -> clearTimeout id
-                  Nothing -> pure unit
-                -- debouncer
-                id <-
-                  setTimeout 500 do
-                    case decidedUnit of
-                      DecidedUnitNumber -> do
-                        case parseFloat val of
-                          Nothing -> pure unit -- wait until it can parse
-                          Just n -> onValuePicked (DecidedValueNumber n)
-                        setState this { pending: Nothing }
-                      _ -> pure unit -- FIXME
-                setState this { value: val, pending: Just id }
-            pure
-              $ case decidedUnit of
-                  DecidedUnitNumber ->
-                    textField'
-                      { label: decidedUnitLabel DecidedUnitNumber
-                      , value
-                      , onChange: mkEffectFn1 handleChange
-                      , "type": "number"
-                      }
-                  _ -> text "" -- FIXME
+          case decidedUnit of
+            DecidedUnitNumber -> do
+              let
+                handleChange e = do
+                  t <- target e
+                  let
+                    value = (unsafeCoerce t).value
+                  onChangeIntermediaryValue (DecidedIntermediaryValueNumber { value })
+              pure
+                $ case title of
+                    Nothing ->
+                      textField'
+                        { label: decidedUnitLabel DecidedUnitNumber
+                        , value:
+                            case intermediaryValue of
+                              DecidedIntermediaryValueNumber { value } -> value
+                              _ -> "" -- FIXME what if it's the bad unit?
+                        , onChange: mkEffectFn1 handleChange
+                        , "type": "number"
+                        , disabled
+                        , error
+                        }
+                    Just title' ->
+                      textField'
+                        { label: decidedUnitLabel DecidedUnitNumber
+                        , value:
+                            case intermediaryValue of
+                              DecidedIntermediaryValueNumber { value } -> value
+                              _ -> "" -- FIXME what if it's the bad unit?
+                        , onChange: mkEffectFn1 handleChange
+                        , "type": "number"
+                        , disabled
+                        , error
+                        , title: title'
+                        }
+            _ -> pure $ text "" -- FIXME other units
       }
