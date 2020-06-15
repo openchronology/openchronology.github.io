@@ -81,50 +81,39 @@ valuePicker' { decidedUnit
 , onChangeIntermediaryValue
 , error
 , title
-} = createLeafElement c {}
-  where
-  c :: ReactClass {}
-  c = pureComponent "ValuePicker" constructor
-
-  constructor :: ReactClassConstructor _ {} _
-  constructor this =
-    pure
-      { state: {}
-      , render:
-          case decidedUnit of
-            DecidedUnitNumber -> do
-              let
-                handleChange e = do
-                  t <- target e
-                  let
-                    value = (unsafeCoerce t).value
-                  onChangeIntermediaryValue (DecidedIntermediaryValueNumber { value })
-              pure
-                $ case title of
-                    Nothing ->
-                      textField'
-                        { label: decidedUnitLabel DecidedUnitNumber
-                        , value:
-                            case intermediaryValue of
-                              DecidedIntermediaryValueNumber { value } -> value
-                              _ -> "" -- FIXME what if it's the bad unit?
-                        , onChange: mkEffectFn1 handleChange
-                        , "type": "number"
-                        , disabled
-                        , error
-                        }
-                    Just title' ->
-                      textField'
-                        { label: decidedUnitLabel DecidedUnitNumber
-                        , value:
-                            case intermediaryValue of
-                              DecidedIntermediaryValueNumber { value } -> value
-                              _ -> "" -- FIXME what if it's the bad unit?
-                        , onChange: mkEffectFn1 handleChange
-                        , "type": "number"
-                        , disabled
-                        , error
-                        , title: title'
-                        }
-            _ -> pure $ text "" -- FIXME other units
-      }
+} = case decidedUnit of
+  DecidedUnitNumber ->
+    let
+      handleChange e = do
+        t <- target e
+        let
+          value = (unsafeCoerce t).value
+        onChangeIntermediaryValue (DecidedIntermediaryValueNumber { value })
+    in
+      case title of
+        Nothing ->
+          textField'
+            { label: decidedUnitLabel DecidedUnitNumber
+            , value:
+                case intermediaryValue of
+                  DecidedIntermediaryValueNumber { value } -> value
+                  _ -> "" -- FIXME what if it's the bad unit?
+            , onChange: mkEffectFn1 handleChange
+            , "type": "number"
+            , disabled
+            , error
+            }
+        Just title' ->
+          textField'
+            { label: decidedUnitLabel DecidedUnitNumber
+            , value:
+                case intermediaryValue of
+                  DecidedIntermediaryValueNumber { value } -> value
+                  _ -> "" -- FIXME what if it's the bad unit?
+            , onChange: mkEffectFn1 handleChange
+            , "type": "number"
+            , disabled
+            , error
+            , title: title'
+            }
+  _ -> text "" -- FIXME other units

@@ -62,49 +62,38 @@ maybeLimitPicker ::
 maybeLimitPicker { onChangeIntermediaryMaybeLimit
 , intermediaryMaybeLimit
 , decidedUnit
-} = createLeafElement c {}
-  where
-  c :: ReactClass {}
-  c = pureComponent "MaybeLimitPicker" constructor
+} =
+  let
+    handleToggleBegin v = onChangeIntermediaryMaybeLimit $ intermediaryMaybeLimit { hasBegin = v }
 
-  constructor :: ReactClassConstructor _ {} _
-  constructor this = do
-    pure
-      { state: {}
-      , render:
-          do
-            let
-              handleToggleBegin v = onChangeIntermediaryMaybeLimit $ intermediaryMaybeLimit { hasBegin = v }
+    handleToggleEnd v = onChangeIntermediaryMaybeLimit $ intermediaryMaybeLimit { hasEnd = v }
 
-              handleToggleEnd v = onChangeIntermediaryMaybeLimit $ intermediaryMaybeLimit { hasEnd = v }
-
-              handleBounds b = onChangeIntermediaryMaybeLimit $ intermediaryMaybeLimit { intermediaryBounds = b }
-            pure
-              $ boundsPicker'
-                  { onChangeIntermediaryBounds: handleBounds
-                  , intermediaryBounds: intermediaryMaybeLimit.intermediaryBounds
-                  , decidedUnit
-                  , disabledBegin: not intermediaryMaybeLimit.hasBegin
-                  , disabledEnd: not intermediaryMaybeLimit.hasEnd
-                  , preBegin:
-                      [ formControlLabel'
-                          { label: "Limit Beginning"
-                          , control:
-                              switch'
-                                { checked: intermediaryMaybeLimit.hasBegin
-                                , onChange: mkEffectFn2 (const handleToggleBegin)
-                                }
-                          }
-                      ]
-                  , preEnd:
-                      [ formControlLabel'
-                          { label: "Limit End"
-                          , control:
-                              switch'
-                                { checked: intermediaryMaybeLimit.hasEnd
-                                , onChange: mkEffectFn2 (const handleToggleEnd)
-                                }
-                          }
-                      ]
-                  }
+    handleBounds b = onChangeIntermediaryMaybeLimit $ intermediaryMaybeLimit { intermediaryBounds = b }
+  in
+    boundsPicker'
+      { onChangeIntermediaryBounds: handleBounds
+      , intermediaryBounds: intermediaryMaybeLimit.intermediaryBounds
+      , decidedUnit
+      , disabledBegin: not intermediaryMaybeLimit.hasBegin
+      , disabledEnd: not intermediaryMaybeLimit.hasEnd
+      , preBegin:
+          [ formControlLabel'
+              { label: "Limit Beginning"
+              , control:
+                  switch'
+                    { checked: intermediaryMaybeLimit.hasBegin
+                    , onChange: mkEffectFn2 (const handleToggleBegin)
+                    }
+              }
+          ]
+      , preEnd:
+          [ formControlLabel'
+              { label: "Limit End"
+              , control:
+                  switch'
+                    { checked: intermediaryMaybeLimit.hasEnd
+                    , onChange: mkEffectFn2 (const handleToggleEnd)
+                    }
+              }
+          ]
       }

@@ -105,104 +105,93 @@ boundsPicker' { onChangeIntermediaryBounds
 , disabledEnd
 , preBegin
 , preEnd
-} = createLeafElement c {}
-  where
-  c :: ReactClass {}
-  c = pureComponent "BoundsPicker" constructor
+} =
+  let
+    handleBegin intermediaryBegin = case updateIntermediaryBegin intermediaryBegin intermediaryBounds of
+      Nothing -> throw $ "Somehow got different units: " <> show { intermediaryBegin, intermediaryBounds }
+      Just intermediaryBounds' -> onChangeIntermediaryBounds intermediaryBounds'
 
-  constructor :: ReactClassConstructor _ {} _
-  constructor this = do
-    pure
-      { state: {}
-      , render:
-          do
-            let
-              handleBegin intermediaryBegin = case updateIntermediaryBegin intermediaryBegin intermediaryBounds of
-                Nothing -> throw $ "Somehow got different units: " <> show { intermediaryBegin, intermediaryBounds }
-                Just intermediaryBounds' -> onChangeIntermediaryBounds intermediaryBounds'
-
-              handleEnd intermediaryEnd = case updateIntermediaryEnd intermediaryEnd intermediaryBounds of
-                Nothing -> throw $ "Somehow got different units: " <> show { intermediaryEnd, intermediaryBounds }
-                Just intermediaryBounds' -> onChangeIntermediaryBounds intermediaryBounds'
-            pure
-              $ div [ RP.style { display: "flex", flexDirection: "row" } ]
-                  [ div [ RP.style { flexGrow: 1 } ]
-                      $ preBegin
-                      <> [ valuePicker'
-                            { onChangeIntermediaryValue: handleBegin
-                            , intermediaryValue: getIntermediaryBegin intermediaryBounds
-                            , decidedUnit
-                            , decidedUnitLabel:
-                                \u -> case u of
-                                  DecidedUnitNumber -> "Begin"
-                                  DecidedUnitFoo -> "Begin"
-                            , disabled: disabledBegin
-                            , error:
-                                case getIntermediaryBegin intermediaryBounds of
-                                  DecidedIntermediaryValueNumber { value: begin' }
-                                    | begin' == "" -> false
-                                    | otherwise -> case parseFloat begin' of
-                                      Nothing -> true
-                                      Just begin -> case getIntermediaryEnd intermediaryBounds of
-                                        DecidedIntermediaryValueNumber { value: end' }
-                                          | end' == "" -> false
-                                          | otherwise -> case parseFloat end' of
-                                            Nothing -> false -- not the problem
-                                            Just end -> begin > end
-                            , title:
-                                case getIntermediaryBegin intermediaryBounds of
-                                  DecidedIntermediaryValueNumber { value: begin' }
-                                    | begin' == "" -> Nothing
-                                    | otherwise -> case parseFloat begin' of
-                                      Nothing -> Just "Can't parse Number"
-                                      Just begin -> case getIntermediaryEnd intermediaryBounds of
-                                        DecidedIntermediaryValueNumber { value: end' }
-                                          | end' == "" -> Nothing
-                                          | otherwise -> case parseFloat end' of
-                                            Nothing -> Nothing -- not the problem
-                                            Just end
-                                              | begin > end -> Just "Beginning is greater than End"
-                                              | otherwise -> Nothing
-                            }
-                        ]
-                  , div [ RP.style { flexGrow: 1 } ]
-                      $ preEnd
-                      <> [ valuePicker'
-                            { onChangeIntermediaryValue: handleEnd
-                            , intermediaryValue: getIntermediaryEnd intermediaryBounds
-                            , decidedUnit
-                            , decidedUnitLabel:
-                                \u -> case u of
-                                  DecidedUnitNumber -> "End"
-                                  DecidedUnitFoo -> "End"
-                            , disabled: disabledEnd
-                            , error:
-                                case getIntermediaryEnd intermediaryBounds of
-                                  DecidedIntermediaryValueNumber { value: end' }
-                                    | end' == "" -> false
-                                    | otherwise -> case parseFloat end' of
-                                      Nothing -> true
-                                      Just end -> case getIntermediaryBegin intermediaryBounds of
-                                        DecidedIntermediaryValueNumber { value: begin' }
-                                          | begin' == "" -> false
-                                          | otherwise -> case parseFloat begin' of
-                                            Nothing -> false -- not the problem
-                                            Just begin -> begin > end
-                            , title:
-                                case getIntermediaryEnd intermediaryBounds of
-                                  DecidedIntermediaryValueNumber { value: end' }
-                                    | end' == "" -> Nothing
-                                    | otherwise -> case parseFloat end' of
-                                      Nothing -> Just "Can't parse Number"
-                                      Just end -> case getIntermediaryBegin intermediaryBounds of
-                                        DecidedIntermediaryValueNumber { value: begin' }
-                                          | begin' == "" -> Nothing
-                                          | otherwise -> case parseFloat begin' of
-                                            Nothing -> Nothing -- not the problem
-                                            Just begin
-                                              | begin > end -> Just "End is less than Beginning"
-                                              | otherwise -> Nothing
-                            }
-                        ]
-                  ]
-      }
+    handleEnd intermediaryEnd = case updateIntermediaryEnd intermediaryEnd intermediaryBounds of
+      Nothing -> throw $ "Somehow got different units: " <> show { intermediaryEnd, intermediaryBounds }
+      Just intermediaryBounds' -> onChangeIntermediaryBounds intermediaryBounds'
+  in
+    div [ RP.style { display: "flex", flexDirection: "row" } ]
+      [ div [ RP.style { flexGrow: 1 } ]
+          $ preBegin
+          <> [ valuePicker'
+                { onChangeIntermediaryValue: handleBegin
+                , intermediaryValue: getIntermediaryBegin intermediaryBounds
+                , decidedUnit
+                , decidedUnitLabel:
+                    \u -> case u of
+                      DecidedUnitNumber -> "Begin"
+                      DecidedUnitFoo -> "Begin"
+                , disabled: disabledBegin
+                , error:
+                    case getIntermediaryBegin intermediaryBounds of
+                      DecidedIntermediaryValueNumber { value: begin' }
+                        | begin' == "" -> false
+                        | otherwise -> case parseFloat begin' of
+                          Nothing -> true
+                          Just begin -> case getIntermediaryEnd intermediaryBounds of
+                            DecidedIntermediaryValueNumber { value: end' }
+                              | end' == "" -> false
+                              | otherwise -> case parseFloat end' of
+                                Nothing -> false -- not the problem
+                                Just end -> begin > end
+                , title:
+                    case getIntermediaryBegin intermediaryBounds of
+                      DecidedIntermediaryValueNumber { value: begin' }
+                        | begin' == "" -> Nothing
+                        | otherwise -> case parseFloat begin' of
+                          Nothing -> Just "Can't parse Number"
+                          Just begin -> case getIntermediaryEnd intermediaryBounds of
+                            DecidedIntermediaryValueNumber { value: end' }
+                              | end' == "" -> Nothing
+                              | otherwise -> case parseFloat end' of
+                                Nothing -> Nothing -- not the problem
+                                Just end
+                                  | begin > end -> Just "Beginning is greater than End"
+                                  | otherwise -> Nothing
+                }
+            ]
+      , div [ RP.style { flexGrow: 1 } ]
+          $ preEnd
+          <> [ valuePicker'
+                { onChangeIntermediaryValue: handleEnd
+                , intermediaryValue: getIntermediaryEnd intermediaryBounds
+                , decidedUnit
+                , decidedUnitLabel:
+                    \u -> case u of
+                      DecidedUnitNumber -> "End"
+                      DecidedUnitFoo -> "End"
+                , disabled: disabledEnd
+                , error:
+                    case getIntermediaryEnd intermediaryBounds of
+                      DecidedIntermediaryValueNumber { value: end' }
+                        | end' == "" -> false
+                        | otherwise -> case parseFloat end' of
+                          Nothing -> true
+                          Just end -> case getIntermediaryBegin intermediaryBounds of
+                            DecidedIntermediaryValueNumber { value: begin' }
+                              | begin' == "" -> false
+                              | otherwise -> case parseFloat begin' of
+                                Nothing -> false -- not the problem
+                                Just begin -> begin > end
+                , title:
+                    case getIntermediaryEnd intermediaryBounds of
+                      DecidedIntermediaryValueNumber { value: end' }
+                        | end' == "" -> Nothing
+                        | otherwise -> case parseFloat end' of
+                          Nothing -> Just "Can't parse Number"
+                          Just end -> case getIntermediaryBegin intermediaryBounds of
+                            DecidedIntermediaryValueNumber { value: begin' }
+                              | begin' == "" -> Nothing
+                              | otherwise -> case parseFloat begin' of
+                                Nothing -> Nothing -- not the problem
+                                Just begin
+                                  | begin > end -> Just "End is less than Beginning"
+                                  | otherwise -> Nothing
+                }
+            ]
+      ]
