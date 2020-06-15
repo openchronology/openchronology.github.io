@@ -5,11 +5,8 @@ import Components.Time.Bounds
   , initialDecidedIntermediaryBounds
   , boundsPicker'
   )
-import Timeline.UI.Index
-  ( DecidedUnit
-  , DecidedMaybeLimit(..)
-  , MaybeLimit(..)
-  )
+import Timeline.UI.Index.Unit (DecidedUnit)
+import Timeline.UI.Index.MaybeLimit (DecidedMaybeLimit(..), MaybeLimit(..))
 import Prelude
 import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))

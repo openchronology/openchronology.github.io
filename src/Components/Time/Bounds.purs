@@ -1,10 +1,7 @@
 module Components.Time.Bounds where
 
-import Timeline.UI.Index
-  ( DecidedUnit(..)
-  , DecidedBounds(..)
-  , Bounds
-  )
+import Timeline.UI.Index.Unit (DecidedUnit(..))
+import Timeline.UI.Index.Bounds (DecidedBounds(..), Bounds)
 import Components.Time.Value
   ( DecidedIntermediaryValue(..)
   , valuePicker'

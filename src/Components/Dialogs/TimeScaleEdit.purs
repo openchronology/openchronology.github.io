@@ -1,8 +1,10 @@
 module Components.Dialogs.TimeScaleEdit (timeScaleEditDialog) where
 
-import Timeline.UI.Index (DecidedUnit(DecidedUnitNumber))
+import Timeline.UI.Index.Unit (DecidedUnit(..))
+import Timeline.UI.Index.MaybeLimit (DecidedMaybeLimit(..), MaybeLimit(..))
 import Timeline.UI.TimeScale (TimeScale(..))
 import Components.Time.Unit (unitPicker)
+import Components.Time.Bounds (DecidedIntermediaryBounds(..))
 import Components.Time.MaybeLimit
   ( DecidedIntermediaryMaybeLimit
   , initialDecidedIntermediaryMaybeLimit
@@ -60,17 +62,40 @@ initialState ::
   IxSig.IxSignal ( read :: S.READ ) Settings ->
   Effect State
 initialState timeScaleSignal settingsSignal = do
-  TimeScale { name, units, description } <- IxSig.get timeScaleSignal
+  TimeScale { name, units, description, limit } <- IxSig.get timeScaleSignal
   Settings { isEditable } <- IxSig.get settingsSignal
-  pure
-    { open: false
-    , isEditable
-    , name
-    , units
-    , description
-    , decidedUnit: DecidedUnitNumber -- FIXME get from a signal
-    , intermediaryMaybeLimit: initialDecidedIntermediaryMaybeLimit DecidedUnitNumber
-    }
+  case limit of
+    DecidedMaybeLimitNumber ml ->
+      pure
+        { open: false
+        , isEditable
+        , name
+        , units
+        , description
+        , decidedUnit: DecidedUnitNumber
+        , intermediaryMaybeLimit:
+            case ml of
+              JustLimitBounds { begin, end } ->
+                { hasBegin: true
+                , hasEnd: true
+                , intermediaryBounds: DecidedIntermediaryBoundsNumber { begin: show begin, end: show end }
+                }
+              JustLimitMin { begin } ->
+                { hasBegin: true
+                , hasEnd: false
+                , intermediaryBounds: DecidedIntermediaryBoundsNumber { begin: show begin, end: "" }
+                }
+              JustLimitMax { end } ->
+                { hasBegin: false
+                , hasEnd: true
+                , intermediaryBounds: DecidedIntermediaryBoundsNumber { begin: "", end: show end }
+                }
+              NothingLimit ->
+                { hasBegin: false
+                , hasEnd: false
+                , intermediaryBounds: DecidedIntermediaryBoundsNumber { begin: "", end: "" }
+                }
+        }
 
 timeScaleEditDialog ::
   { timeScaleSignal :: IxSig.IxSignal ( read :: S.READ ) TimeScale
@@ -102,8 +127,37 @@ timeScaleEditDialog { timeScaleSignal
       handlerOpen :: _ -> Unit -> Effect Unit
       handlerOpen this _ = setState this { open: true }
 
+      -- FIXME include unit change here too?
       handlerChange :: _ -> TimeScale -> Effect Unit
-      handlerChange this (TimeScale { name, units, description }) = setState this { name, units, description }
+      handlerChange this (TimeScale { name, units, description, limit }) = do
+        setState this { name, units, description }
+        setState this
+          $ case limit of
+              DecidedMaybeLimitNumber ml ->
+                { decidedUnit: DecidedUnitNumber
+                , intermediaryMaybeLimit:
+                    case ml of
+                      JustLimitBounds { begin, end } ->
+                        { hasBegin: true
+                        , hasEnd: true
+                        , intermediaryBounds: DecidedIntermediaryBoundsNumber { begin: show begin, end: show end }
+                        }
+                      JustLimitMin { begin } ->
+                        { hasBegin: true
+                        , hasEnd: false
+                        , intermediaryBounds: DecidedIntermediaryBoundsNumber { begin: show begin, end: "" }
+                        }
+                      JustLimitMax { end } ->
+                        { hasBegin: false
+                        , hasEnd: true
+                        , intermediaryBounds: DecidedIntermediaryBoundsNumber { begin: "", end: show end }
+                        }
+                      NothingLimit ->
+                        { hasBegin: false
+                        , hasEnd: false
+                        , intermediaryBounds: DecidedIntermediaryBoundsNumber { begin: "", end: "" }
+                        }
+                }
 
       handlerChangeEdit :: _ -> Settings -> Effect Unit
       handlerChangeEdit this (Settings { isEditable }) = setState this { isEditable }

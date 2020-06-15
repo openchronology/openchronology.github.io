@@ -1,15 +1,12 @@
 module Components.Time.Span where
 
-import Timeline.UI.Index
-  ( DecidedUnit(..)
-  , DecidedSpan(..)
-  , Span
-  )
+import Timeline.UI.Index.Unit (DecidedUnit(..))
+import Timeline.UI.Index.Span (DecidedSpan(..), Span)
 import Components.Time.Value
   ( DecidedIntermediaryValue(..)
   , valuePicker'
   )
-import Prelude
+import Prelude hiding (div)
 import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
 import Data.Float.Parse (parseFloat)
@@ -24,8 +21,9 @@ import React
   , ReactClassConstructor
   , createLeafElement
   , pureComponent
-  , toElement
   )
+import React.DOM (div)
+import React.DOM.Props (style) as RP
 
 data DecidedIntermediarySpan
   = DecidedIntermediarySpanNumber (Span String)
@@ -73,98 +71,124 @@ spanPicker ::
   , decidedUnit :: DecidedUnit
   } ->
   ReactElement
-spanPicker { onChangeIntermediarySpan, intermediarySpan, decidedUnit } = createLeafElement c {}
-  where
-  c :: ReactClass {}
-  c = pureComponent "SpanPicker" constructor
+spanPicker { onChangeIntermediarySpan
+, intermediarySpan
+, decidedUnit
+} =
+  spanPicker'
+    { onChangeIntermediarySpan
+    , intermediarySpan
+    , decidedUnit
+    , disabledStart: false
+    , disabledStop: false
+    , preStart: []
+    , preStop: []
+    }
 
-  constructor :: ReactClassConstructor _ {} _
-  constructor this = do
-    pure
-      { state: {}
-      , render:
-          do
-            let
-              handleStart intermediaryStart = case updateIntermediaryStart intermediaryStart intermediarySpan of
-                Nothing -> throw $ "Somehow got different units: " <> show { intermediaryStart, intermediarySpan }
-                Just intermediarySpan' -> onChangeIntermediarySpan intermediarySpan'
+spanPicker' ::
+  { onChangeIntermediarySpan :: DecidedIntermediarySpan -> Effect Unit
+  , intermediarySpan :: DecidedIntermediarySpan
+  , decidedUnit :: DecidedUnit
+  , disabledStart :: Boolean
+  , disabledStop :: Boolean
+  , preStart :: Array ReactElement
+  , preStop :: Array ReactElement
+  } ->
+  ReactElement
+spanPicker' { onChangeIntermediarySpan
+, intermediarySpan
+, decidedUnit
+, disabledStart
+, disabledStop
+, preStart
+, preStop
+} =
+  let
+    handleStart intermediaryStart = case updateIntermediaryStart intermediaryStart intermediarySpan of
+      Nothing -> throw $ "Somehow got different units: " <> show { intermediaryStart, intermediarySpan }
+      Just intermediarySpan' -> onChangeIntermediarySpan intermediarySpan'
 
-              handleStop intermediaryStop = case updateIntermediaryStop intermediaryStop intermediarySpan of
-                Nothing -> throw $ "Somehow got different units: " <> show { intermediaryStop, intermediarySpan }
-                Just intermediarySpan' -> onChangeIntermediarySpan intermediarySpan'
-            pure
-              $ toElement
-                  [ valuePicker'
-                      { onChangeIntermediaryValue: handleStart
-                      , intermediaryValue: getIntermediaryStart intermediarySpan
-                      , decidedUnit
-                      , decidedUnitLabel:
-                          \u -> case u of
-                            DecidedUnitNumber -> "Start"
-                            DecidedUnitFoo -> "Start"
-                      , disabled: false
-                      , error:
-                          case getIntermediaryStart intermediarySpan of
-                            DecidedIntermediaryValueNumber { value: start' }
-                              | start' == "" -> false
-                              | otherwise -> case parseFloat start' of
-                                Nothing -> true
-                                Just start -> case getIntermediaryStop intermediarySpan of
-                                  DecidedIntermediaryValueNumber { value: stop' }
-                                    | stop' == "" -> false
-                                    | otherwise -> case parseFloat stop' of
-                                      Nothing -> false -- not the problem
-                                      Just stop -> start > stop
-                      , title:
-                          case getIntermediaryStart intermediarySpan of
-                            DecidedIntermediaryValueNumber { value: start' }
-                              | start' == "" -> Nothing
-                              | otherwise -> case parseFloat start' of
-                                Nothing -> Just "Can't parse Number"
-                                Just start -> case getIntermediaryStop intermediarySpan of
-                                  DecidedIntermediaryValueNumber { value: stop' }
-                                    | stop' == "" -> Nothing
-                                    | otherwise -> case parseFloat stop' of
-                                      Nothing -> Nothing -- not the problem
-                                      Just stop
-                                        | start > stop -> Just "Start is greater than Stop"
-                                        | otherwise -> Nothing
-                      }
-                  , valuePicker'
-                      { onChangeIntermediaryValue: handleStop
-                      , intermediaryValue: getIntermediaryStop intermediarySpan
-                      , decidedUnit
-                      , decidedUnitLabel:
-                          \u -> case u of
-                            DecidedUnitNumber -> "Stop"
-                            DecidedUnitFoo -> "Stop"
-                      , disabled: false
-                      , error:
-                          case getIntermediaryStop intermediarySpan of
+    handleStop intermediaryStop = case updateIntermediaryStop intermediaryStop intermediarySpan of
+      Nothing -> throw $ "Somehow got different units: " <> show { intermediaryStop, intermediarySpan }
+      Just intermediarySpan' -> onChangeIntermediarySpan intermediarySpan'
+  in
+    div [ RP.style { display: "flex", flexDirection: "row" } ]
+      [ div [ RP.style { flexGrow: 1 } ]
+          $ preStart
+          <> [ valuePicker'
+                { onChangeIntermediaryValue: handleStart
+                , intermediaryValue: getIntermediaryStart intermediarySpan
+                , decidedUnit
+                , decidedUnitLabel:
+                    \u -> case u of
+                      DecidedUnitNumber -> "Start"
+                      DecidedUnitFoo -> "Start"
+                , disabled: disabledStart
+                , error:
+                    case getIntermediaryStart intermediarySpan of
+                      DecidedIntermediaryValueNumber { value: start' }
+                        | start' == "" -> false
+                        | otherwise -> case parseFloat start' of
+                          Nothing -> true
+                          Just start -> case getIntermediaryStop intermediarySpan of
                             DecidedIntermediaryValueNumber { value: stop' }
                               | stop' == "" -> false
                               | otherwise -> case parseFloat stop' of
-                                Nothing -> true
-                                Just stop -> case getIntermediaryStart intermediarySpan of
-                                  DecidedIntermediaryValueNumber { value: start' }
-                                    | start' == "" -> false
-                                    | otherwise -> case parseFloat start' of
-                                      Nothing -> false -- not the problem
-                                      Just start -> start > stop
-                      , title:
-                          case getIntermediaryStop intermediarySpan of
+                                Nothing -> false -- not the problem
+                                Just stop -> start > stop
+                , title:
+                    case getIntermediaryStart intermediarySpan of
+                      DecidedIntermediaryValueNumber { value: start' }
+                        | start' == "" -> Nothing
+                        | otherwise -> case parseFloat start' of
+                          Nothing -> Just "Can't parse Number"
+                          Just start -> case getIntermediaryStop intermediarySpan of
                             DecidedIntermediaryValueNumber { value: stop' }
                               | stop' == "" -> Nothing
                               | otherwise -> case parseFloat stop' of
-                                Nothing -> Just "Can't parse Number"
-                                Just stop -> case getIntermediaryStart intermediarySpan of
-                                  DecidedIntermediaryValueNumber { value: start' }
-                                    | start' == "" -> Nothing
-                                    | otherwise -> case parseFloat start' of
-                                      Nothing -> Nothing -- not the problem
-                                      Just start
-                                        | start > stop -> Just "Stop is less than Start"
-                                        | otherwise -> Nothing
-                      }
-                  ]
-      }
+                                Nothing -> Nothing -- not the problem
+                                Just stop
+                                  | start > stop -> Just "Start is greater than Stop"
+                                  | otherwise -> Nothing
+                }
+            ]
+      , div [ RP.style { flexGrow: 1 } ]
+          $ preStop
+          <> [ valuePicker'
+                { onChangeIntermediaryValue: handleStop
+                , intermediaryValue: getIntermediaryStop intermediarySpan
+                , decidedUnit
+                , decidedUnitLabel:
+                    \u -> case u of
+                      DecidedUnitNumber -> "Stop"
+                      DecidedUnitFoo -> "Stop"
+                , disabled: disabledStop
+                , error:
+                    case getIntermediaryStop intermediarySpan of
+                      DecidedIntermediaryValueNumber { value: stop' }
+                        | stop' == "" -> false
+                        | otherwise -> case parseFloat stop' of
+                          Nothing -> true
+                          Just stop -> case getIntermediaryStart intermediarySpan of
+                            DecidedIntermediaryValueNumber { value: start' }
+                              | start' == "" -> false
+                              | otherwise -> case parseFloat start' of
+                                Nothing -> false -- not the problem
+                                Just start -> start > stop
+                , title:
+                    case getIntermediaryStop intermediarySpan of
+                      DecidedIntermediaryValueNumber { value: stop' }
+                        | stop' == "" -> Nothing
+                        | otherwise -> case parseFloat stop' of
+                          Nothing -> Just "Can't parse Number"
+                          Just stop -> case getIntermediaryStart intermediarySpan of
+                            DecidedIntermediaryValueNumber { value: start' }
+                              | start' == "" -> Nothing
+                              | otherwise -> case parseFloat start' of
+                                Nothing -> Nothing -- not the problem
+                                Just start
+                                  | start > stop -> Just "Stop is less than Start"
+                                  | otherwise -> Nothing
+                }
+            ]
+      ]

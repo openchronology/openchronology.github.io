@@ -1,10 +1,10 @@
 module Components.Time.Min where
 
+import Components.Time.Value (DecidedIntermediaryValue, valuePicker')
+import Timeline.UI.Index.Unit (DecidedUnit(..))
 import Prelude (Unit)
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
-import Components.Time.Value (DecidedIntermediaryValue, valuePicker')
-import Timeline.UI.Index (DecidedUnit(..))
 import React (ReactElement)
 
 minPicker ::

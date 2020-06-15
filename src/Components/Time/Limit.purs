@@ -5,11 +5,8 @@ import Components.Time.Bounds
   , initialDecidedIntermediaryBounds
   , boundsPicker'
   )
-import Timeline.UI.Index
-  ( DecidedUnit
-  , DecidedLimit(..)
-  , Limit(..)
-  )
+import Timeline.UI.Index.Unit (DecidedUnit)
+import Timeline.UI.Index.Limit (DecidedLimit(..), Limit(..))
 import Prelude
 import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
@@ -59,51 +56,40 @@ limitPicker ::
   , decidedUnit :: DecidedUnit
   } ->
   ReactElement
-limitPicker { onChangeIntermediaryLimit, intermediaryLimit, decidedUnit } = createLeafElement c {}
-  where
-  c :: ReactClass {}
-  c = pureComponent "LimitPicker" constructor
+limitPicker { onChangeIntermediaryLimit, intermediaryLimit, decidedUnit } =
+  let
+    handleToggleBegin v = onChangeIntermediaryLimit $ intermediaryLimit { hasBegin = v }
 
-  constructor :: ReactClassConstructor _ {} _
-  constructor this =
-    pure
-      { state: {}
-      , render:
-          do
-            let
-              handleToggleBegin v = onChangeIntermediaryLimit $ intermediaryLimit { hasBegin = v }
+    handleToggleEnd v = onChangeIntermediaryLimit $ intermediaryLimit { hasEnd = v }
 
-              handleToggleEnd v = onChangeIntermediaryLimit $ intermediaryLimit { hasEnd = v }
-
-              handleBounds b = onChangeIntermediaryLimit $ intermediaryLimit { intermediaryBounds = b }
-            pure
-              $ boundsPicker'
-                  { onChangeIntermediaryBounds: handleBounds
-                  , intermediaryBounds: intermediaryLimit.intermediaryBounds
-                  , decidedUnit
-                  , disabledBegin: not intermediaryLimit.hasBegin
-                  , disabledEnd: not intermediaryLimit.hasEnd
-                  , preBegin:
-                      [ formControlLabel'
-                          { label: "Limit Beginning"
-                          , control:
-                              switch'
-                                { checked: intermediaryLimit.hasBegin
-                                , onChange: mkEffectFn2 (const handleToggleBegin)
-                                , disabled: not intermediaryLimit.hasEnd
-                                }
-                          }
-                      ]
-                  , preEnd:
-                      [ formControlLabel'
-                          { label: "Limit End"
-                          , control:
-                              switch'
-                                { checked: intermediaryLimit.hasEnd
-                                , onChange: mkEffectFn2 (const handleToggleEnd)
-                                , disabled: not intermediaryLimit.hasBegin
-                                }
-                          }
-                      ]
-                  }
+    handleBounds b = onChangeIntermediaryLimit $ intermediaryLimit { intermediaryBounds = b }
+  in
+    boundsPicker'
+      { onChangeIntermediaryBounds: handleBounds
+      , intermediaryBounds: intermediaryLimit.intermediaryBounds
+      , decidedUnit
+      , disabledBegin: not intermediaryLimit.hasBegin
+      , disabledEnd: not intermediaryLimit.hasEnd
+      , preBegin:
+          [ formControlLabel'
+              { label: "Limit Beginning"
+              , control:
+                  switch'
+                    { checked: intermediaryLimit.hasBegin
+                    , onChange: mkEffectFn2 (const handleToggleBegin)
+                    , disabled: not intermediaryLimit.hasEnd
+                    }
+              }
+          ]
+      , preEnd:
+          [ formControlLabel'
+              { label: "Limit End"
+              , control:
+                  switch'
+                    { checked: intermediaryLimit.hasEnd
+                    , onChange: mkEffectFn2 (const handleToggleEnd)
+                    , disabled: not intermediaryLimit.hasBegin
+                    }
+              }
+          ]
       }

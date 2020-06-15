@@ -1,6 +1,6 @@
 module Timeline.UI.TimeSpan where
 
-import Timeline.UI.Index (DecidedSpan)
+import Timeline.UI.Index.Span (DecidedSpan)
 import Prelude
 import Data.Maybe (Maybe)
 import Data.IxSet.Demi (Index)

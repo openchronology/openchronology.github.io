@@ -1,6 +1,6 @@
 module Components.Time.Unit where
 
-import Timeline.UI.Index (DecidedUnit(..))
+import Timeline.UI.Index.Unit (DecidedUnit(..))
 import Prelude
 import Data.Maybe (Maybe(..), maybe)
 import Effect (Effect)

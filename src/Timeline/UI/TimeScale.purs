@@ -1,6 +1,6 @@
 module Timeline.UI.TimeScale where
 
-import Timeline.UI.Index
+import Timeline.UI.Index.MaybeLimit
   ( DecidedMaybeLimit(DecidedMaybeLimitNumber)
   , MaybeLimit(NothingLimit)
   )
