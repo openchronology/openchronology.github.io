@@ -9,15 +9,12 @@ import Data.Generic.Rep.Eq (genericEq)
 import Data.Generic.Rep.Show (genericShow)
 import Effect (Effect)
 import Effect.Uncurried (mkEffectFn1)
-import Effect.Timer (TimeoutId, setTimeout, clearTimeout)
 import React
   ( ReactElement
   , ReactClass
   , ReactClassConstructor
   , createLeafElement
   , pureComponent
-  , getState
-  , setState
   )
 import React.DOM (text)
 import React.SyntheticEvent (target)

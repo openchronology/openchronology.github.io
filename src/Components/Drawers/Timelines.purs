@@ -34,7 +34,7 @@ import MaterialUI.Icons.MoreHorizIcon (moreHorizIcon)
 import MaterialUI.Button (button)
 import MaterialUI.Menu (menu)
 import MaterialUI.MenuItem (menuItem)
-import MaterialUI.Enums (title, small, contained, primary)
+import MaterialUI.Enums (title, small, contained)
 import MaterialUI.Theme (Theme)
 import Zeta.Types (READ) as S
 import IxZeta (IxSignal, get) as IxSig
@@ -173,9 +173,9 @@ timelinesDrawer { settingsSignal
                               { onClick:
                                   mkEffectFn1 \_ -> do
                                     handleClose
-                                    { menuAnchor } <- getState this
+                                    { menuAnchor: anchor' } <- getState this
                                     unsafePartial
-                                      $ case menuAnchor of
+                                      $ case anchor' of
                                           Just { index } -> onClickedEditTimeline index
                               }
                               [ text "Edit" ]
@@ -190,9 +190,9 @@ timelinesDrawer { settingsSignal
                               { onClick:
                                   mkEffectFn1 \_ -> do
                                     handleClose
-                                    { menuAnchor } <- getState this
+                                    { menuAnchor: anchor' } <- getState this
                                     unsafePartial
-                                      $ case menuAnchor of
+                                      $ case anchor' of
                                           Just { index } -> onClickedDeleteTimeline index
                               }
                               [ text "Delete" ]
@@ -202,9 +202,9 @@ timelinesDrawer { settingsSignal
                               { onClick:
                                   mkEffectFn1 \_ -> do
                                     handleClose
-                                    { menuAnchor } <- getState this
+                                    { menuAnchor: anchor' } <- getState this
                                     unsafePartial
-                                      $ case menuAnchor of
+                                      $ case anchor' of
                                           Just { index } -> onClickedEditTimeline index
                               }
                               [ text "Details" ]

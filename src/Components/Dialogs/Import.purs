@@ -21,8 +21,8 @@ import IOQueues (IOQueues(..))
 import Web.File.File (File)
 import Web.File.Store (getFile)
 import React (ReactElement, ReactClass, ReactClassConstructor, component, setState, getState, getProps, createLeafElement)
-import React.DOM (text, div, strong, span)
-import React.DOM.Props (className, dangerouslySetInnerHTML) as RP
+import React.DOM (text, div, strong)
+import React.DOM.Props (className) as RP
 import React.DOM.NonBlockingSpace (nbsp)
 import React.Queue.WhileMounted (whileMountedOne)
 import MaterialUI.Dialog (dialog'')

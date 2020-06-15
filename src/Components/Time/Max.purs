@@ -1,10 +1,10 @@
 module Components.Time.Max where
 
-import Prelude (Unit, (<<<))
+import Prelude (Unit)
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Components.Time.Value (DecidedIntermediaryValue, valuePicker')
-import Timeline.UI.Index (DecidedMax(..), DecidedValue(..), DecidedUnit(..), makeDecidedMax)
+import Timeline.UI.Index (DecidedUnit(..))
 import React (ReactElement)
 
 minPicker ::

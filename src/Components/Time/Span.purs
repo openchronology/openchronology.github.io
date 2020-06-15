@@ -2,16 +2,11 @@ module Components.Time.Span where
 
 import Timeline.UI.Index
   ( DecidedUnit(..)
-  , DecidedValue(..)
   , DecidedSpan(..)
   , Span
-  , makeDecidedSpan
-  , intermediaryDecidedValue
   )
 import Components.Time.Value
   ( DecidedIntermediaryValue(..)
-  , initialDecidedIntermediaryValue
-  , intermediaryToValue
   , valuePicker'
   )
 import Prelude
@@ -22,7 +17,6 @@ import Data.Generic.Rep (class Generic)
 import Data.Generic.Rep.Eq (genericEq)
 import Data.Generic.Rep.Show (genericShow)
 import Effect (Effect)
-import Effect.Ref (new, read, write) as Ref
 import Effect.Exception (throw)
 import React
   ( ReactElement
@@ -31,8 +25,6 @@ import React
   , createLeafElement
   , pureComponent
   , toElement
-  , getState
-  , setState
   )
 
 data DecidedIntermediarySpan
@@ -113,26 +105,26 @@ spanPicker { onChangeIntermediarySpan, intermediarySpan, decidedUnit } = createL
                       , disabled: false
                       , error:
                           case getIntermediaryStart intermediarySpan of
-                            DecidedIntermediaryValueNumber { value: s }
-                              | s == "" -> false
-                              | otherwise -> case parseFloat s of
+                            DecidedIntermediaryValueNumber { value: start' }
+                              | start' == "" -> false
+                              | otherwise -> case parseFloat start' of
                                 Nothing -> true
                                 Just start -> case getIntermediaryStop intermediarySpan of
-                                  DecidedIntermediaryValueNumber { value: s }
-                                    | s == "" -> false
-                                    | otherwise -> case parseFloat s of
+                                  DecidedIntermediaryValueNumber { value: stop' }
+                                    | stop' == "" -> false
+                                    | otherwise -> case parseFloat stop' of
                                       Nothing -> false -- not the problem
                                       Just stop -> start > stop
                       , title:
                           case getIntermediaryStart intermediarySpan of
-                            DecidedIntermediaryValueNumber { value: s }
-                              | s == "" -> Nothing
-                              | otherwise -> case parseFloat s of
+                            DecidedIntermediaryValueNumber { value: start' }
+                              | start' == "" -> Nothing
+                              | otherwise -> case parseFloat start' of
                                 Nothing -> Just "Can't parse Number"
                                 Just start -> case getIntermediaryStop intermediarySpan of
-                                  DecidedIntermediaryValueNumber { value: s }
-                                    | s == "" -> Nothing
-                                    | otherwise -> case parseFloat s of
+                                  DecidedIntermediaryValueNumber { value: stop' }
+                                    | stop' == "" -> Nothing
+                                    | otherwise -> case parseFloat stop' of
                                       Nothing -> Nothing -- not the problem
                                       Just stop
                                         | start > stop -> Just "Start is greater than Stop"
@@ -149,26 +141,26 @@ spanPicker { onChangeIntermediarySpan, intermediarySpan, decidedUnit } = createL
                       , disabled: false
                       , error:
                           case getIntermediaryStop intermediarySpan of
-                            DecidedIntermediaryValueNumber { value: s }
-                              | s == "" -> false
-                              | otherwise -> case parseFloat s of
+                            DecidedIntermediaryValueNumber { value: stop' }
+                              | stop' == "" -> false
+                              | otherwise -> case parseFloat stop' of
                                 Nothing -> true
                                 Just stop -> case getIntermediaryStart intermediarySpan of
-                                  DecidedIntermediaryValueNumber { value: s }
-                                    | s == "" -> false
-                                    | otherwise -> case parseFloat s of
+                                  DecidedIntermediaryValueNumber { value: start' }
+                                    | start' == "" -> false
+                                    | otherwise -> case parseFloat start' of
                                       Nothing -> false -- not the problem
                                       Just start -> start > stop
                       , title:
                           case getIntermediaryStop intermediarySpan of
-                            DecidedIntermediaryValueNumber { value: s }
-                              | s == "" -> Nothing
-                              | otherwise -> case parseFloat s of
+                            DecidedIntermediaryValueNumber { value: stop' }
+                              | stop' == "" -> Nothing
+                              | otherwise -> case parseFloat stop' of
                                 Nothing -> Just "Can't parse Number"
                                 Just stop -> case getIntermediaryStart intermediarySpan of
-                                  DecidedIntermediaryValueNumber { value: s }
-                                    | s == "" -> Nothing
-                                    | otherwise -> case parseFloat s of
+                                  DecidedIntermediaryValueNumber { value: start' }
+                                    | start' == "" -> Nothing
+                                    | otherwise -> case parseFloat start' of
                                       Nothing -> Nothing -- not the problem
                                       Just start
                                         | start > stop -> Just "Stop is less than Start"

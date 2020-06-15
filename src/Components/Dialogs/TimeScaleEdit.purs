@@ -1,10 +1,6 @@
 module Components.Dialogs.TimeScaleEdit (timeScaleEditDialog) where
 
-import Timeline.UI.Index
-  ( DecidedMaybeLimit(DecidedMaybeLimitNumber)
-  , MaybeLimit(NothingLimit)
-  , DecidedUnit(DecidedUnitNumber)
-  )
+import Timeline.UI.Index (DecidedUnit(DecidedUnitNumber))
 import Timeline.UI.TimeScale (TimeScale(..))
 import Components.Time.Unit (unitPicker)
 import Components.Time.MaybeLimit
@@ -18,7 +14,6 @@ import Prelude
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Uncurried (mkEffectFn1)
-import Effect.Console (log)
 import React
   ( ReactClass
   , ReactClassConstructor
@@ -29,7 +24,7 @@ import React
   , createLeafElement
   , component
   )
-import React.DOM (text, hr)
+import React.DOM (text)
 import React.SyntheticEvent (target)
 import React.Queue.WhileMounted (whileMountedOne)
 import React.Signal.WhileMounted (whileMountedIx)
@@ -153,9 +148,7 @@ timeScaleEditDialog { timeScaleSignal
 
                 changeDecidedUnit u = setState this { decidedUnit: u }
 
-                changeDecidedMaybeLimit l = do
-                  log $ "is being called: " <> show l
-                  setState this { intermediaryMaybeLimit: l }
+                changeDecidedMaybeLimit l = setState this { intermediaryMaybeLimit: l }
               { open, isEditable, name, units, description, decidedUnit, intermediaryMaybeLimit } <- getState this
               props <- getProps this
               pure

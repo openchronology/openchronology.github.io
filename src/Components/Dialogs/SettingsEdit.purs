@@ -1,7 +1,7 @@
 module Components.Dialogs.SettingsEdit (settingsEditDialog) where
 
 import Settings (Settings(..), defaultSettings)
-import Prelude
+import Prelude hiding (div)
 import Data.Maybe (Maybe(..))
 import Data.TSCompat.React (ReactNode)
 import Effect (Effect)

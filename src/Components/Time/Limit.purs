@@ -15,7 +15,6 @@ import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
 import Data.Float.Parse (parseFloat)
 import Effect (Effect)
-import Effect.Exception (throw)
 import Effect.Uncurried (mkEffectFn2)
 import React
   ( ReactElement
@@ -23,8 +22,6 @@ import React
   , ReactClassConstructor
   , createLeafElement
   , pureComponent
-  , getState
-  , setState
   )
 import MaterialUI.FormControlLabel (formControlLabel')
 import MaterialUI.Switch (switch')

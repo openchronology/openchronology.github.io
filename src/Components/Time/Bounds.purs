@@ -2,19 +2,14 @@ module Components.Time.Bounds where
 
 import Timeline.UI.Index
   ( DecidedUnit(..)
-  , DecidedValue(..)
   , DecidedBounds(..)
   , Bounds
-  , makeDecidedBounds
-  , intermediaryDecidedValue
   )
 import Components.Time.Value
   ( DecidedIntermediaryValue(..)
-  , initialDecidedIntermediaryValue
-  , intermediaryToValue
   , valuePicker'
   )
-import Prelude
+import Prelude hiding (div)
 import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
 import Data.Float.Parse (parseFloat)
@@ -22,7 +17,6 @@ import Data.Generic.Rep (class Generic)
 import Data.Generic.Rep.Eq (genericEq)
 import Data.Generic.Rep.Show (genericShow)
 import Effect (Effect)
-import Effect.Ref (new, read, write) as Ref
 import Effect.Exception (throw)
 import React
   ( ReactElement
@@ -30,8 +24,6 @@ import React
   , ReactClassConstructor
   , createLeafElement
   , pureComponent
-  , getState
-  , setState
   )
 import React.DOM (div)
 import React.DOM.Props (style) as RP
@@ -147,26 +139,26 @@ boundsPicker' { onChangeIntermediaryBounds
                             , disabled: disabledBegin
                             , error:
                                 case getIntermediaryBegin intermediaryBounds of
-                                  DecidedIntermediaryValueNumber { value: s }
-                                    | s == "" -> false
-                                    | otherwise -> case parseFloat s of
+                                  DecidedIntermediaryValueNumber { value: begin' }
+                                    | begin' == "" -> false
+                                    | otherwise -> case parseFloat begin' of
                                       Nothing -> true
                                       Just begin -> case getIntermediaryEnd intermediaryBounds of
-                                        DecidedIntermediaryValueNumber { value: s }
-                                          | s == "" -> false
-                                          | otherwise -> case parseFloat s of
+                                        DecidedIntermediaryValueNumber { value: end' }
+                                          | end' == "" -> false
+                                          | otherwise -> case parseFloat end' of
                                             Nothing -> false -- not the problem
                                             Just end -> begin > end
                             , title:
                                 case getIntermediaryBegin intermediaryBounds of
-                                  DecidedIntermediaryValueNumber { value: s }
-                                    | s == "" -> Nothing
-                                    | otherwise -> case parseFloat s of
+                                  DecidedIntermediaryValueNumber { value: begin' }
+                                    | begin' == "" -> Nothing
+                                    | otherwise -> case parseFloat begin' of
                                       Nothing -> Just "Can't parse Number"
                                       Just begin -> case getIntermediaryEnd intermediaryBounds of
-                                        DecidedIntermediaryValueNumber { value: s }
-                                          | s == "" -> Nothing
-                                          | otherwise -> case parseFloat s of
+                                        DecidedIntermediaryValueNumber { value: end' }
+                                          | end' == "" -> Nothing
+                                          | otherwise -> case parseFloat end' of
                                             Nothing -> Nothing -- not the problem
                                             Just end
                                               | begin > end -> Just "Beginning is greater than End"
@@ -186,26 +178,26 @@ boundsPicker' { onChangeIntermediaryBounds
                             , disabled: disabledEnd
                             , error:
                                 case getIntermediaryEnd intermediaryBounds of
-                                  DecidedIntermediaryValueNumber { value: s }
-                                    | s == "" -> false
-                                    | otherwise -> case parseFloat s of
+                                  DecidedIntermediaryValueNumber { value: end' }
+                                    | end' == "" -> false
+                                    | otherwise -> case parseFloat end' of
                                       Nothing -> true
                                       Just end -> case getIntermediaryBegin intermediaryBounds of
-                                        DecidedIntermediaryValueNumber { value: s }
-                                          | s == "" -> false
-                                          | otherwise -> case parseFloat s of
+                                        DecidedIntermediaryValueNumber { value: begin' }
+                                          | begin' == "" -> false
+                                          | otherwise -> case parseFloat begin' of
                                             Nothing -> false -- not the problem
                                             Just begin -> begin > end
                             , title:
                                 case getIntermediaryEnd intermediaryBounds of
-                                  DecidedIntermediaryValueNumber { value: s }
-                                    | s == "" -> Nothing
-                                    | otherwise -> case parseFloat s of
+                                  DecidedIntermediaryValueNumber { value: end' }
+                                    | end' == "" -> Nothing
+                                    | otherwise -> case parseFloat end' of
                                       Nothing -> Just "Can't parse Number"
                                       Just end -> case getIntermediaryBegin intermediaryBounds of
-                                        DecidedIntermediaryValueNumber { value: s }
-                                          | s == "" -> Nothing
-                                          | otherwise -> case parseFloat s of
+                                        DecidedIntermediaryValueNumber { value: begin' }
+                                          | begin' == "" -> Nothing
+                                          | otherwise -> case parseFloat begin' of
                                             Nothing -> Nothing -- not the problem
                                             Just begin
                                               | begin > end -> Just "End is less than Beginning"

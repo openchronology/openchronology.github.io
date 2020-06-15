@@ -45,7 +45,7 @@ import MaterialUI.List (list)
 import MaterialUI.ListItem (listItem)
 import MaterialUI.ListItemText (listItemText')
 import MaterialUI.Collapse (collapse)
-import MaterialUI.Enums (primary, secondary, auto)
+import MaterialUI.Enums (secondary, auto)
 import MaterialUI.Icons.ExpandLessIcon (expandLessIcon)
 import MaterialUI.Icons.ExpandMoreIcon (expandMoreIcon)
 

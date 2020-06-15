@@ -3,9 +3,9 @@ module MaterialUI.Markdown where
 import Prelude
 import Data.Maybe (Maybe(..))
 import Data.Nullable (toMaybe)
-import React (ReactElement, createLeafElement, statelessComponent, childrenToArray)
-import React.DOM (code, pre, ul, ol, blockquote) as R
-import React.DOM.Props (style, className) as RP
+import React (ReactElement, statelessComponent, childrenToArray)
+import React.DOM (code, ul, ol, blockquote) as R
+import React.DOM.Props (style) as RP
 import React.DOM.Markdown (markdown) as RM
 import React.DOM.Highlight (highlight)
 import MaterialUI.Typography (typography)

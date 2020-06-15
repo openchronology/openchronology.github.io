@@ -43,7 +43,6 @@ import Web.HTML.Window (localStorage)
 import Web.Storage.Storage (setItem, getItem)
 import Effect (Effect)
 import Effect.Console (warn)
-import Effect.Exception (throw)
 import Zeta.Types (READ, WRITE) as S
 import IxZeta (IxSignal, make, subscribeDiffLight)
 import Test.QuickCheck (class Arbitrary, arbitrary)

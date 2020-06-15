@@ -9,7 +9,7 @@ import Timeline.UI.TimeSpaceName
   (TimeSpaceName(..), clearTimeSpaceNameCache, setDefaultTimeSpaceName)
 import Timeline.UI.TimeScale
   (TimeScale, clearTimeScaleCache, setDefaultTimeScale)
-import Timeline.UI.Timeline (Timeline(..))
+import Timeline.UI.Timeline (Timeline)
 import Timeline.UI.Timelines (Timelines(..))
 import Settings (Settings(..))
 import Prelude
@@ -215,7 +215,7 @@ onClickedEditTimeline { newOrEditTimelineQueues, timelinesSignal } index = do
           Just result ->
             liftEffect
               $ case result of
-                  NewOrEditTimeline t -> case Array.updateAt index t timelines of
+                  NewOrEditTimeline t' -> case Array.updateAt index t' timelines of
                     Nothing -> throw $ "Timeline index does not exist in set: " <> show index
                     Just timelines' -> IxSig.set (Timelines timelines') timelinesSignal
                   DeleteTimeline -> case Array.deleteAt index timelines of
