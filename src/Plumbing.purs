@@ -52,6 +52,8 @@ import Timeline.UI.TimeScale (TimeScale, newTimeScaleSignal)
 import Timeline.UI.ExploreTimeSpaces (ExploreTimeSpaces, WithSpanOfTime, newExploreTimeSpacesSignal)
 import Timeline.UI.Timeline (Timeline)
 import Timeline.UI.Timelines (Timelines, newTimelinesSignal)
+import Timeline.UI.Siblings (Siblings, newSiblingsSignal)
+import Timeline.UI.Children (Children, newChildrenSignal)
 import Settings (Settings, newSettingsSignal)
 import Prelude
 import Data.Maybe (Maybe)
@@ -139,6 +141,8 @@ type PrimarySignals
     , exploreTimeSpacesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (WithSpanOfTime ExploreTimeSpaces)
     , timeSpaceSelectedSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (Array Index)
     , timelinesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Timelines
+    , siblingsSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Siblings
+    , childrenSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Children
     }
 
 -- | Created only on boot of the program
@@ -168,6 +172,12 @@ newPrimarySignals = do
   ( timelinesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Timelines
   ) <-
     newTimelinesSignal (S.readOnly settingsSignal)
+  ( siblingsSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Siblings
+  ) <-
+    newSiblingsSignal (S.readOnly settingsSignal)
+  ( childrenSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Children
+  ) <-
+    newChildrenSignal (S.readOnly settingsSignal)
   pure
     { settingsSignal
     , timeSpaceNameSignal
@@ -176,6 +186,8 @@ newPrimarySignals = do
     , exploreTimeSpacesSignal
     , timeSpaceSelectedSignal
     , timelinesSignal
+    , siblingsSignal
+    , childrenSignal
     }
 
 -- | Functions given to the React.js components, to interact with the async devices.

@@ -128,6 +128,8 @@ index { stateRef
     , exploreTimeSpacesSignal
     , timeSpaceSelectedSignal
     , timelinesSignal
+    , siblingsSignal
+    , childrenSignal
     }
 , logicFunctions:
     { onImport
@@ -194,7 +196,10 @@ index { stateRef
                             , onClickedDeleteTimeline: onClickedDeleteTimeline <<< Left
                             }
                         , divider_ []
-                        , siblingsDrawer { settingsSignal: S.readOnly settingsSignal }
+                        , siblingsDrawer
+                            { settingsSignal: S.readOnly settingsSignal
+                            , siblingsSignal: S.readOnly siblingsSignal
+                            }
                         ]
                     ]
                   | otherwise = []
@@ -207,7 +212,10 @@ index { stateRef
                         , classes: { paper: props.classes.drawerPaper }
                         , anchor: right
                         }
-                        [ childrenDrawer { settingsSignal: S.readOnly settingsSignal }
+                        [ childrenDrawer
+                            { settingsSignal: S.readOnly settingsSignal
+                            , childrenSignal: S.readOnly childrenSignal
+                            }
                         ]
                     ]
                   | otherwise = []

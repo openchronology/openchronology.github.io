@@ -5,7 +5,7 @@ MODULES=./graphs/modules.dot
 MODULESOUT=./graphs/modules.png
 
 # build graph
-find src -name '*.purs' | xargs $GRAPHMOD -q \
+find src test -name '*.purs' | xargs $GRAPHMOD -q \
   -R 'MaterialUI.Icons' -R 'React' -R 'Scripts' -d 48,32 > $MODULES \
   || { pwd; exit 1; }
 # rename graph

@@ -34,6 +34,7 @@ derive newtype instance decodeJsonTimelines :: DecodeJson Timelines
 
 derive newtype instance arbitraryTimelines :: Arbitrary Timelines
 
+-- FIXME dummy data
 instance defaultTimelines :: Default Timelines where
   def =
     Timelines

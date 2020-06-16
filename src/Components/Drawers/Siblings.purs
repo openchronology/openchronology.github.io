@@ -2,8 +2,8 @@ module Components.Drawers.Siblings where
 
 import Timeline.UI.Event (Event(..))
 import Timeline.UI.TimeSpan (TimeSpan(..))
-import Timeline.UI.EventOrTimeSpan (EventOrTimeSpan)
-import Timeline.UI.EventOrTimeSpans (EventOrTimeSpans)
+import Timeline.UI.EventOrTimeSpan (EventOrTimeSpan(..))
+import Timeline.UI.Siblings (Siblings(..))
 import Timeline.UI.Index.Class (asSecondaryString)
 import Timeline.UI.Index.Value (DecidedValue(..))
 import Timeline.UI.Index.Span (DecidedSpan(..))
@@ -46,7 +46,7 @@ import Zeta.Types (READ) as S
 import IxZeta (IxSignal, get) as IxSig
 
 type State
-  = { elements :: EventOrTimeSpans -- Array { name :: String, time :: String } -- FIXME time-sorted mapping?
+  = { elements :: Siblings -- Array { name :: String, time :: String } -- FIXME time-sorted mapping?
     , selected :: Maybe Int
     , menuAnchor :: Maybe NativeEventTarget
     , isEditable :: Boolean
@@ -54,16 +54,13 @@ type State
 
 initialState ::
   IxSig.IxSignal ( read :: S.READ ) Settings ->
+  IxSig.IxSignal ( read :: S.READ ) Siblings ->
   Effect State
-initialState settingsSignal = do
+initialState settingsSignal siblingsSignal = do
   Settings { isEditable } <- IxSig.get settingsSignal
+  elements <- IxSig.get siblingsSignal
   pure
-    { elements:
-        [ Left (Event { name: "Event A", description: "baz", time: DecidedValueNumber 3.0 })
-        , Left (Event { name: "Event B", description: "qux", time: DecidedValueNumber 3.5 })
-        , Right (TimeSpan { name: "TimeSpan C", description: "bar", span: DecidedSpanNumber { start: 2.0, stop: 5.0 }, timeSpace: Nothing })
-        , Right (TimeSpan { name: "TimeSpan D", description: "foo", span: DecidedSpanNumber { start: 1.0, stop: 4.0 }, timeSpace: Nothing })
-        ]
+    { elements
     , selected: Nothing
     , menuAnchor: Nothing
     , isEditable
@@ -79,9 +76,10 @@ styles theme =
 
 siblingsDrawer ::
   { settingsSignal :: IxSig.IxSignal ( read :: S.READ ) Settings
+  , siblingsSignal :: IxSig.IxSignal ( read :: S.READ ) Siblings
   } ->
   ReactElement
-siblingsDrawer { settingsSignal } = createLeafElement c {}
+siblingsDrawer { settingsSignal, siblingsSignal } = createLeafElement c {}
   where
   c :: ReactClass {}
   c = withStyles styles c'
@@ -98,11 +96,14 @@ siblingsDrawer { settingsSignal } = createLeafElement c {}
   constructor =
     let
       handleChangeEdit this (Settings { isEditable }) = setState this { isEditable }
+
+      handleChangeSiblings this elements = setState this { elements }
     in
-      whileMountedIx settingsSignal "SiblingsDrawer" handleChangeEdit constructor'
+      whileMountedIx settingsSignal "SiblingsDrawer" handleChangeEdit
+        $ whileMountedIx siblingsSignal "SiblingsDrawer" handleChangeSiblings constructor'
     where
     constructor' this = do
-      state <- initialState settingsSignal
+      state <- initialState settingsSignal siblingsSignal
       pure
         { state
         , componentDidMount: pure unit
@@ -110,7 +111,7 @@ siblingsDrawer { settingsSignal } = createLeafElement c {}
         , render:
             do
               props <- getProps this
-              { elements, selected, menuAnchor, isEditable } <- getState this
+              { elements: Siblings elements, selected, menuAnchor, isEditable } <- getState this
               let
                 handleMenuClick e = do
                   anchor <- currentTarget e
@@ -119,7 +120,7 @@ siblingsDrawer { settingsSignal } = createLeafElement c {}
                 handleClose = setState this { menuAnchor: Nothing }
 
                 mkTextItemTime :: Int -> EventOrTimeSpan -> ReactElement
-                mkTextItemTime i eOrT =
+                mkTextItemTime i (EventOrTimeSpan eOrT) =
                   let
                     item edit = case eOrT of
                       Left (Event { name, time }) ->

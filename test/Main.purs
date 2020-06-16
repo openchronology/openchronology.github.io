@@ -2,6 +2,13 @@ module Test.Main where
 
 import Timeline.UI.TimeSpaceName (TimeSpaceName)
 import Timeline.UI.TimeScale (TimeScale)
+import Timeline.UI.Event (Event)
+import Timeline.UI.TimeSpan (TimeSpan)
+import Timeline.UI.EventOrTimeSpan (EventOrTimeSpan)
+import Timeline.UI.Siblings (Siblings)
+import Timeline.UI.Children (Children)
+import Timeline.UI.Timeline (Timeline)
+import Timeline.UI.Timelines (Timelines)
 import Settings (Settings)
 
 
@@ -31,6 +38,13 @@ tests = do
     jsonTest "Settings" (Proxy :: Proxy Settings)
     jsonTest "TimeSpaceName" (Proxy :: Proxy TimeSpaceName)
     jsonTest "TimeScale" (Proxy :: Proxy TimeScale)
+    jsonTest "Event" (Proxy :: Proxy Event)
+    jsonTest "TimeSpan" (Proxy :: Proxy TimeSpan)
+    jsonTest "EventOrTimeSpan" (Proxy :: Proxy EventOrTimeSpan)
+    jsonTest "Siblings" (Proxy :: Proxy Siblings)
+    jsonTest "Children" (Proxy :: Proxy Children)
+    jsonTest "Timeline" (Proxy :: Proxy Timeline)
+    jsonTest "Timelines" (Proxy :: Proxy Timelines)
   where
     jsonTest :: forall a
               . Arbitrary a
