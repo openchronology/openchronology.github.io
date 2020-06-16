@@ -1,8 +1,16 @@
 module Components.Drawers.Siblings where
 
+import Timeline.UI.Event (Event(..))
+import Timeline.UI.TimeSpan (TimeSpan(..))
+import Timeline.UI.EventOrTimeSpan (EventOrTimeSpan)
+import Timeline.UI.EventOrTimeSpans (EventOrTimeSpans)
+import Timeline.UI.Index.Class (asSecondaryString)
+import Timeline.UI.Index.Value (DecidedValue(..))
+import Timeline.UI.Index.Span (DecidedSpan(..))
 import Settings (Settings(..))
 import Prelude
 import Data.Maybe (Maybe(..), isJust)
+import Data.Either (Either(..))
 import Data.Array (mapWithIndex) as Array
 import Data.Nullable (toNullable)
 import Effect (Effect)
@@ -38,7 +46,7 @@ import Zeta.Types (READ) as S
 import IxZeta (IxSignal, get) as IxSig
 
 type State
-  = { elements :: Array { name :: String, time :: String } -- FIXME time-sorted mapping?
+  = { elements :: EventOrTimeSpans -- Array { name :: String, time :: String } -- FIXME time-sorted mapping?
     , selected :: Maybe Int
     , menuAnchor :: Maybe NativeEventTarget
     , isEditable :: Boolean
@@ -51,12 +59,10 @@ initialState settingsSignal = do
   Settings { isEditable } <- IxSig.get settingsSignal
   pure
     { elements:
-        [ { name: "Event A", time: "20200130" }
-        , { name: "Event B", time: "20200131" }
-        , { name: "TimeSpan C", time: "20200202" }
-        , { name: "TimeSpan D", time: "20200204" }
-        , { name: "Event E", time: "20200208" }
-        , { name: "Event F", time: "20200211" }
+        [ Left (Event { name: "Event A", description: "baz", time: DecidedValueNumber 3.0 })
+        , Left (Event { name: "Event B", description: "qux", time: DecidedValueNumber 3.5 })
+        , Right (TimeSpan { name: "TimeSpan C", description: "bar", span: DecidedSpanNumber { start: 2.0, stop: 5.0 }, timeSpace: Nothing })
+        , Right (TimeSpan { name: "TimeSpan D", description: "foo", span: DecidedSpanNumber { start: 1.0, stop: 4.0 }, timeSpace: Nothing })
         ]
     , selected: Nothing
     , menuAnchor: Nothing
@@ -112,15 +118,31 @@ siblingsDrawer { settingsSignal } = createLeafElement c {}
 
                 handleClose = setState this { menuAnchor: Nothing }
 
-                mkTextItemTime i { name, time } =
-                  listItem
-                    { button: true
-                    , selected: isSelected
-                    , onClick: mkEffectFn1 (const select)
-                    }
-                    $ [ listItemText' { primary: name, secondary: time }
-                      ]
-                    <> ( if isEditable then
+                mkTextItemTime :: Int -> EventOrTimeSpan -> ReactElement
+                mkTextItemTime i eOrT =
+                  let
+                    item edit = case eOrT of
+                      Left (Event { name, time }) ->
+                        listItem
+                          { button: true
+                          , selected: isSelected
+                          , onClick: mkEffectFn1 (const select)
+                          }
+                          $ [ listItemText' { primary: name, secondary: asSecondaryString time }
+                            ]
+                          <> edit
+                      Right (TimeSpan { name, span }) ->
+                        listItem
+                          { button: true
+                          , selected: isSelected
+                          , onClick: mkEffectFn1 (const select)
+                          }
+                          $ [ listItemText' { primary: name, secondary: asSecondaryString span }
+                            ]
+                          <> edit
+                  in
+                    item
+                      ( if isEditable then
                           [ listItemSecondaryAction_
                               [ iconButton
                                   { onClick: mkEffectFn1 handleMenuClick
