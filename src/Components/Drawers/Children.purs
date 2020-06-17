@@ -5,8 +5,6 @@ import Timeline.UI.TimeSpan (TimeSpan(..))
 import Timeline.UI.EventOrTimeSpan (EventOrTimeSpan(..))
 import Timeline.UI.Children (Children(..))
 import Timeline.UI.Index.Class (asSecondaryString)
-import Timeline.UI.Index.Value (DecidedValue(..))
-import Timeline.UI.Index.Span (DecidedSpan(..))
 import Settings (Settings(..))
 import Prelude
 import Data.Maybe (Maybe(..), isJust)

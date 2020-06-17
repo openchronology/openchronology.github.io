@@ -13,13 +13,7 @@ import Data.Tuple (Tuple(..))
 import Data.Float.Parse (parseFloat)
 import Effect (Effect)
 import Effect.Uncurried (mkEffectFn2)
-import React
-  ( ReactElement
-  , ReactClass
-  , ReactClassConstructor
-  , createLeafElement
-  , pureComponent
-  )
+import React (ReactElement)
 import MaterialUI.FormControlLabel (formControlLabel')
 import MaterialUI.Switch (switch')
 

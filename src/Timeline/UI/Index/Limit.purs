@@ -7,7 +7,6 @@ import Timeline.UI.Index.Bounds (Bounds)
 import Prelude
 import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
-import Data.Either (Either)
 import Data.NonEmpty (NonEmpty(..))
 import Data.Generic.Rep (class Generic)
 import Data.Generic.Rep.Eq (genericEq)
@@ -15,20 +14,15 @@ import Data.Generic.Rep.Show (genericShow)
 import Data.Argonaut
   ( class EncodeJson
   , class DecodeJson
-  , encodeJson
   , decodeJson
-  , Json
   , (~>)
   , jsonEmptyObject
   , (:=)
   , (.:)
-  , fail
   )
 import Control.Alternative ((<|>))
-import Effect (Effect)
 import Test.QuickCheck (class Arbitrary, arbitrary)
-import Test.QuickCheck.Gen (Gen, oneOf, elements)
-import Type.Proxy (Proxy(..))
+import Test.QuickCheck.Gen (oneOf)
 
 data Limit a
   = LimitBounds (Bounds a)

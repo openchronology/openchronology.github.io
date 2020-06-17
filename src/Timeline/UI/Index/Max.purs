@@ -2,8 +2,6 @@ module Timeline.UI.Index.Max where
 
 import Timeline.UI.Index.Value (DecidedValue(..))
 import Prelude
-import Data.Maybe (Maybe(..))
-import Data.Tuple (Tuple(..))
 import Data.Either (Either)
 import Data.NonEmpty (NonEmpty(..))
 import Data.Generic.Rep (class Generic)
@@ -12,19 +10,15 @@ import Data.Generic.Rep.Show (genericShow)
 import Data.Argonaut
   ( class EncodeJson
   , class DecodeJson
-  , encodeJson
   , decodeJson
   , Json
   , (~>)
   , jsonEmptyObject
   , (:=)
   , (.:)
-  , fail
   )
-import Control.Alternative ((<|>))
-import Effect (Effect)
 import Test.QuickCheck (class Arbitrary, arbitrary)
-import Test.QuickCheck.Gen (Gen, oneOf, elements)
+import Test.QuickCheck.Gen (Gen, oneOf)
 import Type.Proxy (Proxy(..))
 
 type Max a

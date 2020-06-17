@@ -7,7 +7,6 @@ import Components.Time.Unit (unitPicker)
 import Components.Time.Bounds (DecidedIntermediaryBounds(..))
 import Components.Time.MaybeLimit
   ( DecidedIntermediaryMaybeLimit
-  , initialDecidedIntermediaryMaybeLimit
   , intermediaryToMaybeLimit
   , maybeLimitPicker
   )

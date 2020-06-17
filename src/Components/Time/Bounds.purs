@@ -15,13 +15,7 @@ import Data.Generic.Rep.Eq (genericEq)
 import Data.Generic.Rep.Show (genericShow)
 import Effect (Effect)
 import Effect.Exception (throw)
-import React
-  ( ReactElement
-  , ReactClass
-  , ReactClassConstructor
-  , createLeafElement
-  , pureComponent
-  )
+import React (ReactElement)
 import React.DOM (div)
 import React.DOM.Props (style) as RP
 

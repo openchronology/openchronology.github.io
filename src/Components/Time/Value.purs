@@ -10,13 +10,7 @@ import Data.Generic.Rep.Eq (genericEq)
 import Data.Generic.Rep.Show (genericShow)
 import Effect (Effect)
 import Effect.Uncurried (mkEffectFn1)
-import React
-  ( ReactElement
-  , ReactClass
-  , ReactClassConstructor
-  , createLeafElement
-  , pureComponent
-  )
+import React (ReactElement)
 import React.DOM (text)
 import React.SyntheticEvent (target)
 import MaterialUI.TextField (textField')

@@ -12,19 +12,15 @@ import Data.Generic.Rep.Show (genericShow)
 import Data.Argonaut
   ( class EncodeJson
   , class DecodeJson
-  , encodeJson
   , decodeJson
   , Json
   , (~>)
   , jsonEmptyObject
   , (:=)
   , (.:)
-  , fail
   )
-import Control.Alternative ((<|>))
-import Effect (Effect)
 import Test.QuickCheck (class Arbitrary, arbitrary)
-import Test.QuickCheck.Gen (Gen, oneOf, elements)
+import Test.QuickCheck.Gen (Gen, oneOf)
 import Type.Proxy (Proxy(..))
 
 type Span a
