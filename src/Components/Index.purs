@@ -202,6 +202,9 @@ index { stateRef
                         [ childrenDrawer
                             { settingsSignal: S.readOnly settingsSignal
                             , childrenSignal: S.readOnly childrenSignal
+                            , onClickedNewEventOrTimeSpanChildren
+                            , onClickedEditEventOrTimeSpanChildren
+                            , onClickedDeleteEventOrTimeSpanChildren: onClickedDeleteEventOrTimeSpanChildren <<< Left
                             }
                         ]
                     ]

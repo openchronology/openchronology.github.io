@@ -42,11 +42,16 @@ import MaterialUI.Enums (title, subheading, small, contained)
 import MaterialUI.Theme (Theme)
 import Zeta.Types (READ) as S
 import IxZeta (IxSignal, get) as IxSig
+import Partial.Unsafe (unsafePartial)
 
 type State
-  = { elements :: Children
+  = { elements :: Children -- Array { name :: String, time :: String } -- FIXME time-sorted mapping?
     , selected :: Maybe Int
-    , menuAnchor :: Maybe NativeEventTarget
+    , menuAnchor ::
+        Maybe
+          { target :: NativeEventTarget
+          , index :: Int
+          }
     , isEditable :: Boolean
     }
 
@@ -66,8 +71,8 @@ initialState settingsSignal childrenSignal = do
 
 styles :: Theme -> _
 styles theme =
-  { rightDrawerList:
-      { height: "calc(100vh - " <> show ((theme.spacing.unit * 12.0) + (24.5 * 2.0) + 30.75) <> "px)"
+  { leftDrawerList:
+      { height: "calc(100vh - " <> show ((theme.spacing.unit * 12.0) + (24.5 * 3.0) + (30.75 * 2.0)) <> "px)"
       , overflowY: "auto"
       }
   }
@@ -75,9 +80,17 @@ styles theme =
 childrenDrawer ::
   { settingsSignal :: IxSig.IxSignal ( read :: S.READ ) Settings
   , childrenSignal :: IxSig.IxSignal ( read :: S.READ ) Children
+  , onClickedNewEventOrTimeSpanChildren :: Effect Unit
+  , onClickedEditEventOrTimeSpanChildren :: Int -> Effect Unit
+  , onClickedDeleteEventOrTimeSpanChildren :: Int -> Effect Unit
   } ->
   ReactElement
-childrenDrawer { settingsSignal, childrenSignal } = createLeafElement c {}
+childrenDrawer { settingsSignal
+, childrenSignal
+, onClickedNewEventOrTimeSpanChildren
+, onClickedEditEventOrTimeSpanChildren
+, onClickedDeleteEventOrTimeSpanChildren
+} = createLeafElement c {}
   where
   c :: ReactClass {}
   c = withStyles styles c'
@@ -85,7 +98,7 @@ childrenDrawer { settingsSignal, childrenSignal } = createLeafElement c {}
     c' ::
       ReactClass
         { classes ::
-            { rightDrawerList :: String
+            { leftDrawerList :: String
             }
         }
     c' = component "ChildrenDrawer" constructor
@@ -111,9 +124,10 @@ childrenDrawer { settingsSignal, childrenSignal } = createLeafElement c {}
               props <- getProps this
               { elements: Children elements, selected, menuAnchor, isEditable } <- getState this
               let
-                handleMenuClick e = do
+                handleMenuClick :: Int -> _ -> Effect Unit
+                handleMenuClick i e = do
                   anchor <- currentTarget e
-                  setState this { menuAnchor: Just anchor }
+                  setState this { menuAnchor: Just { target: anchor, index: i } }
 
                 handleClose = setState this { menuAnchor: Nothing }
 
@@ -126,6 +140,7 @@ childrenDrawer { settingsSignal, childrenSignal } = createLeafElement c {}
                           { button: true
                           , selected: isSelected
                           , onClick: mkEffectFn1 (const select)
+                          , title: "Select Event"
                           }
                           $ [ listItemText' { primary: name, secondary: asSecondaryString time }
                             ]
@@ -135,6 +150,7 @@ childrenDrawer { settingsSignal, childrenSignal } = createLeafElement c {}
                           { button: true
                           , selected: isSelected
                           , onClick: mkEffectFn1 (const select)
+                          , title: "Select TimeSpan"
                           }
                           $ [ listItemText' { primary: name, secondary: asSecondaryString span }
                             ]
@@ -144,7 +160,7 @@ childrenDrawer { settingsSignal, childrenSignal } = createLeafElement c {}
                       ( if isEditable then
                           [ listItemSecondaryAction_
                               [ iconButton
-                                  { onClick: mkEffectFn1 handleMenuClick
+                                  { onClick: mkEffectFn1 (handleMenuClick i)
                                   }
                                   [ moreHorizIcon ]
                               ]
@@ -158,32 +174,64 @@ childrenDrawer { settingsSignal, childrenSignal } = createLeafElement c {}
                   select = setState this { selected: if isSelected then Nothing else Just i }
               pure $ toElement
                 $ [ typography { variant: title } [ text "Events and TimeSpans" ]
-                  , typography { variant: subheading } [ text "For Timeline \"A\"" ]
+                  , typography { variant: subheading } [ text "For Multiple Timelines" ]
                   ]
                 <> ( if isEditable then
-                      [ button { size: small, variant: contained } [ text "Add" ] ]
+                      [ button
+                          { size: small
+                          , variant: contained
+                          , onClick: mkEffectFn1 (const onClickedNewEventOrTimeSpanChildren)
+                          }
+                          [ text "Add" ]
+                      ]
                     else
                       []
                   )
-                <> [ list { className: props.classes.rightDrawerList } (Array.mapWithIndex mkTextItemTime elements)
+                <> [ list { className: props.classes.leftDrawerList } (Array.mapWithIndex mkTextItemTime elements)
                   , menu
                       { id: "children-item-menu"
-                      , anchorEl: toNullable menuAnchor
+                      , anchorEl: toNullable (map _.target menuAnchor)
                       , open: isJust menuAnchor
                       , onClose: mkEffectFn1 (const handleClose)
                       }
-                      [ menuItem
-                          { onClick: mkEffectFn1 (const handleClose)
-                          }
-                          [ text "Edit" ]
-                      , menuItem
-                          { onClick: mkEffectFn1 (const handleClose)
-                          }
-                          [ text "Move" ]
-                      , menuItem
-                          { onClick: mkEffectFn1 (const handleClose)
-                          }
-                          [ text "Delete" ]
-                      ]
+                      $ if isEditable then
+                          [ menuItem
+                              { onClick:
+                                  mkEffectFn1 \_ -> do
+                                    handleClose
+                                    { menuAnchor: anchor' } <- getState this
+                                    unsafePartial
+                                      $ case anchor' of
+                                          Just { index } -> onClickedEditEventOrTimeSpanChildren index
+                              }
+                              [ text "Edit" ]
+                          , menuItem
+                              { onClick: mkEffectFn1 (const handleClose)
+                              -- TODO timespace explorer
+                              }
+                              [ text "Move" ]
+                          , menuItem
+                              { onClick:
+                                  mkEffectFn1 \_ -> do
+                                    handleClose
+                                    { menuAnchor: anchor' } <- getState this
+                                    unsafePartial
+                                      $ case anchor' of
+                                          Just { index } -> onClickedDeleteEventOrTimeSpanChildren index
+                              }
+                              [ text "Delete" ]
+                          ]
+                        else
+                          [ menuItem
+                              { onClick:
+                                  mkEffectFn1 \_ -> do
+                                    handleClose
+                                    { menuAnchor: anchor' } <- getState this
+                                    unsafePartial
+                                      $ case anchor' of
+                                          Just { index } -> onClickedEditEventOrTimeSpanChildren index
+                              }
+                              [ text "Details" ]
+                          ]
                   ]
         }

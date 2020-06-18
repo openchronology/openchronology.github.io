@@ -97,6 +97,7 @@ valuePicker' { decidedUnit
             , "type": "number"
             , disabled
             , error
+            , fullWidth: true
             }
         Just title' ->
           textField'
@@ -110,5 +111,6 @@ valuePicker' { decidedUnit
             , disabled
             , error
             , title: title'
+            , fullWidth: true
             }
   _ -> text "" -- FIXME other units

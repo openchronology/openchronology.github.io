@@ -91,10 +91,10 @@ onClickedDeleteEventOrTimeSpanSiblings { dangerConfirmQueues, siblingsSignal } e
                 [ typography { variant: body1 }
                     [ strong [] [ text "Warning!" ]
                     , nbsp
-                    , text "Are you sure you want to delete this eventOrTimeSpan?"
+                    , text "Are you sure you want to delete this eventOrTimeSpan?" -- FIXME fix this message
                     ]
                 ]
-            , submit: "Delete EventOrTimeSpan"
+            , submit: "Delete EventOrTimeSpan" -- FIXME fix this message
             }
     when confirmed $ liftEffect
       $ case eIndexAuxAction of

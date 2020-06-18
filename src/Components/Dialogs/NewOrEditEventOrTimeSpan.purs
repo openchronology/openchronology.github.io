@@ -10,11 +10,13 @@ import Components.Time.Value
   ( DecidedIntermediaryValue
   , initialDecidedIntermediaryValue
   , intermediaryToValue
+  , valuePicker
   )
 import Components.Time.Span
   ( DecidedIntermediarySpan
   , initialDecidedIntermediarySpan
   , intermediaryToSpan
+  , spanPicker
   )
 import Settings (Settings(..))
 import Prelude
@@ -22,7 +24,7 @@ import Data.Maybe (Maybe(..))
 import Data.Either (Either(..))
 import Data.IxSet.Demi (Index)
 import Effect (Effect)
-import Effect.Uncurried (mkEffectFn1)
+import Effect.Uncurried (mkEffectFn1, mkEffectFn2)
 import Effect.Timer (setTimeout)
 import React
   ( ReactElement
@@ -45,15 +47,19 @@ import MaterialUI.DialogTitle (dialogTitle)
 import MaterialUI.DialogContent (dialogContent_)
 import MaterialUI.DialogActions (dialogActions_)
 import MaterialUI.TextField (textField')
+import MaterialUI.AppBar (appBar)
+import MaterialUI.Tabs (tabs)
+import MaterialUI.Tab (tab')
 import MaterialUI.Styles (withStyles)
 import MaterialUI.Theme (Theme)
-import MaterialUI.Enums (secondary)
+import MaterialUI.Enums (secondary, primary, static, default, fullWidth)
 import MaterialUI.Markdown (markdown)
 import IOQueues (IOQueues(..))
 import Queue.One (Queue, put)
 import Zeta.Types (READ) as S
 import IxZeta (IxSignal, get) as IxSig
 import Unsafe.Coerce (unsafeCoerce)
+import Partial.Unsafe (unsafePartial)
 
 data EventOrTimeSpanTab
   = EventTab
@@ -238,6 +244,15 @@ newOrEditEventOrTimeSpanDialog { newOrEditEventOrTimeSpanQueues: IOQueues { inpu
                     put output (Just DeleteEventOrTimeSpan)
                     setState this { open: false, onDelete: \x -> x }
 
+                changeTab _ v =
+                  setState this
+                    { tab:
+                        unsafePartial
+                          $ case unsafeCoerce v of
+                              0 -> EventTab
+                              1 -> TimeSpanTab
+                    }
+
                 changeEventName e = do
                   t <- target e
                   setState this { eventName: (unsafeCoerce t).value }
@@ -245,12 +260,27 @@ newOrEditEventOrTimeSpanDialog { newOrEditEventOrTimeSpanQueues: IOQueues { inpu
                 changeEventDescription e = do
                   t <- target e
                   setState this { eventDescription: (unsafeCoerce t).value }
+
+                changeEventTime eventTime = setState this { eventTime }
+
+                changeTimeSpanName e = do
+                  t <- target e
+                  setState this { timeSpanName: (unsafeCoerce t).value }
+
+                changeTimeSpanDescription e = do
+                  t <- target e
+                  setState this { timeSpanDescription: (unsafeCoerce t).value }
+
+                changeTimeSpanSpan timeSpanSpan = setState this { timeSpanSpan }
               { open
               , tab
+              , decidedUnit
               , eventName
               , eventDescription
+              , eventTime
               , timeSpanName
               , timeSpanDescription
+              , timeSpanSpan
               , new
               , isEditable
               } <-
@@ -273,21 +303,68 @@ newOrEditEventOrTimeSpanDialog { newOrEditEventOrTimeSpanQueues: IOQueues { inpu
                               )
                         ]
                     , dialogContent_ -- TODO tabs, and other content
-                        $ [ textField'
-                              { label: "Name"
-                              , value: eventName
-                              , onChange: mkEffectFn1 changeEventName
-                              , fullWidth: true
+                        $ [ appBar
+                              { position: static
+                              , color: default
                               }
-                          , textField'
-                              { label: "Description"
-                              , value: eventDescription
-                              , onChange: mkEffectFn1 changeEventDescription
-                              , multiline: true
-                              , fullWidth: true
-                              , rows: 4
-                              }
+                              [ tabs
+                                  { indicatorColor: primary
+                                  , textColor: primary
+                                  , variant: fullWidth
+                                  , value:
+                                      case tab of
+                                        EventTab -> 0
+                                        TimeSpanTab -> 1
+                                  , onChange: mkEffectFn2 changeTab
+                                  }
+                                  [ tab' { label: "Event" }
+                                  , tab' { label: "TimeSpan" }
+                                  ]
+                              ]
                           ]
+                        <> case tab of
+                            EventTab ->
+                              [ textField'
+                                  { label: "Name"
+                                  , value: eventName
+                                  , onChange: mkEffectFn1 changeEventName
+                                  , fullWidth: true
+                                  }
+                              , textField'
+                                  { label: "Description"
+                                  , value: eventDescription
+                                  , onChange: mkEffectFn1 changeEventDescription
+                                  , multiline: true
+                                  , fullWidth: true
+                                  , rows: 4
+                                  }
+                              , valuePicker
+                                  { decidedUnit
+                                  , intermediaryValue: eventTime
+                                  , onChangeIntermediaryValue: changeEventTime
+                                  }
+                              ]
+                            TimeSpanTab ->
+                              [ textField'
+                                  { label: "Name"
+                                  , value: timeSpanName
+                                  , onChange: mkEffectFn1 changeTimeSpanName
+                                  , fullWidth: true
+                                  }
+                              , textField'
+                                  { label: "Description"
+                                  , value: timeSpanDescription
+                                  , onChange: mkEffectFn1 changeTimeSpanDescription
+                                  , multiline: true
+                                  , fullWidth: true
+                                  , rows: 4
+                                  }
+                              , spanPicker
+                                  { decidedUnit
+                                  , intermediarySpan: timeSpanSpan
+                                  , onChangeIntermediarySpan: changeTimeSpanSpan
+                                  }
+                              ]
                         <> if new then
                             []
                           else
@@ -307,7 +384,7 @@ newOrEditEventOrTimeSpanDialog { newOrEditEventOrTimeSpanQueues: IOQueues { inpu
                             , color: secondary
                             , autoFocus: true
                             }
-                            [ text $ if new then "Submit" else "Save" ]
+                            [ text $ if new then "Submit" else "Save" ] -- FIXME disable submit if form is bad
                         ]
                     ]
                   else
