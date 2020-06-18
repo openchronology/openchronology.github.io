@@ -38,19 +38,31 @@ import Plumbing.Logic
   , onSettingsEdit
   , onReadEULA
   , onExploreTimeSpaces
-  , onClickedNewTimeline
+  )
+import Plumbing.Logic.Drawers.Timelines
+  ( onClickedNewTimeline
   , onClickedEditTimeline
   , onClickedDeleteTimeline
+  )
+import Plumbing.Logic.Drawers.Siblings
+  ( onClickedNewEventOrTimeSpanSiblings
+  , onClickedEditEventOrTimeSpanSiblings
+  , onClickedDeleteEventOrTimeSpanSiblings
+  )
+import Plumbing.Logic.Drawers.Children
+  ( onClickedNewEventOrTimeSpanChildren
+  , onClickedEditEventOrTimeSpanChildren
+  , onClickedDeleteEventOrTimeSpanChildren
   )
 import Components.Dialogs.Import (ImportDialog) as Import
 import Components.Dialogs.Export (ExportDialog) as Export
 import Components.Dialogs.DangerConfirm (DangerConfirm)
-import Components.Dialogs.NewOrEditTimeline (NewOrEditTimelineResult)
+import Components.Dialogs.NewOrEditTimeline (NewOrEditTimelineResult, NewOrEditTimeline)
+import Components.Dialogs.NewOrEditEventOrTimeSpan (NewOrEditEventOrTimeSpanResult, NewOrEditEventOrTimeSpan)
 import Components.Snackbar (SnackbarContent)
 import Timeline.UI.TimeSpaceName (TimeSpaceName, newTimeSpaceNameSignal)
 import Timeline.UI.TimeScale (TimeScale, newTimeScaleSignal)
 import Timeline.UI.ExploreTimeSpaces (ExploreTimeSpaces, WithSpanOfTime, newExploreTimeSpacesSignal)
-import Timeline.UI.Timeline (Timeline)
 import Timeline.UI.Timelines (Timelines, newTimelinesSignal)
 import Timeline.UI.Siblings (Siblings, newSiblingsSignal)
 import Timeline.UI.Children (Children, newChildrenSignal)
@@ -79,7 +91,8 @@ type PrimaryQueues
     , eulaQueue :: Q.Queue ( write :: Q.WRITE ) Unit
     , exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array Index))
     , dangerConfirmQueues :: IOQueues Q.Queue DangerConfirm Boolean
-    , newOrEditTimelineQueues :: IOQueues Q.Queue (Maybe Timeline) (Maybe NewOrEditTimelineResult)
+    , newOrEditTimelineQueues :: IOQueues Q.Queue (Maybe NewOrEditTimeline) (Maybe NewOrEditTimelineResult)
+    , newOrEditEventOrTimeSpanQueues :: IOQueues Q.Queue (Maybe NewOrEditEventOrTimeSpan) (Maybe NewOrEditEventOrTimeSpanResult)
     }
 
 -- | Created only on boot of the program
@@ -113,7 +126,10 @@ newPrimaryQueues = do
   ( dangerConfirmQueues :: IOQueues Q.Queue DangerConfirm Boolean
   ) <-
     IOQueues.new
-  ( newOrEditTimelineQueues :: IOQueues Q.Queue (Maybe Timeline) (Maybe NewOrEditTimelineResult)
+  ( newOrEditTimelineQueues :: IOQueues Q.Queue (Maybe NewOrEditTimeline) (Maybe NewOrEditTimelineResult)
+  ) <-
+    IOQueues.new
+  ( newOrEditEventOrTimeSpanQueues :: IOQueues Q.Queue (Maybe NewOrEditEventOrTimeSpan) (Maybe NewOrEditEventOrTimeSpanResult)
   ) <-
     IOQueues.new
   pure
@@ -127,6 +143,7 @@ newPrimaryQueues = do
     , exploreTimeSpacesQueues
     , dangerConfirmQueues
     , newOrEditTimelineQueues
+    , newOrEditEventOrTimeSpanQueues
     }
 
 -- | shared state signals
@@ -205,6 +222,12 @@ type LogicFunctions
     , onClickedNewTimeline :: Effect Unit
     , onClickedEditTimeline :: Int -> Effect Unit
     , onClickedDeleteTimeline :: Either Int (Effect Unit) -> Effect Unit
+    , onClickedNewEventOrTimeSpanSiblings :: Effect Unit
+    , onClickedEditEventOrTimeSpanSiblings :: Int -> Effect Unit
+    , onClickedDeleteEventOrTimeSpanSiblings :: Either Int (Effect Unit) -> Effect Unit
+    , onClickedNewEventOrTimeSpanChildren :: Effect Unit
+    , onClickedEditEventOrTimeSpanChildren :: Int -> Effect Unit
+    , onClickedDeleteEventOrTimeSpanChildren :: Either Int (Effect Unit) -> Effect Unit
     }
 
 -- | Create the logical functions
@@ -219,12 +242,15 @@ logic { importQueues
 , exploreTimeSpacesQueues
 , dangerConfirmQueues
 , newOrEditTimelineQueues
+, newOrEditEventOrTimeSpanQueues
 } { settingsSignal
 , timeSpaceNameSignal
 , timeScaleSignal
 , zoomSignal
 , timeSpaceSelectedSignal
 , timelinesSignal
+, siblingsSignal
+, childrenSignal
 } =
   { onImport:
       onImport
@@ -246,6 +272,12 @@ logic { importQueues
   , onReadEULA: onReadEULA { eulaQueue }
   , onExploreTimeSpaces: onExploreTimeSpaces { exploreTimeSpacesQueues, timeSpaceSelectedSignal }
   , onClickedNewTimeline: onClickedNewTimeline { newOrEditTimelineQueues, timelinesSignal }
-  , onClickedEditTimeline: onClickedEditTimeline { newOrEditTimelineQueues, timelinesSignal }
+  , onClickedEditTimeline: onClickedEditTimeline { newOrEditTimelineQueues, timelinesSignal, dangerConfirmQueues }
   , onClickedDeleteTimeline: onClickedDeleteTimeline { dangerConfirmQueues, timelinesSignal }
+  , onClickedNewEventOrTimeSpanSiblings: onClickedNewEventOrTimeSpanSiblings { newOrEditEventOrTimeSpanQueues, siblingsSignal }
+  , onClickedEditEventOrTimeSpanSiblings: onClickedEditEventOrTimeSpanSiblings { newOrEditEventOrTimeSpanQueues, siblingsSignal, dangerConfirmQueues }
+  , onClickedDeleteEventOrTimeSpanSiblings: onClickedDeleteEventOrTimeSpanSiblings { dangerConfirmQueues, siblingsSignal }
+  , onClickedNewEventOrTimeSpanChildren: onClickedNewEventOrTimeSpanChildren { newOrEditEventOrTimeSpanQueues, childrenSignal }
+  , onClickedEditEventOrTimeSpanChildren: onClickedEditEventOrTimeSpanChildren { newOrEditEventOrTimeSpanQueues, childrenSignal, dangerConfirmQueues }
+  , onClickedDeleteEventOrTimeSpanChildren: onClickedDeleteEventOrTimeSpanChildren { dangerConfirmQueues, childrenSignal }
   }

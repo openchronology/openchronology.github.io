@@ -38,7 +38,7 @@ newtype TimeScale
   , units :: String
   , description :: String
   , limit :: DecidedMaybeLimit -- Commands the consistency throughout the rest of the sibling data
-  -- , morphism :: Equation -- change this for different mappings - for now, we're linear
+  -- , morphism :: Equation -- TODO change this for different mappings - for now, we're linear
   }
 
 derive instance genericTimeScale :: Generic TimeScale _

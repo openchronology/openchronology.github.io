@@ -6,21 +6,13 @@ This is the main entry point React.js component - basically, everything that's i
 user interface visually, lives here.
 
 -}
+import Components.Dialogs (dialogs)
 import Settings (Settings(..))
 import Components.TopBar (topBar)
 import Components.BottomBar (bottomBar)
 import Components.Drawers.Timelines (timelinesDrawer)
 import Components.Drawers.Siblings (siblingsDrawer)
 import Components.Drawers.Children (childrenDrawer)
-import Components.Dialogs.Import (importDialog)
-import Components.Dialogs.Export (exportDialog)
-import Components.Dialogs.TimeSpaceNameEdit (timeSpaceNameEditDialog)
-import Components.Dialogs.TimeScaleEdit (timeScaleEditDialog)
-import Components.Dialogs.SettingsEdit (settingsEditDialog)
-import Components.Dialogs.EULA (eulaDialog)
-import Components.Dialogs.ExploreTimeSpaces (exploreTimeSpacesDialog)
-import Components.Dialogs.DangerConfirm (dangerConfirmDialog)
-import Components.Dialogs.NewOrEditTimeline (newOrEditTimelineDialog)
 import Components.Snackbar (snackbars)
 import WithRoot (withRoot)
 import Plumbing (PrimaryQueues, PrimarySignals, LogicFunctions)
@@ -109,41 +101,33 @@ index ::
   ReactElement
 index { stateRef
 , primaryQueues:
-    { importQueues
-    , exportQueue
-    , settingsEditQueues
-    , timeSpaceNameEditQueues
-    , timeScaleEditQueues
-    , snackbarQueue
-    , eulaQueue
-    , exploreTimeSpacesQueues
-    , dangerConfirmQueues
-    , newOrEditTimelineQueues
+    primaryQueues@{ snackbarQueue
     }
 , primarySignals:
-    { settingsSignal
+    primarySignals@{ settingsSignal
     , timeSpaceNameSignal
     , timeScaleSignal
     , zoomSignal
-    , exploreTimeSpacesSignal
-    , timeSpaceSelectedSignal
     , timelinesSignal
     , siblingsSignal
     , childrenSignal
     }
 , logicFunctions:
-    { onImport
+    logicFunctions@{ onImport
     , onExport
-    , onClickedExport
-    , onNew
     , onTimeSpaceNameEdit
     , onTimeScaleEdit
     , onSettingsEdit
-    , onReadEULA
     , onExploreTimeSpaces
     , onClickedNewTimeline
     , onClickedEditTimeline
     , onClickedDeleteTimeline
+    , onClickedNewEventOrTimeSpanSiblings
+    , onClickedEditEventOrTimeSpanSiblings
+    , onClickedDeleteEventOrTimeSpanSiblings
+    , onClickedNewEventOrTimeSpanChildren
+    , onClickedEditEventOrTimeSpanChildren
+    , onClickedDeleteEventOrTimeSpanChildren
     }
 } = withRoot e
   where
@@ -199,6 +183,9 @@ index { stateRef
                         , siblingsDrawer
                             { settingsSignal: S.readOnly settingsSignal
                             , siblingsSignal: S.readOnly siblingsSignal
+                            , onClickedNewEventOrTimeSpanSiblings
+                            , onClickedEditEventOrTimeSpanSiblings
+                            , onClickedDeleteEventOrTimeSpanSiblings: onClickedDeleteEventOrTimeSpanSiblings <<< Left
                             }
                         ]
                     ]
@@ -248,40 +235,8 @@ index { stateRef
                       , zoomSignal
                       , timeScaleSignal: S.readOnly timeScaleSignal
                       }
-                  -- dialogs
-                  , importDialog importQueues
-                  , exportDialog
-                      { exportQueue: Q.readOnly (Q.allowReading exportQueue)
-                      , onClickedExport
-                      }
-                  , timeSpaceNameEditDialog
-                      { timeSpaceNameSignal: S.readOnly timeSpaceNameSignal
-                      , settingsSignal: S.readOnly settingsSignal
-                      , timeSpaceNameEditQueues
-                      }
-                  , timeScaleEditDialog
-                      { timeScaleSignal: S.readOnly timeScaleSignal
-                      , settingsSignal: S.readOnly settingsSignal
-                      , timeScaleEditQueues
-                      }
-                  , settingsEditDialog
-                      { settingsSignal: S.readOnly settingsSignal
-                      , settingsEditQueues
-                      , onNew
-                      , onReadEULA
-                      }
-                  , newOrEditTimelineDialog
-                      { onDelete: onClickedDeleteTimeline <<< Right
-                      , newOrEditTimelineQueues
-                      , settingsSignal: S.readOnly settingsSignal
-                      }
-                  , eulaDialog { eulaQueue: Q.readOnly (Q.allowReading eulaQueue) }
-                  , exploreTimeSpacesDialog
-                      { exploreTimeSpacesSignal: S.readOnly exploreTimeSpacesSignal
-                      , timeSpaceSelectedSignal: S.readOnly timeSpaceSelectedSignal
-                      , exploreTimeSpacesQueues
-                      }
-                  , dangerConfirmDialog { dangerConfirmQueues }
-                  , snackbars (Q.readOnly (Q.allowReading snackbarQueue))
+                  ]
+                <> dialogs { primaryQueues, primarySignals, logicFunctions }
+                <> [ snackbars (Q.readOnly (Q.allowReading snackbarQueue))
                   ]
         }

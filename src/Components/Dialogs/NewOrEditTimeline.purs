@@ -1,3 +1,5 @@
+-- | Used for new timelines, editing an existing timeline,
+-- | and presenting an existing timeline in read-only mode.
 module Components.Dialogs.NewOrEditTimeline where
 
 import Timeline.UI.Timeline (Timeline(..))
@@ -42,14 +44,22 @@ data NewOrEditTimelineResult
   = DeleteTimeline
   | NewOrEditTimeline Timeline
 
+type NewOrEditTimeline
+  = { timeline :: Timeline
+    , onDelete :: Effect Unit -> Effect Unit
+    }
+
 type State
   = { open :: Boolean
     , name :: String
     , description :: String
     , new :: Boolean
     , isEditable :: Boolean
+    , onDelete :: Effect Unit -> Effect Unit -- ^ Continuation helps resolve state
     }
 
+-- | Dummy values for Timeline content, because they'll be populated when
+-- | opened via edit, or not with new.
 initialState ::
   IxSig.IxSignal ( read :: S.READ ) Settings ->
   Effect State
@@ -61,6 +71,7 @@ initialState settingsSignal = do
     , description: ""
     , new: true
     , isEditable
+    , onDelete: \x -> x
     }
 
 styles :: Theme -> _
@@ -75,13 +86,11 @@ styles theme =
   }
 
 newOrEditTimelineDialog ::
-  { onDelete :: Effect Unit -> Effect Unit
-  , newOrEditTimelineQueues :: IOQueues Queue (Maybe Timeline) (Maybe NewOrEditTimelineResult)
+  { newOrEditTimelineQueues :: IOQueues Queue (Maybe NewOrEditTimeline) (Maybe NewOrEditTimelineResult)
   , settingsSignal :: IxSig.IxSignal ( read :: S.READ ) Settings
   } ->
   ReactElement
-newOrEditTimelineDialog { onDelete
-, newOrEditTimelineQueues: IOQueues { input, output }
+newOrEditTimelineDialog { newOrEditTimelineQueues: IOQueues { input, output }
 , settingsSignal
 } = createLeafElement c {}
   where
@@ -94,18 +103,19 @@ newOrEditTimelineDialog { onDelete
   constructor' :: ReactClassConstructor _ State _
   constructor' =
     let
-      handlerOpen :: _ -> Maybe Timeline -> Effect Unit
+      handlerOpen :: _ -> Maybe NewOrEditTimeline -> Effect Unit
       handlerOpen this mT = do
         _ <- setTimeout 250 (setState this { open: true })
         case mT of
           Nothing -> do
             state <- initialState settingsSignal
             setState this state
-          Just (Timeline { name, description }) -> do
+          Just { timeline: Timeline { name, description }, onDelete } -> do
             setState this
               { name
               , description
               , new: false
+              , onDelete
               }
 
       handlerChangeEdit :: _ -> Settings -> Effect Unit
@@ -132,10 +142,11 @@ newOrEditTimelineDialog { onDelete
                   put output (Just (NewOrEditTimeline (Timeline { name, description })))
                   setState this { open: false }
 
-                delete =
+                delete = do
+                  { onDelete } <- getState this
                   onDelete do
                     put output (Just DeleteTimeline)
-                    setState this { open: false }
+                    setState this { open: false, onDelete: \x -> x }
 
                 changeName e = do
                   t <- target e

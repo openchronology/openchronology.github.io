@@ -42,11 +42,16 @@ import MaterialUI.Enums (title, subheading, small, contained)
 import MaterialUI.Theme (Theme)
 import Zeta.Types (READ) as S
 import IxZeta (IxSignal, get) as IxSig
+import Partial.Unsafe (unsafePartial)
 
 type State
   = { elements :: Siblings -- Array { name :: String, time :: String } -- FIXME time-sorted mapping?
     , selected :: Maybe Int
-    , menuAnchor :: Maybe NativeEventTarget
+    , menuAnchor ::
+        Maybe
+          { target :: NativeEventTarget
+          , index :: Int
+          }
     , isEditable :: Boolean
     }
 
@@ -75,9 +80,17 @@ styles theme =
 siblingsDrawer ::
   { settingsSignal :: IxSig.IxSignal ( read :: S.READ ) Settings
   , siblingsSignal :: IxSig.IxSignal ( read :: S.READ ) Siblings
+  , onClickedNewEventOrTimeSpanSiblings :: Effect Unit
+  , onClickedEditEventOrTimeSpanSiblings :: Int -> Effect Unit
+  , onClickedDeleteEventOrTimeSpanSiblings :: Int -> Effect Unit
   } ->
   ReactElement
-siblingsDrawer { settingsSignal, siblingsSignal } = createLeafElement c {}
+siblingsDrawer { settingsSignal
+, siblingsSignal
+, onClickedNewEventOrTimeSpanSiblings
+, onClickedEditEventOrTimeSpanSiblings
+, onClickedDeleteEventOrTimeSpanSiblings
+} = createLeafElement c {}
   where
   c :: ReactClass {}
   c = withStyles styles c'
@@ -111,9 +124,10 @@ siblingsDrawer { settingsSignal, siblingsSignal } = createLeafElement c {}
               props <- getProps this
               { elements: Siblings elements, selected, menuAnchor, isEditable } <- getState this
               let
-                handleMenuClick e = do
+                handleMenuClick :: Int -> _ -> Effect Unit
+                handleMenuClick i e = do
                   anchor <- currentTarget e
-                  setState this { menuAnchor: Just anchor }
+                  setState this { menuAnchor: Just { target: anchor, index: i } }
 
                 handleClose = setState this { menuAnchor: Nothing }
 
@@ -126,6 +140,7 @@ siblingsDrawer { settingsSignal, siblingsSignal } = createLeafElement c {}
                           { button: true
                           , selected: isSelected
                           , onClick: mkEffectFn1 (const select)
+                          , title: "Select Event"
                           }
                           $ [ listItemText' { primary: name, secondary: asSecondaryString time }
                             ]
@@ -135,6 +150,7 @@ siblingsDrawer { settingsSignal, siblingsSignal } = createLeafElement c {}
                           { button: true
                           , selected: isSelected
                           , onClick: mkEffectFn1 (const select)
+                          , title: "Select TimeSpan"
                           }
                           $ [ listItemText' { primary: name, secondary: asSecondaryString span }
                             ]
@@ -144,7 +160,7 @@ siblingsDrawer { settingsSignal, siblingsSignal } = createLeafElement c {}
                       ( if isEditable then
                           [ listItemSecondaryAction_
                               [ iconButton
-                                  { onClick: mkEffectFn1 handleMenuClick
+                                  { onClick: mkEffectFn1 (handleMenuClick i)
                                   }
                                   [ moreHorizIcon ]
                               ]
@@ -161,29 +177,61 @@ siblingsDrawer { settingsSignal, siblingsSignal } = createLeafElement c {}
                   , typography { variant: subheading } [ text "For Multiple Timelines" ]
                   ]
                 <> ( if isEditable then
-                      [ button { size: small, variant: contained } [ text "Add" ] ]
+                      [ button
+                          { size: small
+                          , variant: contained
+                          , onClick: mkEffectFn1 (const onClickedNewEventOrTimeSpanSiblings)
+                          }
+                          [ text "Add" ]
+                      ]
                     else
                       []
                   )
                 <> [ list { className: props.classes.leftDrawerList } (Array.mapWithIndex mkTextItemTime elements)
                   , menu
                       { id: "siblings-item-menu"
-                      , anchorEl: toNullable menuAnchor
+                      , anchorEl: toNullable (map _.target menuAnchor)
                       , open: isJust menuAnchor
                       , onClose: mkEffectFn1 (const handleClose)
                       }
-                      [ menuItem
-                          { onClick: mkEffectFn1 (const handleClose)
-                          }
-                          [ text "Edit" ]
-                      , menuItem
-                          { onClick: mkEffectFn1 (const handleClose)
-                          }
-                          [ text "Move" ]
-                      , menuItem
-                          { onClick: mkEffectFn1 (const handleClose)
-                          }
-                          [ text "Delete" ]
-                      ]
+                      $ if isEditable then
+                          [ menuItem
+                              { onClick:
+                                  mkEffectFn1 \_ -> do
+                                    handleClose
+                                    { menuAnchor: anchor' } <- getState this
+                                    unsafePartial
+                                      $ case anchor' of
+                                          Just { index } -> onClickedEditEventOrTimeSpanSiblings index
+                              }
+                              [ text "Edit" ]
+                          , menuItem
+                              { onClick: mkEffectFn1 (const handleClose)
+                              -- TODO timespace explorer
+                              }
+                              [ text "Move" ]
+                          , menuItem
+                              { onClick:
+                                  mkEffectFn1 \_ -> do
+                                    handleClose
+                                    { menuAnchor: anchor' } <- getState this
+                                    unsafePartial
+                                      $ case anchor' of
+                                          Just { index } -> onClickedDeleteEventOrTimeSpanSiblings index
+                              }
+                              [ text "Delete" ]
+                          ]
+                        else
+                          [ menuItem
+                              { onClick:
+                                  mkEffectFn1 \_ -> do
+                                    handleClose
+                                    { menuAnchor: anchor' } <- getState this
+                                    unsafePartial
+                                      $ case anchor' of
+                                          Just { index } -> onClickedEditEventOrTimeSpanSiblings index
+                              }
+                              [ text "Details" ]
+                          ]
                   ]
         }

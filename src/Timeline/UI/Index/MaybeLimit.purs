@@ -1,5 +1,6 @@
 module Timeline.UI.Index.MaybeLimit where
 
+import Timeline.UI.Index.Unit (DecidedUnit(..))
 import Timeline.UI.Index.Value (DecidedValue(..))
 import Timeline.UI.Index.Min (Min)
 import Timeline.UI.Index.Max (Max)
@@ -99,6 +100,10 @@ unmakeDecidedMaybeLimit l = case l of
     JustLimitMin { begin } -> { begin: Just (DecidedValueNumber begin), end: Nothing }
     JustLimitMax { end } -> { begin: Nothing, end: Just (DecidedValueNumber end) }
     NothingLimit -> { begin: Nothing, end: Nothing } -- FIXME how would I show the unit?
+
+getMaybeLimitDecidedUnit :: DecidedMaybeLimit -> DecidedUnit
+getMaybeLimitDecidedUnit l = case l of
+  DecidedMaybeLimitNumber _ -> DecidedUnitNumber
 
 derive instance genericDecidedMaybeLimit :: Generic DecidedMaybeLimit _
 

@@ -20,6 +20,7 @@ You can edit this file as you like.
   , "react-mui"
   , "react-queue"
   , "spec"
+  , "stringutils"
   , "timeline"
   ]
 , packages = ./packages.dhall

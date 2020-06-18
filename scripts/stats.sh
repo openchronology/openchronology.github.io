@@ -11,3 +11,6 @@ echo "Lines of Code per module:"
 echo ""
 echo ""
 find src/ -name "*.purs" | xargs wc --lines | sort -nr
+
+echo ""
+spago run -m Scripts.ModuleImportsAndExports
