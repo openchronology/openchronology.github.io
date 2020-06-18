@@ -34,7 +34,7 @@ import MaterialUI.CircularProgress (circularProgress')
 import MaterialUI.Styles (withStyles)
 import MaterialUI.Typography (typography)
 import MaterialUI.Input (input')
-import MaterialUI.Enums (primary, subheading)
+import MaterialUI.Enums (primary, subtitle1)
 
 -- | Externally supplied signals to command the dialog
 data ImportDialog
@@ -121,7 +121,7 @@ importDialog (IOQueues { input, output }) = createLeafElement c {}
                   $ dialog'' { onClose: mkEffectFn1 (const close), open, "aria-labelledby": "import-dialog-title" }
                       [ dialogTitle { id: "import-dialog-title" } [ text "Import OpenChronology File" ]
                       , dialogContent_
-                          $ [ typography { gutterBottom: true, variant: subheading }
+                          $ [ typography { gutterBottom: true, variant: subtitle1 }
                                 [ strong [] [ text "Warning!" ]
                                 , nbsp
                                 , text "Clicking \"Import\" will delete any unsaved data!"

@@ -34,7 +34,7 @@ import MaterialUI.Icons.MoreHorizIcon (moreHorizIcon)
 import MaterialUI.Button (button)
 import MaterialUI.Menu (menu)
 import MaterialUI.MenuItem (menuItem)
-import MaterialUI.Enums (title, small, contained)
+import MaterialUI.Enums (h6, small, contained)
 import MaterialUI.Theme (Theme)
 import Zeta.Types (READ) as S
 import IxZeta (IxSignal, get) as IxSig
@@ -148,7 +148,7 @@ timelinesDrawer { settingsSignal
 
                   select = setState this { selected: if isSelected then Nothing else Just i }
               pure $ toElement
-                $ [ typography { variant: title } [ text "Timelines" ]
+                $ [ typography { variant: h6 } [ text "Timelines" ]
                   ]
                 <> ( if isEditable then
                       [ button

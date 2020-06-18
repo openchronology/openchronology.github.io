@@ -41,7 +41,7 @@ import MaterialUI.Styles (withStyles)
 import MaterialUI.Typography (typography)
 import MaterialUI.Drawer (drawer)
 import MaterialUI.Divider (divider_)
-import MaterialUI.Enums (title, permanent, right)
+import MaterialUI.Enums (h6, permanent, right)
 import MaterialUI.Theme (Theme)
 
 -- TODO define which queues, signals, and functions Index will need, and keep separate
@@ -228,7 +228,7 @@ index { stateRef
                             else
                               props.classes.content
                       ]
-                      [ typography { gutterBottom: true, variant: title }
+                      [ typography { gutterBottom: true, variant: h6 }
                           [ text "Just a Test - blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah" ]
                       ]
                   ]

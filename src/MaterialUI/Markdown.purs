@@ -10,7 +10,7 @@ import React.DOM.Markdown (markdown) as RM
 import React.DOM.Highlight (highlight)
 import MaterialUI.Typography (typography)
 import MaterialUI.Divider (divider')
-import MaterialUI.Enums (headline, title, subheading, display1, display2, display3, body1, caption)
+import MaterialUI.Enums (h5, h6, subtitle1, h4, h3, h2, body1, caption)
 import Partial.Unsafe (unsafePartial)
 
 markdown :: String -> ReactElement
@@ -22,12 +22,12 @@ markdown source =
             statelessComponent \{ level, children } ->
               unsafePartial
                 $ case level of
-                    1 -> typography { variant: display3 } (childrenToArray children)
-                    2 -> typography { variant: display2 } (childrenToArray children)
-                    3 -> typography { variant: display1 } (childrenToArray children)
-                    4 -> typography { variant: headline } (childrenToArray children)
-                    5 -> typography { variant: title } (childrenToArray children)
-                    6 -> typography { variant: subheading } (childrenToArray children)
+                    1 -> typography { variant: h2 } (childrenToArray children)
+                    2 -> typography { variant: h3 } (childrenToArray children)
+                    3 -> typography { variant: h4 } (childrenToArray children)
+                    4 -> typography { variant: h5 } (childrenToArray children)
+                    5 -> typography { variant: h6 } (childrenToArray children)
+                    6 -> typography { variant: subtitle1 } (childrenToArray children)
         , paragraph: statelessComponent \{ children } -> typography { variant: body1, paragraph: true } (childrenToArray children)
         , thematicBreak: statelessComponent \_ -> divider' { style: { margin: "1em 0" } }
         , blockquote:

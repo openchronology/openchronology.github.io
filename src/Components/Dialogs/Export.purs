@@ -25,7 +25,7 @@ import MaterialUI.DialogTitle (dialogTitle)
 import MaterialUI.DialogContent (dialogContent_)
 import MaterialUI.DialogActions (dialogActions_)
 import MaterialUI.Button (button)
-import MaterialUI.Enums (primary, subheading)
+import MaterialUI.Enums (primary, subtitle1)
 import MaterialUI.Typography (typography)
 import Unsafe.Coerce (unsafeCoerce)
 import Web.File.Store (arrayBufferToBlob)
@@ -79,7 +79,7 @@ exportDialog { exportQueue, onClickedExport } = createLeafElement c {}
               $ dialog'' { onClose: mkEffectFn1 (const close), open, "aria-labelledby": "import-dialog-title" }
                   [ dialogTitle { id: "import-dialog-title" } [ text "Export OpenChronology File" ]
                   , dialogContent_
-                      [ typography { gutterBottom: true, variant: subheading }
+                      [ typography { gutterBottom: true, variant: subtitle1 }
                           [ strong [] [ text "Warning!" ]
                           , nbsp
                           , text "Clicking \"Export\" will delete any unsaved data!"

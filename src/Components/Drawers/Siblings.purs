@@ -38,7 +38,7 @@ import MaterialUI.Icons.MoreHorizIcon (moreHorizIcon)
 import MaterialUI.Button (button)
 import MaterialUI.Menu (menu)
 import MaterialUI.MenuItem (menuItem)
-import MaterialUI.Enums (title, subheading, small, contained)
+import MaterialUI.Enums (h6, subtitle1, small, contained)
 import MaterialUI.Theme (Theme)
 import Zeta.Types (READ) as S
 import IxZeta (IxSignal, get) as IxSig
@@ -173,8 +173,8 @@ siblingsDrawer { settingsSignal
 
                   select = setState this { selected: if isSelected then Nothing else Just i }
               pure $ toElement
-                $ [ typography { variant: title } [ text "Events and TimeSpans" ]
-                  , typography { variant: subheading } [ text "For Multiple Timelines" ]
+                $ [ typography { variant: h6 } [ text "Events and TimeSpans" ]
+                  , typography { variant: subtitle1 } [ text "For Multiple Timelines" ]
                   ]
                 <> ( if isEditable then
                       [ button

@@ -41,7 +41,7 @@ import MaterialUI.DialogContent (dialogContent_)
 import MaterialUI.DialogActions (dialogActions_)
 import MaterialUI.Typography (typography)
 import MaterialUI.Button (button)
-import MaterialUI.Enums (body2, subheading, secondary, headline)
+import MaterialUI.Enums (body2, subtitle1, secondary, h5)
 import Queue.One (READ, Queue) as Q
 
 eulaLocalStorageKey :: String
@@ -100,12 +100,12 @@ eulaDialog { eulaQueue } = createLeafElement c {}
 
 eulaText :: Array ReactElement
 eulaText =
-  [ typography { variant: headline, gutterBottom: true } [ text "Copyright Disclaimer" ]
-  , typography { variant: subheading }
+  [ typography { variant: h5, gutterBottom: true } [ text "Copyright Disclaimer" ]
+  , typography { variant: subtitle1 }
       [ strong [] [ text "OpenChronology" ]
       , text " - an application for graphing and visualizing timelines."
       ]
-  , typography { variant: subheading, paragraph: true }
+  , typography { variant: subtitle1, paragraph: true }
       [ text "Copyright (C) 2020  Athan Clark"
       ]
   , typography { variant: body2, paragraph: true }
