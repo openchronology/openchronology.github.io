@@ -20,7 +20,7 @@ import Components.Time.Span
   )
 import Settings (Settings(..))
 import Prelude
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), isJust)
 import Data.Either (Either(..))
 import Data.IxSet.Demi (Index)
 import Effect (Effect)
@@ -50,6 +50,8 @@ import MaterialUI.TextField (textField')
 import MaterialUI.AppBar (appBar)
 import MaterialUI.Tabs (tabs)
 import MaterialUI.Tab (tab')
+import MaterialUI.FormControlLabel (formControlLabel')
+import MaterialUI.Switch (switch')
 import MaterialUI.Styles (withStyles)
 import MaterialUI.Theme (Theme)
 import MaterialUI.Enums (secondary, primary, static, default, fullWidth)
@@ -281,6 +283,7 @@ newOrEditEventOrTimeSpanDialog { newOrEditEventOrTimeSpanQueues: IOQueues { inpu
               , timeSpanName
               , timeSpanDescription
               , timeSpanSpan
+              , timeSpanTimeSpace
               , new
               , isEditable
               } <-
@@ -321,6 +324,7 @@ newOrEditEventOrTimeSpanDialog { newOrEditEventOrTimeSpanQueues: IOQueues { inpu
                                   , tab' { label: "TimeSpan" }
                                   ]
                               ]
+                          , br []
                           ]
                         <> case tab of
                             EventTab ->
@@ -363,6 +367,14 @@ newOrEditEventOrTimeSpanDialog { newOrEditEventOrTimeSpanQueues: IOQueues { inpu
                                   { decidedUnit
                                   , intermediarySpan: timeSpanSpan
                                   , onChangeIntermediarySpan: changeTimeSpanSpan
+                                  }
+                              , formControlLabel'
+                                  { control:
+                                      switch'
+                                        { checked: isJust timeSpanTimeSpace
+                                        -- , onChange: 
+                                        } -- TODO add "new time space" / "delete time space?" dialogs
+                                  , label: "Owns a TimeSpace"
                                   }
                               ]
                         <> if new then

@@ -157,17 +157,13 @@ childrenDrawer { settingsSignal
                           <> edit
                   in
                     item
-                      ( if isEditable then
-                          [ listItemSecondaryAction_
-                              [ iconButton
-                                  { onClick: mkEffectFn1 (handleMenuClick i)
-                                  }
-                                  [ moreHorizIcon ]
-                              ]
+                      [ listItemSecondaryAction_
+                          [ iconButton
+                              { onClick: mkEffectFn1 (handleMenuClick i)
+                              }
+                              [ moreHorizIcon ]
                           ]
-                        else
-                          []
-                      )
+                      ]
                   where
                   isSelected = Just i == selected
 
