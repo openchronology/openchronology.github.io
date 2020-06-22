@@ -9,7 +9,7 @@ import Timeline.UI.Siblings (Siblings)
 import Timeline.UI.Children (Children)
 import Timeline.UI.Timeline (Timeline)
 import Timeline.UI.Timelines (Timelines)
-import Settings (Settings)
+import Timeline.UI.Settings (Settings)
 
 
 import Prelude

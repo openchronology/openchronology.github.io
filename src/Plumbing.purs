@@ -62,11 +62,11 @@ import Components.Dialogs.NewOrEditEventOrTimeSpan (NewOrEditEventOrTimeSpanResu
 import Components.Snackbar (SnackbarContent)
 import Timeline.UI.TimeSpaceName (TimeSpaceName, newTimeSpaceNameSignal)
 import Timeline.UI.TimeScale (TimeScale, newTimeScaleSignal)
-import Timeline.UI.ExploreTimeSpaces (ExploreTimeSpaces, WithSpanOfTime, newExploreTimeSpacesSignal)
+import Timeline.UI.ExploreTimeSpaces (ExploreTimeSpaces, WithBounds, newExploreTimeSpacesSignal)
 import Timeline.UI.Timelines (Timelines, newTimelinesSignal)
 import Timeline.UI.Siblings (Siblings, newSiblingsSignal)
 import Timeline.UI.Children (Children, newChildrenSignal)
-import Settings (Settings, newSettingsSignal)
+import Timeline.UI.Settings (Settings, newSettingsSignal)
 import Prelude
 import Data.Maybe (Maybe)
 import Data.Either (Either)
@@ -155,7 +155,7 @@ type PrimarySignals
     , timeScaleSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) TimeScale
     -- initial zoom level
     , zoomSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Number
-    , exploreTimeSpacesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (WithSpanOfTime ExploreTimeSpaces)
+    , exploreTimeSpacesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (WithBounds ExploreTimeSpaces)
     , timeSpaceSelectedSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (Array Index)
     , timelinesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Timelines
     , siblingsSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Siblings
@@ -180,7 +180,7 @@ newPrimarySignals = do
   ( zoomSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Number
   ) <-
     IxSig.make 100.0
-  ( exploreTimeSpacesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (WithSpanOfTime ExploreTimeSpaces)
+  ( exploreTimeSpacesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (WithBounds ExploreTimeSpaces)
   ) <-
     newExploreTimeSpacesSignal
   ( timeSpaceSelectedSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (Array Index)

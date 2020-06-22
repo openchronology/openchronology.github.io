@@ -4,10 +4,7 @@ You can edit this file as you like.
 -}
 { name = "openchronology.github.io"
 , dependencies =
-  [ "argonaut"
-  , "arraybuffer-class"
-  , "data-default"
-  , "debug"
+  [ "debug"
   , "file-store"
   , "fixed-precision"
   , "indexed-demiset"

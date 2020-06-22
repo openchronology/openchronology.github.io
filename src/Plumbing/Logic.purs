@@ -8,7 +8,7 @@ import Timeline.UI.TimeSpaceName
   (TimeSpaceName(..), clearTimeSpaceNameCache, setDefaultTimeSpaceName)
 import Timeline.UI.TimeScale
   (TimeScale, clearTimeScaleCache, setDefaultTimeScale)
-import Settings (Settings(..))
+import Timeline.UI.Settings (Settings(..))
 import Prelude
 import Data.Maybe (Maybe(..))
 import Data.ArrayBuffer.Class (encodeArrayBuffer)

@@ -1,11 +1,12 @@
 module Components.Dialogs.NewOrEditEventOrTimeSpan where
 
-import Timeline.UI.Index.Unit (DecidedUnit)
-import Timeline.UI.Index.MaybeLimit (getMaybeLimitDecidedUnit)
+import Timeline.Time.Unit (DecidedUnit)
+import Timeline.Time.MaybeLimit (getMaybeLimitDecidedUnit)
 import Timeline.UI.TimeScale (TimeScale(..))
 import Timeline.UI.Event (Event(..))
 import Timeline.UI.TimeSpan (TimeSpan(..))
 import Timeline.UI.EventOrTimeSpan (EventOrTimeSpan(..))
+import Timeline.UI.Settings (Settings(..))
 import Components.Time.Value
   ( DecidedIntermediaryValue
   , initialDecidedIntermediaryValue
@@ -18,7 +19,6 @@ import Components.Time.Span
   , intermediaryToSpan
   , spanPicker
   )
-import Settings (Settings(..))
 import Prelude
 import Data.Maybe (Maybe(..), isJust)
 import Data.Either (Either(..))

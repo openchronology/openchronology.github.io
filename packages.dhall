@@ -121,11 +121,16 @@ let additions =
 let upstream =
       https://github.com/purescript/package-sets/releases/download/psc-0.13.6-20200507/packages.dhall sha256:9c1e8951e721b79de1de551f31ecb5a339e82bbd43300eb5ccfb1bf8cf7bbd62
 
-let overrides = {=}
-{-
-  { generics-rep = upstream.generics-rep // { repo = "https://github.com/openchronology/purescript-generics-rep.git", version = "master" }
+let overrides =
+  { uuid =
+    { dependencies = ["foreign-generic", "sized-vectors"]
+    , repo = "https://github.com/openchronology/purescript-uuid.git"
+    , version = "master"
+    }
+  , arraybuffer-class = upstream.arraybuffer-class //
+    { version = "v0.2.6"
+    }
   }
--}
 
 let additions =
   { tscompat =
@@ -175,11 +180,20 @@ let additions =
     }
   , timeline =
     { dependencies =
-      [ "indexed-multiset"
+      [ "indexed-demiset"
+      , "indexed-multiset"
       , "indexed-set"
       , "numbers"
+      , "timeline-time"
+      , "uuid"
+      , "data-default"
       ]
     , repo = "https://github.com/openchronology/purescript-timeline.git"
+    , version = "master"
+    }
+  , timeline-time =
+    { dependencies = ["arraybuffer-class", "argonaut"]
+    , repo = "https://github.com/openchronology/purescript-timeline-time.git"
     , version = "master"
     }
   , quickcheck-utf8 =

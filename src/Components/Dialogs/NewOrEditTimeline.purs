@@ -3,7 +3,7 @@
 module Components.Dialogs.NewOrEditTimeline where
 
 import Timeline.UI.Timeline (Timeline(..))
-import Settings (Settings(..))
+import Timeline.UI.Settings (Settings(..))
 import Prelude
 import Data.Maybe (Maybe(..))
 import Effect (Effect)

@@ -1,7 +1,7 @@
 module Components.Time.Max where
 
 import Components.Time.Value (DecidedIntermediaryValue, valuePicker')
-import Timeline.UI.Index.Unit (DecidedUnit(..))
+import Timeline.Time.Unit (DecidedUnit(..))
 import Prelude (Unit)
 import Data.Maybe (Maybe(..))
 import Effect (Effect)

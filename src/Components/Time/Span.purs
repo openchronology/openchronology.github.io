@@ -1,7 +1,7 @@
 module Components.Time.Span where
 
-import Timeline.UI.Index.Unit (DecidedUnit(..))
-import Timeline.UI.Index.Span (DecidedSpan(..), Span)
+import Timeline.Time.Unit (DecidedUnit(..))
+import Timeline.Time.Span (DecidedSpan(..), Span)
 import Components.Time.Value
   ( DecidedIntermediaryValue(..)
   , valuePicker'

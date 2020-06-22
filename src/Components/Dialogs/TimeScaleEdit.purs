@@ -1,8 +1,9 @@
 module Components.Dialogs.TimeScaleEdit (timeScaleEditDialog) where
 
-import Timeline.UI.Index.Unit (DecidedUnit(..))
-import Timeline.UI.Index.MaybeLimit (DecidedMaybeLimit(..), MaybeLimit(..))
+import Timeline.Time.Unit (DecidedUnit(..))
+import Timeline.Time.MaybeLimit (DecidedMaybeLimit(..), MaybeLimit(..))
 import Timeline.UI.TimeScale (TimeScale(..))
+import Timeline.UI.Settings (Settings(..))
 import Components.Time.Unit (unitPicker)
 import Components.Time.Bounds (DecidedIntermediaryBounds(..))
 import Components.Time.MaybeLimit
@@ -10,7 +11,6 @@ import Components.Time.MaybeLimit
   , intermediaryToMaybeLimit
   , maybeLimitPicker
   )
-import Settings (Settings(..))
 import Prelude
 import Data.Maybe (Maybe(..))
 import Effect (Effect)

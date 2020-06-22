@@ -7,7 +7,7 @@ and access to control the side-wide settings.
 
 -}
 import Timeline.UI.TimeSpaceName (TimeSpaceName(..))
-import Settings (Settings(..))
+import Timeline.UI.Settings (Settings(..))
 import Prelude hiding (div)
 import Data.Maybe (Maybe(..), isJust)
 import Data.Nullable (toNullable)

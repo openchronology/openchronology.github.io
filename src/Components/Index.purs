@@ -6,8 +6,8 @@ This is the main entry point React.js component - basically, everything that's i
 user interface visually, lives here.
 
 -}
+import Timeline.UI.Settings (Settings(..))
 import Components.Dialogs (dialogs)
-import Settings (Settings(..))
 import Components.TopBar (topBar)
 import Components.BottomBar (bottomBar)
 import Components.Drawers.Timelines (timelinesDrawer)

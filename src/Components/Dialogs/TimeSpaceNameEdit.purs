@@ -1,7 +1,7 @@
 module Components.Dialogs.TimeSpaceNameEdit (timeSpaceNameEditDialog) where
 
 import Timeline.UI.TimeSpaceName (TimeSpaceName(..))
-import Settings (Settings(..))
+import Timeline.UI.Settings (Settings(..))
 import Prelude
 import Data.Maybe (Maybe(..))
 import Effect (Effect)

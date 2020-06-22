@@ -2,7 +2,7 @@ module Components.Drawers.Timelines where
 
 import Timeline.UI.Timeline (Timeline(..))
 import Timeline.UI.Timelines (Timelines(..))
-import Settings (Settings(..))
+import Timeline.UI.Settings (Settings(..))
 import Prelude
 import Data.Maybe (Maybe(..), isJust)
 import Data.Array (mapWithIndex) as Array

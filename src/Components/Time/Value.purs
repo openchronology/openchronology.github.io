@@ -1,7 +1,7 @@
 module Components.Time.Value where
 
-import Timeline.UI.Index.Unit (DecidedUnit(..))
-import Timeline.UI.Index.Value (DecidedValue(..))
+import Timeline.Time.Unit (DecidedUnit(..))
+import Timeline.Time.Value (DecidedValue(..))
 import Prelude
 import Data.Maybe (Maybe(..))
 import Data.Float.Parse (parseFloat)

@@ -1,7 +1,7 @@
 module Components.Dialogs.ExploreTimeSpaces where
 
 import Timeline.UI.ExploreTimeSpaces
-  ( WithSpanOfTime(..)
+  ( WithBounds(..)
   , ExploreTimeSpaces
   , ExploreTimeSpacesWithAux(..)
   , toggleOpen
@@ -9,7 +9,8 @@ import Timeline.UI.ExploreTimeSpaces
   , exploreTimeSpacesWithAux
   , updateExploreTimeSpacesWithAux
   )
-import Timeline.Data.TimeComponent (SpanOfTime(..))
+import Timeline.Time.Bounds (DecidedBounds(..))
+import Timeline.Time.Class (asSecondaryString)
 import Prelude
 import Data.Maybe (Maybe(..))
 import Data.IxSet.Demi (Index)
@@ -51,12 +52,12 @@ import MaterialUI.Icons.ExpandMoreIcon (expandMoreIcon)
 
 type State
   = { open :: Boolean
-    , timeSpaces :: WithSpanOfTime ExploreTimeSpacesWithAux
+    , timeSpaces :: WithBounds ExploreTimeSpacesWithAux
     , selected :: Array Index
     }
 
 initialState ::
-  IxSig.IxSignal ( read :: S.READ ) (WithSpanOfTime ExploreTimeSpaces) ->
+  IxSig.IxSignal ( read :: S.READ ) (WithBounds ExploreTimeSpaces) ->
   IxSig.IxSignal ( read :: S.READ ) (Array Index) ->
   Effect State
 initialState exploreTimeSpacesSignal timeSpaceSelectedSignal = do
@@ -69,7 +70,7 @@ initialState exploreTimeSpacesSignal timeSpaceSelectedSignal = do
     }
 
 exploreTimeSpacesDialog ::
-  { exploreTimeSpacesSignal :: IxSig.IxSignal ( read :: S.READ ) (WithSpanOfTime ExploreTimeSpaces)
+  { exploreTimeSpacesSignal :: IxSig.IxSignal ( read :: S.READ ) (WithBounds ExploreTimeSpaces)
   , timeSpaceSelectedSignal :: IxSig.IxSignal ( read :: S.READ ) (Array Index)
   , exploreTimeSpacesQueues :: IOQueues Queue Unit (Maybe (Array Index))
   } ->
@@ -94,7 +95,7 @@ exploreTimeSpacesDialog { exploreTimeSpacesSignal
         setState this { selected, timeSpaces: openThrough selected <$> timeSpaces }
 
       -- FIXME how will residual opened state after timespaces change be affected?
-      handlerChangeTimeSpaces :: _ -> WithSpanOfTime ExploreTimeSpaces -> Effect Unit
+      handlerChangeTimeSpaces :: _ -> WithBounds ExploreTimeSpaces -> Effect Unit
       handlerChangeTimeSpaces this newTimeSpaces = do
         { timeSpaces } <- getState this
         setState this
@@ -142,8 +143,8 @@ exploreTimeSpacesDialog { exploreTimeSpacesSignal
                     [ dialogTitle { id: "exploreTimeSpaces-dialog-title" } [ text "Explore TimeSpaces" ]
                     , dialogContent_
                         [ let
-                            printListItem :: Array Index -> SpanOfTime String -> ExploreTimeSpacesWithAux -> Int -> Array ReactElement
-                            printListItem path (SpanOfTime t) (ExploreTimeSpacesWithAux x) paddingLeft =
+                            printListItem :: Array Index -> DecidedBounds -> ExploreTimeSpacesWithAux -> Int -> Array ReactElement
+                            printListItem path bounds (ExploreTimeSpacesWithAux x) paddingLeft =
                               [ listItem
                                   { button: true
                                   , onClick: mkEffectFn1 (const (select path))
@@ -153,7 +154,7 @@ exploreTimeSpacesDialog { exploreTimeSpacesSignal
                                   $ [ listItemText'
                                         { inset: true
                                         , primary: x.name
-                                        , secondary: "From: " <> t.startTime <> ", To: " <> t.stopTime
+                                        , secondary: asSecondaryString bounds
                                         }
                                     ]
                                   <> case x.children of
@@ -179,9 +180,9 @@ exploreTimeSpacesDialog { exploreTimeSpacesSignal
                                       ]
                           in
                             case timeSpaces of
-                              WithSpanOfTime x ->
+                              WithBounds x ->
                                 list { disablePadding: true }
-                                  $ printListItem [] x.spanOfTime x.timeSpaces 16
+                                  $ printListItem [] x.bounds x.timeSpaces 16
                         ]
                     , dialogActions_
                         [ button { onClick: mkEffectFn1 (const close) } [ text "Cancel" ]
