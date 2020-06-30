@@ -35,7 +35,7 @@ elif [ $1 == "production" ]; then
     DYNAMICSCRIPTS=./build/dynamicscripts.production.html
 else
     echo "incorrect flag usage - either \"production\" or none"
-    exit
+    exit 1
 fi
 
 # $JSOUT is the target used when stitching into the template

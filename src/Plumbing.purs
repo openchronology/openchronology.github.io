@@ -62,7 +62,7 @@ import Components.Dialogs.NewOrEditEventOrTimeSpan (NewOrEditEventOrTimeSpanResu
 import Components.Snackbar (SnackbarContent)
 import Timeline.UI.TimeSpaceName (TimeSpaceName, newTimeSpaceNameSignal)
 import Timeline.UI.TimeScale (TimeScale, newTimeScaleSignal)
-import Timeline.UI.ExploreTimeSpaces (ExploreTimeSpaces, WithBounds, newExploreTimeSpacesSignal)
+import Timeline.UI.ExploreTimeSpaces (ExploreTimeSpaces, newExploreTimeSpacesSignal)
 import Timeline.UI.Timelines (Timelines, newTimelinesSignal)
 import Timeline.UI.Siblings (Siblings, newSiblingsSignal)
 import Timeline.UI.Children (Children, newChildrenSignal)
@@ -70,7 +70,7 @@ import Timeline.UI.Settings (Settings, newSettingsSignal)
 import Prelude
 import Data.Maybe (Maybe)
 import Data.Either (Either)
-import Data.IxSet.Demi (Index)
+import Data.UUID (UUID)
 import Effect (Effect)
 import Queue.One (Queue, new) as Q
 import Queue.Types (writeOnly, WRITE) as Q
@@ -89,7 +89,7 @@ type PrimaryQueues
     , timeScaleEditQueues :: IOQueues Q.Queue Unit (Maybe TimeScale)
     , snackbarQueue :: Q.Queue ( write :: Q.WRITE ) SnackbarContent
     , eulaQueue :: Q.Queue ( write :: Q.WRITE ) Unit
-    , exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array Index))
+    , exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array UUID))
     , dangerConfirmQueues :: IOQueues Q.Queue DangerConfirm Boolean
     , newOrEditTimelineQueues :: IOQueues Q.Queue (Maybe NewOrEditTimeline) (Maybe NewOrEditTimelineResult)
     , newOrEditEventOrTimeSpanQueues :: IOQueues Q.Queue (Maybe NewOrEditEventOrTimeSpan) (Maybe NewOrEditEventOrTimeSpanResult)
@@ -120,7 +120,7 @@ newPrimaryQueues = do
   ( eulaQueue :: Q.Queue ( write :: Q.WRITE ) Unit
   ) <-
     Q.writeOnly <$> Q.new
-  ( exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array Index))
+  ( exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array UUID))
   ) <-
     IOQueues.new
   ( dangerConfirmQueues :: IOQueues Q.Queue DangerConfirm Boolean
@@ -155,8 +155,9 @@ type PrimarySignals
     , timeScaleSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) TimeScale
     -- initial zoom level
     , zoomSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Number
-    , exploreTimeSpacesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (WithBounds ExploreTimeSpaces)
-    , timeSpaceSelectedSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (Array Index)
+    , exploreTimeSpacesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) ExploreTimeSpaces
+    -- TODO custom type for selected signal, to store in JSON
+    , timeSpaceSelectedSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (Array UUID)
     , timelinesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Timelines
     , siblingsSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Siblings
     , childrenSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Children
@@ -180,10 +181,10 @@ newPrimarySignals = do
   ( zoomSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Number
   ) <-
     IxSig.make 100.0
-  ( exploreTimeSpacesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (WithBounds ExploreTimeSpaces)
+  ( exploreTimeSpacesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) ExploreTimeSpaces
   ) <-
     newExploreTimeSpacesSignal
-  ( timeSpaceSelectedSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (Array Index)
+  ( timeSpaceSelectedSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) (Array UUID)
   ) <-
     IxSig.make []
   ( timelinesSignal :: IxSig.IxSignal ( write :: S.WRITE, read :: S.READ ) Timelines

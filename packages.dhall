@@ -155,6 +155,11 @@ let additions =
     , repo = "https://github.com/openchronology/purescript-file-store.git"
     , version = "master"
     }
+  , indexed-array =
+    { dependencies = [ "arrays", "foreign-object", "generics-rep", "quickcheck-utf8" ]
+    , repo = "https://github.com/openchronology/purescript-indexed-array.git"
+    , version = "v0.0.0"
+    }
   , indexed-multiset =
     { dependencies =
       [ "ordered-collections"
@@ -163,26 +168,9 @@ let additions =
     , repo = "https://github.com/openchronology/purescript-indexed-multiset.git"
     , version = "master"
     }
-  , intmap =
-    { dependencies = ["arraybuffer-class", "argonaut", "parseint"]
-    , repo = "https://github.com/openchronology/purescript-intmap.git"
-    , version = "master"
-    }
-  , indexed-set =
-    { dependencies = ["intmap"]
-    , repo = "https://github.com/openchronology/purescript-indexed-set.git"
-    , version = "master"
-    }
-  , indexed-demiset =
-    { dependencies = ["intmap"]
-    , repo = "https://github.com/openchronology/purescript-indexed-demiset.git"
-    , version = "master"
-    }
   , timeline =
     { dependencies =
-      [ "indexed-demiset"
-      , "indexed-multiset"
-      , "indexed-set"
+      [ "indexed-array"
       , "numbers"
       , "timeline-time"
       , "uuid"

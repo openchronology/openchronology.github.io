@@ -22,7 +22,8 @@ import Components.Time.Span
 import Prelude
 import Data.Maybe (Maybe(..), isJust)
 import Data.Either (Either(..))
-import Data.IxSet.Demi (Index)
+import Data.UUID (UUID)
+import Data.UUID (genUUID) as UUID
 import Effect (Effect)
 import Effect.Uncurried (mkEffectFn1, mkEffectFn2)
 import Effect.Timer (setTimeout)
@@ -88,7 +89,7 @@ type State
     , timeSpanName :: String
     , timeSpanDescription :: String
     , timeSpanSpan :: DecidedIntermediarySpan
-    , timeSpanTimeSpace :: Maybe Index -- TODO Lookup from ExploreTimeSpaces
+    , timeSpanTimeSpace :: Maybe UUID -- TODO Lookup from ExploreTimeSpaces
     , new :: Boolean
     , isEditable :: Boolean
     , onDelete :: Effect Unit -> Effect Unit
@@ -210,7 +211,8 @@ newOrEditEventOrTimeSpanDialog { newOrEditEventOrTimeSpanQueues: IOQueues { inpu
                         getState this
                       case intermediaryToValue eventTime of
                         Nothing -> pure unit -- FIXME throw snackbar
-                        Just time ->
+                        Just time -> do
+                          id <- UUID.genUUID -- FIXME get from edited?
                           put output $ Just $ NewOrEditEventOrTimeSpan
                             $ EventOrTimeSpan
                             $ Left
@@ -218,6 +220,7 @@ newOrEditEventOrTimeSpanDialog { newOrEditEventOrTimeSpanQueues: IOQueues { inpu
                                 { name: eventName
                                 , description: eventDescription
                                 , time
+                                , id
                                 }
                     TimeSpanTab -> do
                       { timeSpanName
@@ -228,7 +231,8 @@ newOrEditEventOrTimeSpanDialog { newOrEditEventOrTimeSpanQueues: IOQueues { inpu
                         getState this
                       case intermediaryToSpan timeSpanSpan of
                         Nothing -> pure unit -- FIXME throw snackbar
-                        Just span ->
+                        Just span -> do
+                          id <- UUID.genUUID -- FIXME get from edited?
                           put output $ Just $ NewOrEditEventOrTimeSpan
                             $ EventOrTimeSpan
                             $ Right
@@ -237,6 +241,7 @@ newOrEditEventOrTimeSpanDialog { newOrEditEventOrTimeSpanQueues: IOQueues { inpu
                                 , description: timeSpanDescription
                                 , span
                                 , timeSpace: timeSpanTimeSpace
+                                , id
                                 }
                   setState this { open: false }
 

@@ -36,7 +36,9 @@
     "react-dom": "^16.8.3",
     "react-markdown": "^4.3.1",
     "react-syntax-highlighter": "^12.2.1",
-    "tweetnacl-util": "^0.15.1"
+    "tweetnacl-util": "^0.15.1",
+    "uuid": "^8.2.0",
+    "uuid-validate": "0.0.3"
   },
   "devDependencies": {
     "@babel/compat-data": "^7.10.1",

@@ -6,6 +6,7 @@ import Timeline.UI.Timeline (Timeline(..))
 import Timeline.UI.Settings (Settings(..))
 import Prelude
 import Data.Maybe (Maybe(..))
+import Data.UUID (genUUID) as UUID
 import Effect (Effect)
 import Effect.Uncurried (mkEffectFn1)
 import Effect.Timer (setTimeout)
@@ -139,7 +140,15 @@ newOrEditTimelineDialog { newOrEditTimelineQueues: IOQueues { input, output }
 
                 submit = do
                   { name, description } <- getState this
-                  put output (Just (NewOrEditTimeline (Timeline { name, description })))
+                  id <- UUID.genUUID
+                  put output $ Just $ NewOrEditTimeline
+                    $ Timeline
+                        { name
+                        , description
+                        , eventChildren: []
+                        , timeSpanChildren: []
+                        , id -- FIXME what if it was opened with Edit?
+                        } -- FIXME sure they should be empty?
                   setState this { open: false }
 
                 delete = do

@@ -1,22 +1,23 @@
 module Components.Dialogs.ExploreTimeSpaces where
 
 import Timeline.UI.ExploreTimeSpaces
-  ( WithBounds(..)
-  , ExploreTimeSpaces
+  ( ExploreTimeSpaces
   , ExploreTimeSpacesWithAux(..)
-  , toggleOpen
-  , openThrough
+  , updateAux
+  , setAuxPreceeding
   , exploreTimeSpacesWithAux
   , updateExploreTimeSpacesWithAux
   )
 import Timeline.Time.Bounds (DecidedBounds(..))
 import Timeline.Time.Class (asSecondaryString)
 import Prelude
-import Data.Maybe (Maybe(..))
-import Data.IxSet.Demi (Index)
-import Data.IxSet.Demi (toUnfoldable) as IxDemiSet
+import Data.Maybe (Maybe(..), fromJust)
+import Data.Tuple (Tuple(..))
 import Data.Array (snoc) as Array
+import Data.Array.Indexed (toUnfoldable) as IxArray
 import Data.Foldable (foldMap)
+import Data.UUID (UUID)
+import Data.UUID (parseUUID) as UUID
 import Effect (Effect)
 import Effect.Uncurried (mkEffectFn1)
 import Zeta.Types (READ) as S
@@ -49,16 +50,17 @@ import MaterialUI.Collapse (collapse)
 import MaterialUI.Enums (secondary, auto)
 import MaterialUI.Icons.ExpandLessIcon (expandLessIcon)
 import MaterialUI.Icons.ExpandMoreIcon (expandMoreIcon)
+import Partial.Unsafe (unsafePartial)
 
 type State
   = { open :: Boolean
-    , timeSpaces :: WithBounds ExploreTimeSpacesWithAux
-    , selected :: Array Index
+    , timeSpaces :: ExploreTimeSpacesWithAux Boolean -- Auxiallary data is "open"
+    , selected :: Array UUID
     }
 
 initialState ::
-  IxSig.IxSignal ( read :: S.READ ) (WithBounds ExploreTimeSpaces) ->
-  IxSig.IxSignal ( read :: S.READ ) (Array Index) ->
+  IxSig.IxSignal ( read :: S.READ ) ExploreTimeSpaces ->
+  IxSig.IxSignal ( read :: S.READ ) (Array UUID) ->
   Effect State
 initialState exploreTimeSpacesSignal timeSpaceSelectedSignal = do
   timeSpaces <- IxSig.get exploreTimeSpacesSignal
@@ -66,13 +68,13 @@ initialState exploreTimeSpacesSignal timeSpaceSelectedSignal = do
   pure
     { open: false
     , selected
-    , timeSpaces: (openThrough selected <<< exploreTimeSpacesWithAux) <$> timeSpaces
+    , timeSpaces: setAuxPreceeding true selected (exploreTimeSpacesWithAux false timeSpaces)
     }
 
 exploreTimeSpacesDialog ::
-  { exploreTimeSpacesSignal :: IxSig.IxSignal ( read :: S.READ ) (WithBounds ExploreTimeSpaces)
-  , timeSpaceSelectedSignal :: IxSig.IxSignal ( read :: S.READ ) (Array Index)
-  , exploreTimeSpacesQueues :: IOQueues Queue Unit (Maybe (Array Index))
+  { exploreTimeSpacesSignal :: IxSig.IxSignal ( read :: S.READ ) ExploreTimeSpaces
+  , timeSpaceSelectedSignal :: IxSig.IxSignal ( read :: S.READ ) (Array UUID)
+  , exploreTimeSpacesQueues :: IOQueues Queue Unit (Maybe (Array UUID))
   } ->
   ReactElement
 exploreTimeSpacesDialog { exploreTimeSpacesSignal
@@ -89,17 +91,17 @@ exploreTimeSpacesDialog { exploreTimeSpacesSignal
       handlerOpen :: _ -> Unit -> Effect Unit
       handlerOpen this _ = setState this { open: true }
 
-      handlerChangeTimeSpaceSelected :: _ -> Array Index -> Effect Unit
+      handlerChangeTimeSpaceSelected :: _ -> Array UUID -> Effect Unit
       handlerChangeTimeSpaceSelected this selected = do
         { timeSpaces } <- getState this
-        setState this { selected, timeSpaces: openThrough selected <$> timeSpaces }
+        setState this { selected, timeSpaces: setAuxPreceeding true selected timeSpaces }
 
       -- FIXME how will residual opened state after timespaces change be affected?
-      handlerChangeTimeSpaces :: _ -> WithBounds ExploreTimeSpaces -> Effect Unit
+      handlerChangeTimeSpaces :: _ -> ExploreTimeSpaces -> Effect Unit
       handlerChangeTimeSpaces this newTimeSpaces = do
         { timeSpaces } <- getState this
         setState this
-          { timeSpaces: updateExploreTimeSpacesWithAux <$> timeSpaces <*> newTimeSpaces
+          { timeSpaces: updateExploreTimeSpacesWithAux false timeSpaces newTimeSpaces
           }
     in
       whileMountedOne input handlerOpen
@@ -129,7 +131,7 @@ exploreTimeSpacesDialog { exploreTimeSpacesSignal
                   preventDefault e
                   stopPropagation e
                   { timeSpaces } <- getState this
-                  setState this { timeSpaces: toggleOpen path <$> timeSpaces }
+                  setState this { timeSpaces: updateAux not path timeSpaces }
 
                 select path = setState this { selected: path }
               { open, selected, timeSpaces } <- getState this
@@ -143,8 +145,8 @@ exploreTimeSpacesDialog { exploreTimeSpacesSignal
                     [ dialogTitle { id: "exploreTimeSpaces-dialog-title" } [ text "Explore TimeSpaces" ]
                     , dialogContent_
                         [ let
-                            printListItem :: Array Index -> DecidedBounds -> ExploreTimeSpacesWithAux -> Int -> Array ReactElement
-                            printListItem path bounds (ExploreTimeSpacesWithAux x) paddingLeft =
+                            printListItem :: Array UUID -> ExploreTimeSpacesWithAux Boolean -> Int -> Array ReactElement
+                            printListItem path (ExploreTimeSpacesWithAux x) paddingLeft =
                               [ listItem
                                   { button: true
                                   , onClick: mkEffectFn1 (const (select path))
@@ -154,35 +156,37 @@ exploreTimeSpacesDialog { exploreTimeSpacesSignal
                                   $ [ listItemText'
                                         { inset: true
                                         , primary: x.name
-                                        , secondary: asSecondaryString bounds
+                                        , secondary: asSecondaryString x.bounds
                                         }
                                     ]
                                   <> case x.children of
                                       Nothing -> []
-                                      Just { open: open' } ->
+                                      Just { aux: open' } ->
                                         [ iconButton { onClick: mkEffectFn1 (toggledOpen path) }
                                             [ if open' then expandLessIcon else expandMoreIcon ]
                                         ]
                               ]
                                 <> case x.children of
                                     Nothing -> []
-                                    Just { open: open', children } ->
+                                    Just { aux: open', childrenValues } ->
                                       [ collapse { "in": open', timeout: auto, unmountOnExit: true }
                                           [ list { disablePadding: true }
                                               $ let
                                                   xs :: Array _
-                                                  xs = IxDemiSet.toUnfoldable children
+                                                  xs = IxArray.toUnfoldable childrenValues
 
-                                                  go { index, key, value } = printListItem (Array.snoc path index) key value (paddingLeft + 8)
+                                                  go (Tuple index nextBranch) =
+                                                    let
+                                                      index' = unsafePartial $ fromJust $ UUID.parseUUID index
+                                                    in
+                                                      printListItem (Array.snoc path index') nextBranch (paddingLeft + 8)
                                                 in
                                                   foldMap go xs
                                           ]
                                       ]
                           in
-                            case timeSpaces of
-                              WithBounds x ->
-                                list { disablePadding: true }
-                                  $ printListItem [] x.bounds x.timeSpaces 16
+                            list { disablePadding: true }
+                              $ printListItem [] timeSpaces 16
                         ]
                     , dialogActions_
                         [ button { onClick: mkEffectFn1 (const close) } [ text "Cancel" ]

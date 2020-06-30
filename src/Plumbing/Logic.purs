@@ -13,7 +13,7 @@ import Prelude
 import Data.Maybe (Maybe(..))
 import Data.ArrayBuffer.Class (encodeArrayBuffer)
 import Data.Time.Duration (Milliseconds(..))
-import Data.IxSet.Demi (Index)
+import Data.UUID (UUID)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
@@ -160,8 +160,8 @@ onReadEULA :: { eulaQueue :: Q.Queue ( write :: Q.WRITE ) Unit } -> Effect Unit
 onReadEULA { eulaQueue } = Q.put eulaQueue unit
 
 onExploreTimeSpaces ::
-  { exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array Index))
-  , timeSpaceSelectedSignal :: IxSig.IxSignal ( read :: S.READ, write :: S.WRITE ) (Array Index)
+  { exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array UUID))
+  , timeSpaceSelectedSignal :: IxSig.IxSignal ( read :: S.READ, write :: S.WRITE ) (Array UUID)
   -- TODO assign new timespace name, pulling from the global directory, not the explore sub-view
   -- , timeSpaceNameSignal :: IxSig.IxSignal (write :: S.WRITE) TimeSpaceName
   -- , exploreTimeSpacesSignal :: IxSig.IxSignal (read :: S.READ) (WithSpanOfTime ExploreTimeSpaces)
