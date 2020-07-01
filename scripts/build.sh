@@ -59,6 +59,8 @@ echo "Bundled"
 
 ./scripts/build_modules.sh \
      || { echo "Module Graph Failed"; exit 1; }
+./scripts/build_modules.sh verbose \
+     || { echo "Module Graph Failed"; exit 1; }
 echo "Module Graph Built"
 
 

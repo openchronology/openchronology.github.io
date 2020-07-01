@@ -3,10 +3,11 @@
 ./scripts/build_all_graphs.sh
 
 # takes forever
-spago docs -f html
+spago docs -f html \
+  || { exit 1; }
 
 # move all local docs
-find src -name '*.purs' \
+find src .spago/timeline/master/src .spago/timeline-time/master/src -name '*.purs' -printf '%P\n' \
   | sed 's/\.purs/.html/' \
   | sed 's/src\///' \
   | sed 's/\//./g' \

@@ -1,8 +1,16 @@
 #! /bin/bash
 
 GRAPHMOD=./graphmod/.stack-work/dist/*/Cabal-2.2.0.1/build/graphmod/graphmod
-MODULES=./graphs/modules.dot
-MODULESOUT=./graphs/modules.png
+if [ $# -eq 0 ]; then
+    MODULES=./graphs/modules.dot
+    MODULESOUT=./graphs/modules.png
+elif [ $1 == "verbose" ]; then
+    MODULES=./graphs/modules_verbose.dot
+    MODULESOUT=./graphs/modules_verbose.png
+else
+    echo "incorrect flag usage - either \"verbose\" or none"
+    exit 1
+fi
 
 TIMELINEDIR=./.spago/timeline/master/src/
 TIMELINETIMEDIR=./.spago/timeline-time/master/src/

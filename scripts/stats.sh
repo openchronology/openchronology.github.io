@@ -3,14 +3,14 @@
 echo ""
 echo ""
 echo "Number of modules:"
-find src/ -name "*.purs" | wc --lines
+find src/ .spago/timeline/master/src/ .spago/timeline-time/master/src/ -name "*.purs" | wc --lines
 
 echo ""
 echo ""
 echo "Lines of Code per module:"
 echo ""
 echo ""
-find src/ -name "*.purs" | xargs wc --lines | sort -nr
+find src/ .spago/timeline/master/src/ .spago/timeline-time/master/src/ -name "*.purs" | xargs wc --lines | sort -nr
 
 echo ""
 spago run -m Scripts.ModuleImportsAndExports
