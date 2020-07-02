@@ -76,7 +76,9 @@ echo "Module Graph Built"
       ] || { exit 1; }
 echo "Browserified"
 
-./node_modules/.bin/babel $JSBABEL > $JS
+./node_modules/.bin/babel $JSBABEL > $JS \
+    || { exit 1; }
+rm $JSBABEL
 echo "Re-ran Babel to get rid of unreasonable artifacts"
 
 # uglify only in production, first through browserify
