@@ -70,8 +70,7 @@ jobs:
       run: ./scripts/build.sh
     
     - name: Build Production
-      run: ./scripts/build.sh
-        ./scripts/build.sh production
+      run: ./scripts/build.sh production
 
     - name: Test
       # run: npm test
