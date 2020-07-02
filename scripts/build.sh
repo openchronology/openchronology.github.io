@@ -8,6 +8,7 @@
 JSTMP=./build/index.tmp.js
 JSTMPUGLY=./build/index.ugly.tmp.js
 JS=./build/index.js
+JSBABEL=./build/index.babel.js
 JSMIN=./build/index.min.js
 
 TEMPLATE=./build/index.template.html
@@ -69,13 +70,13 @@ echo "Module Graph Built"
 # Manually browserify the bundled output, because there's some
 # ECMAScript here that needs to be processed, because of Material-UI
 
-./node_modules/.bin/browserify $JSTMP -o $JS \
+./node_modules/.bin/browserify $JSTMP -o $JSBABEL \
    -t [ babelify --presets [ @babel/preset-env @babel/preset-react ] \
                  --plugins [ @babel/plugin-proposal-class-properties @babel/plugin-transform-block-scoping ] \
       ] || { exit 1; }
 echo "Browserified"
 
-./node_modules/.bin/babel $JS > $JS
+./node_modules/.bin/babel $JSBABEL > $JS
 echo "Re-ran Babel to get rid of unreasonable artifacts"
 
 # uglify only in production, first through browserify
