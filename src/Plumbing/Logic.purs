@@ -32,7 +32,11 @@ import Web.File.File (File)
 import Web.File.Store (fileToArrayBuffer)
 import Unsafe.Coerce (unsafeCoerce)
 
--- | When the "Import" button is clicked
+-- | When the "Import" button is clicked in the Settings dialog, a new
+-- | dialog is opened for importing a file. When the file is selected,
+-- | the dialog returns with the file handle. This function proceeds
+-- | to parse the file, and assign & load the constituent signals with
+-- | their appropriate data.
 onImport ::
   { importQueues :: IOQueues Q.Queue Import.ImportDialog (Maybe File)
   , timeSpaceNameSignal :: IxSig.IxSignal ( read :: S.READ ) TimeSpaceName
@@ -65,7 +69,9 @@ onImport { importQueues
           case importQueues of
             IOQueues { input } -> Q.put (Q.allowWriting input) Import.Close
 
--- | When opening the "Export" window
+-- | When opening the "Export" window from the settings dialog. This
+-- | gives the user the ability to save their file, which also resets
+-- | some of the locally stored data via `onClickedExport`.
 onExport ::
   { exportQueue :: Q.Queue ( write :: Q.WRITE ) Export.ExportDialog
   } ->
@@ -91,7 +97,8 @@ onClickedExport { snackbarQueue } = do
     , timeout: Just (Milliseconds 5000.0)
     }
 
--- | open new timeline
+-- | Create a new document, which erases everything in the current editor
+-- | after confirming the dangerous operation.
 onNew ::
   { dangerConfirmQueues :: IOQueues Q.Queue DangerConfirm Boolean
   , timeScaleSignal :: IxSig.IxSignal ( write :: S.WRITE ) TimeScale
@@ -119,7 +126,7 @@ onNew { dangerConfirmQueues, timeScaleSignal, timeSpaceNameSignal } =
           setDefaultTimeScale timeScaleSignal
           setDefaultTimeSpaceName timeSpaceNameSignal
 
--- | Invokes dialog queues and stores the result in state signals
+-- | Invokes dialog queues and stores the result in state signals.
 onTimeSpaceNameEdit ::
   { timeSpaceNameEditQueues :: IOQueues Q.Queue Unit (Maybe TimeSpaceName)
   , timeSpaceNameSignal :: IxSig.IxSignal ( read :: S.READ, write :: S.WRITE ) TimeSpaceName
@@ -132,6 +139,8 @@ onTimeSpaceNameEdit { timeSpaceNameEditQueues, timeSpaceNameSignal } =
       Nothing -> pure unit
       Just newTimeSpaceName -> liftEffect (IxSig.setDiff newTimeSpaceName timeSpaceNameSignal)
 
+-- | Edit the time scale for the currently viewed time space. This includes the
+-- | units, range, and human-readable information.
 onTimeScaleEdit ::
   { timeScaleEditQueues :: IOQueues Q.Queue Unit (Maybe TimeScale)
   , timeScaleSignal :: IxSig.IxSignal ( read :: S.READ, write :: S.WRITE ) TimeScale
@@ -144,6 +153,8 @@ onTimeScaleEdit { timeScaleEditQueues, timeScaleSignal } =
       Nothing -> pure unit
       Just newTimeScale -> liftEffect (IxSig.setDiff newTimeScale timeScaleSignal)
 
+-- | Open the settings dialog, and allow the user to read EULAs again, allow editability,
+-- | etc.
 onSettingsEdit ::
   { settingsEditQueues :: IOQueues Q.Queue Unit (Maybe Settings)
   , settingsSignal :: IxSig.IxSignal ( read :: S.READ, write :: S.WRITE ) Settings
@@ -156,9 +167,19 @@ onSettingsEdit { settingsEditQueues, settingsSignal } =
       Nothing -> pure unit
       Just newSettings -> liftEffect (IxSig.setDiff newSettings settingsSignal)
 
-onReadEULA :: { eulaQueue :: Q.Queue ( write :: Q.WRITE ) Unit } -> Effect Unit
-onReadEULA { eulaQueue } = Q.put eulaQueue unit
+-- | Open the "Welcome" dialog, so users can read it again if they want.
+onReadWelcome :: { welcomeQueue :: Q.Queue ( write :: Q.WRITE ) Unit } -> Effect Unit
+onReadWelcome { welcomeQueue } = Q.put welcomeQueue unit
 
+-- | Open the "EULA" dialog, so users can read it again if they want.
+onReadEULA :: { eulaQueues :: IOQueues Q.Queue Unit Boolean } -> Effect Unit
+onReadEULA { eulaQueues } =
+  launchAff_ do
+    isAccepted <- IOQueues.callAsync eulaQueues unit
+    pure unit -- FIXME
+
+-- | Open the "Explore Time Spaces" dialog, so users can traverse the hierarchy
+-- | of time spaces, and select which perspective they want to view.
 onExploreTimeSpaces ::
   { exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array UUID))
   , timeSpaceSelectedSignal :: IxSig.IxSignal ( read :: S.READ, write :: S.WRITE ) (Array UUID)

@@ -88,7 +88,8 @@ type PrimaryQueues
     , timeSpaceNameEditQueues :: IOQueues Q.Queue Unit (Maybe TimeSpaceName)
     , timeScaleEditQueues :: IOQueues Q.Queue Unit (Maybe TimeScale)
     , snackbarQueue :: Q.Queue ( write :: Q.WRITE ) SnackbarContent
-    , eulaQueue :: Q.Queue ( write :: Q.WRITE ) Unit
+    , welcomeQueue :: Q.Queue ( write :: Q.WRITE ) Unit
+    , eulaQueues :: IOQueues Q.Queue Unit Boolean
     , exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array UUID))
     , dangerConfirmQueues :: IOQueues Q.Queue DangerConfirm Boolean
     , newOrEditTimelineQueues :: IOQueues Q.Queue (Maybe NewOrEditTimeline) (Maybe NewOrEditTimelineResult)
@@ -117,9 +118,12 @@ newPrimaryQueues = do
   ( snackbarQueue :: Q.Queue ( write :: Q.WRITE ) SnackbarContent
   ) <-
     Q.writeOnly <$> Q.new
-  ( eulaQueue :: Q.Queue ( write :: Q.WRITE ) Unit
+  ( welcomeQueue :: Q.Queue ( write :: Q.WRITE ) Unit
   ) <-
     Q.writeOnly <$> Q.new
+  ( eulaQueues :: IOQueues Q.Queue Unit Boolean
+  ) <-
+    IOQueues.new
   ( exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array UUID))
   ) <-
     IOQueues.new
@@ -139,7 +143,8 @@ newPrimaryQueues = do
     , timeSpaceNameEditQueues
     , timeScaleEditQueues
     , snackbarQueue
-    , eulaQueue
+    , welcomeQueue
+    , eulaQueues
     , exploreTimeSpacesQueues
     , dangerConfirmQueues
     , newOrEditTimelineQueues
@@ -239,7 +244,8 @@ logic { importQueues
 , timeSpaceNameEditQueues
 , timeScaleEditQueues
 , snackbarQueue
-, eulaQueue
+, welcomeQueue
+, eulaQueues
 , exploreTimeSpacesQueues
 , dangerConfirmQueues
 , newOrEditTimelineQueues
@@ -270,7 +276,7 @@ logic { importQueues
   , onTimeSpaceNameEdit: onTimeSpaceNameEdit { timeSpaceNameEditQueues, timeSpaceNameSignal }
   , onTimeScaleEdit: onTimeScaleEdit { timeScaleEditQueues, timeScaleSignal }
   , onSettingsEdit: onSettingsEdit { settingsEditQueues, settingsSignal }
-  , onReadEULA: onReadEULA { eulaQueue }
+  , onReadEULA: onReadEULA { eulaQueues } -- TODO if not accepted, should I re-open welcome screen?
   , onExploreTimeSpaces: onExploreTimeSpaces { exploreTimeSpacesQueues, timeSpaceSelectedSignal }
   , onClickedNewTimeline: onClickedNewTimeline { newOrEditTimelineQueues, timelinesSignal }
   , onClickedEditTimeline: onClickedEditTimeline { newOrEditTimelineQueues, timelinesSignal, dangerConfirmQueues }

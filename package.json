@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "spago test && npm run-script itest",
+    "test": "spago test",
     "itest": "node_modules/.bin/mocha --recursive --timeout 10000 itest/test.js"
   },
   "repository": {

@@ -21,6 +21,8 @@ import IOQueues (callAsync) as IOQueues
 import Zeta.Types (WRITE, READ) as S
 import IxZeta (IxSignal, get, set) as IxSig
 
+-- | Open the "New or Edit Timeline" dialog, in the mode of creating a new one, and
+-- | append it to the timelines list.
 onClickedNewTimeline ::
   { newOrEditTimelineQueues :: IOQueues Q.Queue (Maybe NewOrEditTimeline) (Maybe NewOrEditTimelineResult)
   , timelinesSignal :: IxSig.IxSignal ( read :: S.READ, write :: S.WRITE ) Timelines
@@ -39,6 +41,7 @@ onClickedNewTimeline { newOrEditTimelineQueues, timelinesSignal } =
             IxSig.set (Timelines (Array.snoc ts t)) timelinesSignal
         DeleteTimeline -> liftEffect $ throw "Shouldn't be possible!"
 
+-- | Edit a timeline, with the option of deleting it.
 onClickedEditTimeline ::
   { newOrEditTimelineQueues :: IOQueues Q.Queue (Maybe NewOrEditTimeline) (Maybe NewOrEditTimelineResult)
   , dangerConfirmQueues :: IOQueues Q.Queue DangerConfirm Boolean
@@ -77,6 +80,7 @@ onClickedEditTimeline { newOrEditTimelineQueues
                     Nothing -> throw $ "Timeline index does not exist in set: " <> show index
                     Just timelines' -> IxSig.set (Timelines timelines') timelinesSignal
 
+-- | Delete a timeline from the set, after confirming the danger.
 onClickedDeleteTimeline ::
   { dangerConfirmQueues :: IOQueues Q.Queue DangerConfirm Boolean
   , timelinesSignal :: IxSig.IxSignal ( read :: S.READ, write :: S.WRITE ) Timelines

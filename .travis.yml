@@ -4,7 +4,7 @@ addons:
   chrome: stable
 language: node_js
 install:
-  - npm install -g purescript spago mocha chromedriver
-  - npm install
+  - npm install -g purescript spago yarn mocha chromedriver
+  - yarn install
 script:
-  - npm test
+  - yarn test

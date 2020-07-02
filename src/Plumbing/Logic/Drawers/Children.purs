@@ -21,6 +21,8 @@ import IOQueues (callAsync) as IOQueues
 import Zeta.Types (WRITE, READ) as S
 import IxZeta (IxSignal, get, set) as IxSig
 
+-- | Open the "New or Edit Event or Time Span" dialog, in the mode of creating a new one, and
+-- | append it to the children list.
 onClickedNewEventOrTimeSpanChildren ::
   { newOrEditEventOrTimeSpanQueues :: IOQueues Q.Queue (Maybe NewOrEditEventOrTimeSpan) (Maybe NewOrEditEventOrTimeSpanResult)
   , childrenSignal :: IxSig.IxSignal ( read :: S.READ, write :: S.WRITE ) Children
@@ -39,6 +41,7 @@ onClickedNewEventOrTimeSpanChildren { newOrEditEventOrTimeSpanQueues, childrenSi
             IxSig.set (Children (Array.snoc ts t)) childrenSignal
         DeleteEventOrTimeSpan -> liftEffect $ throw "Shouldn't be possible!"
 
+-- | Edit an event or time span, with the option of deleting it.
 onClickedEditEventOrTimeSpanChildren ::
   { newOrEditEventOrTimeSpanQueues :: IOQueues Q.Queue (Maybe NewOrEditEventOrTimeSpan) (Maybe NewOrEditEventOrTimeSpanResult)
   , childrenSignal :: IxSig.IxSignal ( read :: S.READ, write :: S.WRITE ) Children
@@ -77,6 +80,7 @@ onClickedEditEventOrTimeSpanChildren { newOrEditEventOrTimeSpanQueues
                     Nothing -> throw $ "EventOrTimeSpan index does not exist in set: " <> show index
                     Just children' -> IxSig.set (Children children') childrenSignal
 
+-- | Delete an event or time span from the set, after confirming the danger.
 onClickedDeleteEventOrTimeSpanChildren ::
   { dangerConfirmQueues :: IOQueues Q.Queue DangerConfirm Boolean
   , childrenSignal :: IxSig.IxSignal ( read :: S.READ, write :: S.WRITE ) Children

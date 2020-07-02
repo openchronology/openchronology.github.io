@@ -6,7 +6,8 @@ import Components.Dialogs.Export (exportDialog)
 import Components.Dialogs.TimeSpaceNameEdit (timeSpaceNameEditDialog)
 import Components.Dialogs.TimeScaleEdit (timeScaleEditDialog)
 import Components.Dialogs.SettingsEdit (settingsEditDialog)
-import Components.Dialogs.EULA (eulaDialog)
+import Components.Dialogs.Welcome (welcomeDialog)
+import Components.Dialogs.Welcome.EULA (eulaDialog)
 import Components.Dialogs.ExploreTimeSpaces (exploreTimeSpacesDialog)
 import Components.Dialogs.DangerConfirm (dangerConfirmDialog)
 import Components.Dialogs.NewOrEditTimeline (newOrEditTimelineDialog)
@@ -29,7 +30,8 @@ dialogs { primaryQueues:
     , settingsEditQueues
     , newOrEditTimelineQueues
     , newOrEditEventOrTimeSpanQueues
-    , eulaQueue
+    , welcomeQueue
+    , eulaQueues
     , exploreTimeSpacesQueues
     , dangerConfirmQueues
     }
@@ -76,7 +78,8 @@ dialogs { primaryQueues:
       , settingsSignal: S.readOnly settingsSignal
       , timeScaleSignal: S.readOnly timeScaleSignal
       }
-  , eulaDialog { eulaQueue: Q.readOnly (Q.allowReading eulaQueue) }
+  , welcomeDialog { welcomeQueue: Q.readOnly (Q.allowReading welcomeQueue) }
+  , eulaDialog { eulaQueues }
   , exploreTimeSpacesDialog
       { exploreTimeSpacesSignal: S.readOnly exploreTimeSpacesSignal
       , timeSpaceSelectedSignal: S.readOnly timeSpaceSelectedSignal

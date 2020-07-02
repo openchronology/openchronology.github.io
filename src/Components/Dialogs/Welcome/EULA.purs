@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -}
-module Components.Dialogs.EULA where
+module Components.Dialogs.Welcome.EULA where
 
 import Prelude
 import Data.Maybe (isJust)
@@ -42,7 +42,8 @@ import MaterialUI.DialogActions (dialogActions_)
 import MaterialUI.Typography (typography)
 import MaterialUI.Button (button)
 import MaterialUI.Enums (body2, subtitle1, secondary, h5)
-import Queue.One (READ, Queue) as Q
+import IOQueues (IOQueues(..))
+import Queue.One (Queue, put) as Q
 
 eulaLocalStorageKey :: String
 eulaLocalStorageKey = "eula"
@@ -50,30 +51,26 @@ eulaLocalStorageKey = "eula"
 type State
   = { open :: Boolean }
 
-initialState :: Effect State
-initialState = do
-  store <- window >>= localStorage
-  mExists <- getItem eulaLocalStorageKey store
-  pure { open: not (isJust mExists) }
+initialState :: State
+initialState = { open: false } -- Opened by Welcome dialog
 
 eulaDialog ::
-  { eulaQueue :: Q.Queue ( read :: Q.READ ) Unit -- ^ Write to this to open the dialog
+  { eulaQueues :: IOQueues Q.Queue Unit Boolean
   } ->
   ReactElement
-eulaDialog { eulaQueue } = createLeafElement c {}
+eulaDialog { eulaQueues: IOQueues { input, output } } = createLeafElement c {}
   where
   c :: ReactClass {}
   c = component "EULADialog" constructor'
 
   constructor' :: ReactClassConstructor _ State _
-  constructor' = whileMountedOne eulaQueue (\this _ -> setState this { open: true }) constructor
+  constructor' = whileMountedOne input (\this _ -> setState this { open: true }) constructor
     where
     constructor this = do
-      state <- initialState
       pure
         { componentDidMount: pure unit
         , componentWillUnmount: pure unit
-        , state
+        , state: initialState
         , render:
             do
               let
@@ -81,18 +78,24 @@ eulaDialog { eulaQueue } = createLeafElement c {}
                   store <- window >>= localStorage
                   setItem eulaLocalStorageKey "accepted" store
                   setState this { open: false }
+                  Q.put output true
+
+                handleNotAccepted = do
+                  setState this { open: false }
+                  Q.put output false
               { open } <- getState this
               pure
                 $ dialog''
-                    { disableBackdropClick: true
-                    , disableEscapeKeyDown: true
+                    { onClose: mkEffectFn1 (const handleNotAccepted)
                     , open
                     , "aria-labelledby": "eula-dialog-title"
                     }
                     [ dialogTitle { id: "eula-dialog-title" } [ text "End User License Agreement" ]
                     , dialogContent_ eulaText
                     , dialogActions_
-                        [ button { onClick: mkEffectFn1 (const handleAccept), color: secondary }
+                        [ button { onClick: mkEffectFn1 (const handleNotAccepted) }
+                            [ text "I Don't Accept" ]
+                        , button { onClick: mkEffectFn1 (const handleAccept), color: secondary }
                             [ text "I Accept" ]
                         ]
                     ]
