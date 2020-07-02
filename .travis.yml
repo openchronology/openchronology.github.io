@@ -4,7 +4,7 @@ addons:
   chrome: stable
 language: node_js
 install:
-  - npm install -g yarn
+  - npm install -g yarn purescript
   - yarn install
 script:
   - yarn test

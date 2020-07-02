@@ -60,7 +60,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        npm install -g yarn
+        npm install -g yarn purescript
         yarn install
 
     - name: Lint
