@@ -6,6 +6,7 @@
 
 
 JSTMP=./build/index.tmp.js
+JSTMPUGLY=./build/index.ugly.tmp.js
 JS=./build/index.js
 JSMIN=./build/index.min.js
 
@@ -69,22 +70,28 @@ echo "Module Graph Built"
 # ECMAScript here that needs to be processed, because of Material-UI
 
 ./node_modules/.bin/browserify $JSTMP -o $JS \
-                               -t [ babelify --presets [ @babel/preset-env ] \
-                                             --plugins [ @babel/plugin-proposal-class-properties ] \
-                                  ] || { exit 1; }
-# clean up tmp
-rm $JSTMP
+   -t [ babelify --presets [ @babel/preset-env @babel/preset-react ] \
+                 --plugins [ @babel/plugin-proposal-class-properties @babel/plugin-transform-block-scoping ] \
+      ] || { exit 1; }
+echo "Browserified"
 
-
+./node_modules/.bin/babel $JS > $JS
+echo "Re-ran Babel to get rid of unreasonable artifacts"
 
 # uglify only in production, first through browserify
 if [ $# -eq 1 ] && [ $1 == "production" ]; then
     ./node_modules/.bin/browserify $JS -g \
-      [ envify --NODE_ENV production ] -g uglifyify | \
-      ./node_modules/.bin/uglifyjs --compress --mangle > $JSMIN || \
+      [ envify --NODE_ENV production ] -g uglifyify > $JSTMPUGLY || \
       { exit 1; }
+    echo "Uglified through Browserify"
+    ./node_modules/.bin/uglifyjs $JSTMPUGLY --compress --mangle > $JSMIN || \
+      { exit 1; }
+    echo "Uglified total output"
+    rm $JSTMPUGLY
 fi
-echo "Browserified"
+
+# clean up tmp
+rm $JSTMP
 
 # ---------- templates
 
