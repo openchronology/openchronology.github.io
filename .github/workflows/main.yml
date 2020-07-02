@@ -74,7 +74,7 @@ jobs:
 
     - name: Test
       # run: npm test
-      run: spago test
+      run: ./node_modules/.bin/spago test
 
     - name: Docs
       run: ./scripts/build_all_docs.sh
