@@ -67,8 +67,10 @@ jobs:
       run: ./scripts/lint.sh
 
     - name: Build
-      run: |
-        ./scripts/build.sh
+      run: ./scripts/build.sh
+    
+    - name: Build Production
+      run: ./scripts/build.sh
         ./scripts/build.sh production
 
     - name: Test
