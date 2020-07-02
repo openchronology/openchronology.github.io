@@ -3,7 +3,7 @@
 ./scripts/build_all_graphs.sh
 
 # takes forever
-spago docs -f html \
+node_modules/.bin/spago docs -f html \
   || { exit 1; }
 
 # move all local docs
@@ -18,4 +18,4 @@ find src .spago/timeline/master/src .spago/timeline-time/master/src -name '*.pur
 rm -r generated-docs/html/
 
 # process html, removing modules not in this package
-spago run -m Scripts.TrimDocs
+node_modules/.bin/spago run -m Scripts.TrimDocs

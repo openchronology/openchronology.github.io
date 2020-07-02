@@ -50,7 +50,7 @@ fi
 
 # ----------- compiling
 
-spago bundle-app -m Main --to $JSTMP \
+node_modules/.bin/spago bundle-app -m Main --to $JSTMP \
      || { echo "Bundle Failed"; exit 1; }
 
 echo "Bundled"

@@ -13,7 +13,7 @@ do
 
     if [ $# -eq 0 ]
     then
-        purty $file > tmp/$file
+        node_modules/.bin/purty $file > tmp/$file
         diff --brief $file tmp/$file
         if [ $? -ne 0 ]
         then
@@ -21,7 +21,7 @@ do
         fi
     elif [ $1 == "write" ]
     then
-        purty --write $file
+        node_modules/.bin/purty --write $file
     else
         echo "Bad argument. Only one allowed is write"
     fi

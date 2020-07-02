@@ -13,4 +13,4 @@ echo ""
 find src/ .spago/timeline/master/src/ .spago/timeline-time/master/src/ -name "*.purs" | xargs wc --lines | sort -nr
 
 echo ""
-spago run -m Scripts.ModuleImportsAndExports
+node_modules/.bin/spago run -m Scripts.ModuleImportsAndExports
