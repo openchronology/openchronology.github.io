@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -}
-module Components.Dialogs.Welcome.EULA where
+module Components.Dialogs.Welcome.Copyright where
 
 import Prelude
 import Data.Maybe (isJust)
@@ -45,8 +45,8 @@ import MaterialUI.Enums (body2, subtitle1, secondary, h5)
 import IOQueues (IOQueues(..))
 import Queue.One (Queue, put) as Q
 
-eulaLocalStorageKey :: String
-eulaLocalStorageKey = "eula"
+copyrightLocalStorageKey :: String
+copyrightLocalStorageKey = "copyright"
 
 type State
   = { open :: Boolean }
@@ -54,14 +54,14 @@ type State
 initialState :: State
 initialState = { open: false } -- Opened by Welcome dialog
 
-eulaDialog ::
-  { eulaQueues :: IOQueues Q.Queue Unit Boolean
+copyrightDialog ::
+  { copyrightQueues :: IOQueues Q.Queue Unit Boolean
   } ->
   ReactElement
-eulaDialog { eulaQueues: IOQueues { input, output } } = createLeafElement c {}
+copyrightDialog { copyrightQueues: IOQueues { input, output } } = createLeafElement c {}
   where
   c :: ReactClass {}
-  c = component "EULADialog" constructor'
+  c = component "CopyrightDialog" constructor'
 
   constructor' :: ReactClassConstructor _ State _
   constructor' = whileMountedOne input (\this _ -> setState this { open: true }) constructor
@@ -76,13 +76,13 @@ eulaDialog { eulaQueues: IOQueues { input, output } } = createLeafElement c {}
               let
                 handleAccept = do
                   store <- window >>= localStorage
-                  setItem eulaLocalStorageKey "accepted" store
+                  setItem copyrightLocalStorageKey "accepted" store
                   setState this { open: false }
                   Q.put output true
 
                 handleNotAccepted = do
                   store <- window >>= localStorage
-                  removeItem eulaLocalStorageKey store
+                  removeItem copyrightLocalStorageKey store
                   setState this { open: false }
                   Q.put output false
               { open } <- getState this
@@ -90,10 +90,10 @@ eulaDialog { eulaQueues: IOQueues { input, output } } = createLeafElement c {}
                 $ dialog''
                     { onClose: mkEffectFn1 (const handleNotAccepted)
                     , open
-                    , "aria-labelledby": "eula-dialog-title"
+                    , "aria-labelledby": "copyright-dialog-title"
                     }
-                    [ dialogTitle { id: "eula-dialog-title" } [ text "End User License Agreement" ]
-                    , dialogContent_ eulaText
+                    [ dialogTitle { id: "copyright-dialog-title" } [ text "Copyright Disclaimer" ]
+                    , dialogContent_ copyrightText
                     , dialogActions_
                         [ button { onClick: mkEffectFn1 (const handleNotAccepted) }
                             [ text "I Don't Accept" ]
@@ -103,12 +103,40 @@ eulaDialog { eulaQueues: IOQueues { input, output } } = createLeafElement c {}
                     ]
         }
 
-eulaText :: Array ReactElement
-eulaText =
-  [ typography { variant: body2, paragraph: true }
+copyrightText :: Array ReactElement
+copyrightText =
+  [ typography { variant: h5, gutterBottom: true } [ text "Copyright Disclaimer" ]
+  , typography { variant: subtitle1 }
+      [ strong [] [ text "OpenChronology" ]
+      , text " - an application for graphing and visualizing timelines."
+      ]
+  , typography { variant: subtitle1, paragraph: true }
+      [ text "Copyright (C) 2020  Athan Clark"
+      ]
+  , typography { variant: body2, paragraph: true }
       [ text
           """
-<insert EULA here>
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation version 3 of the License.
 """
+      ]
+  , typography { variant: body2, paragraph: true }
+      [ text
+          """
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+"""
+      ]
+  , typography { variant: body2 }
+      [ text
+          """
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see 
+"""
+      , a [ href "https://www.gnu.org/licenses/" ] [ text "https://www.gnu.org/licenses/" ]
+      , text "."
       ]
   ]

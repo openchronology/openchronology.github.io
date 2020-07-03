@@ -178,6 +178,20 @@ onReadEULA { eulaQueues } =
     isAccepted <- IOQueues.callAsync eulaQueues unit
     pure unit -- FIXME
 
+-- | Open the "Copyright" dialog, so users can read it again if they want.
+onReadCopyright :: { copyrightQueues :: IOQueues Q.Queue Unit Boolean } -> Effect Unit
+onReadCopyright { copyrightQueues } =
+  launchAff_ do
+    isAccepted <- IOQueues.callAsync copyrightQueues unit
+    pure unit -- FIXME
+
+-- | Open the "Cookie" dialog, so users can read it again if they want.
+onReadCookie :: { cookieQueues :: IOQueues Q.Queue Unit Boolean } -> Effect Unit
+onReadCookie { cookieQueues } =
+  launchAff_ do
+    isAccepted <- IOQueues.callAsync cookieQueues unit
+    pure unit -- FIXME
+
 -- | Open the "Explore Time Spaces" dialog, so users can traverse the hierarchy
 -- | of time spaces, and select which perspective they want to view.
 onExploreTimeSpaces ::

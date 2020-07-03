@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -}
-module Components.Dialogs.Welcome.EULA where
+module Components.Dialogs.Welcome.Cookie where
 
 import Prelude
 import Data.Maybe (isJust)
@@ -45,8 +45,8 @@ import MaterialUI.Enums (body2, subtitle1, secondary, h5)
 import IOQueues (IOQueues(..))
 import Queue.One (Queue, put) as Q
 
-eulaLocalStorageKey :: String
-eulaLocalStorageKey = "eula"
+cookieLocalStorageKey :: String
+cookieLocalStorageKey = "cookie"
 
 type State
   = { open :: Boolean }
@@ -54,14 +54,14 @@ type State
 initialState :: State
 initialState = { open: false } -- Opened by Welcome dialog
 
-eulaDialog ::
-  { eulaQueues :: IOQueues Q.Queue Unit Boolean
+cookieDialog ::
+  { cookieQueues :: IOQueues Q.Queue Unit Boolean
   } ->
   ReactElement
-eulaDialog { eulaQueues: IOQueues { input, output } } = createLeafElement c {}
+cookieDialog { cookieQueues: IOQueues { input, output } } = createLeafElement c {}
   where
   c :: ReactClass {}
-  c = component "EULADialog" constructor'
+  c = component "CookieDialog" constructor'
 
   constructor' :: ReactClassConstructor _ State _
   constructor' = whileMountedOne input (\this _ -> setState this { open: true }) constructor
@@ -76,13 +76,13 @@ eulaDialog { eulaQueues: IOQueues { input, output } } = createLeafElement c {}
               let
                 handleAccept = do
                   store <- window >>= localStorage
-                  setItem eulaLocalStorageKey "accepted" store
+                  setItem cookieLocalStorageKey "accepted" store
                   setState this { open: false }
                   Q.put output true
 
                 handleNotAccepted = do
                   store <- window >>= localStorage
-                  removeItem eulaLocalStorageKey store
+                  removeItem cookieLocalStorageKey store
                   setState this { open: false }
                   Q.put output false
               { open } <- getState this
@@ -90,10 +90,10 @@ eulaDialog { eulaQueues: IOQueues { input, output } } = createLeafElement c {}
                 $ dialog''
                     { onClose: mkEffectFn1 (const handleNotAccepted)
                     , open
-                    , "aria-labelledby": "eula-dialog-title"
+                    , "aria-labelledby": "cookie-dialog-title"
                     }
-                    [ dialogTitle { id: "eula-dialog-title" } [ text "End User License Agreement" ]
-                    , dialogContent_ eulaText
+                    [ dialogTitle { id: "cookie-dialog-title" } [ text "End User License Agreement" ]
+                    , dialogContent_ cookieText
                     , dialogActions_
                         [ button { onClick: mkEffectFn1 (const handleNotAccepted) }
                             [ text "I Don't Accept" ]
@@ -103,12 +103,12 @@ eulaDialog { eulaQueues: IOQueues { input, output } } = createLeafElement c {}
                     ]
         }
 
-eulaText :: Array ReactElement
-eulaText =
+cookieText :: Array ReactElement
+cookieText =
   [ typography { variant: body2, paragraph: true }
       [ text
           """
-<insert EULA here>
+<insert cookie policy here>
 """
       ]
   ]

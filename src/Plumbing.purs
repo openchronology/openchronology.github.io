@@ -36,7 +36,10 @@ import Plumbing.Logic
   , onTimeSpaceNameEdit
   , onTimeScaleEdit
   , onSettingsEdit
+  , onReadWelcome
   , onReadEULA
+  , onReadCopyright
+  , onReadCookie
   , onExploreTimeSpaces
   )
 import Plumbing.Logic.Drawers.Timelines
@@ -90,6 +93,8 @@ type PrimaryQueues
     , snackbarQueue :: Q.Queue ( write :: Q.WRITE ) SnackbarContent
     , welcomeQueue :: Q.Queue ( write :: Q.WRITE ) Unit
     , eulaQueues :: IOQueues Q.Queue Unit Boolean
+    , copyrightQueues :: IOQueues Q.Queue Unit Boolean
+    , cookieQueues :: IOQueues Q.Queue Unit Boolean
     , exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array UUID))
     , dangerConfirmQueues :: IOQueues Q.Queue DangerConfirm Boolean
     , newOrEditTimelineQueues :: IOQueues Q.Queue (Maybe NewOrEditTimeline) (Maybe NewOrEditTimelineResult)
@@ -124,6 +129,12 @@ newPrimaryQueues = do
   ( eulaQueues :: IOQueues Q.Queue Unit Boolean
   ) <-
     IOQueues.new
+  ( copyrightQueues :: IOQueues Q.Queue Unit Boolean
+  ) <-
+    IOQueues.new
+  ( cookieQueues :: IOQueues Q.Queue Unit Boolean
+  ) <-
+    IOQueues.new
   ( exploreTimeSpacesQueues :: IOQueues Q.Queue Unit (Maybe (Array UUID))
   ) <-
     IOQueues.new
@@ -145,6 +156,8 @@ newPrimaryQueues = do
     , snackbarQueue
     , welcomeQueue
     , eulaQueues
+    , copyrightQueues
+    , cookieQueues
     , exploreTimeSpacesQueues
     , dangerConfirmQueues
     , newOrEditTimelineQueues
@@ -223,7 +236,10 @@ type LogicFunctions
     , onTimeSpaceNameEdit :: Effect Unit
     , onTimeScaleEdit :: Effect Unit
     , onSettingsEdit :: Effect Unit
+    , onReadWelcome :: Effect Unit
     , onReadEULA :: Effect Unit
+    , onReadCopyright :: Effect Unit
+    , onReadCookie :: Effect Unit
     , onExploreTimeSpaces :: Effect Unit
     , onClickedNewTimeline :: Effect Unit
     , onClickedEditTimeline :: Int -> Effect Unit
@@ -246,6 +262,8 @@ logic { importQueues
 , snackbarQueue
 , welcomeQueue
 , eulaQueues
+, copyrightQueues
+, cookieQueues
 , exploreTimeSpacesQueues
 , dangerConfirmQueues
 , newOrEditTimelineQueues
@@ -276,7 +294,10 @@ logic { importQueues
   , onTimeSpaceNameEdit: onTimeSpaceNameEdit { timeSpaceNameEditQueues, timeSpaceNameSignal }
   , onTimeScaleEdit: onTimeScaleEdit { timeScaleEditQueues, timeScaleSignal }
   , onSettingsEdit: onSettingsEdit { settingsEditQueues, settingsSignal }
+  , onReadWelcome: onReadWelcome { welcomeQueue }
   , onReadEULA: onReadEULA { eulaQueues } -- TODO if not accepted, should I re-open welcome screen?
+  , onReadCopyright: onReadCopyright { copyrightQueues } -- TODO if not accepted, should I re-open welcome screen?
+  , onReadCookie: onReadCookie { cookieQueues } -- TODO if not accepted, should I re-open welcome screen?
   , onExploreTimeSpaces: onExploreTimeSpaces { exploreTimeSpacesQueues, timeSpaceSelectedSignal }
   , onClickedNewTimeline: onClickedNewTimeline { newOrEditTimelineQueues, timelinesSignal }
   , onClickedEditTimeline: onClickedEditTimeline { newOrEditTimelineQueues, timelinesSignal, dangerConfirmQueues }

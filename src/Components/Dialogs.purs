@@ -8,6 +8,8 @@ import Components.Dialogs.TimeScaleEdit (timeScaleEditDialog)
 import Components.Dialogs.SettingsEdit (settingsEditDialog)
 import Components.Dialogs.Welcome (welcomeDialog)
 import Components.Dialogs.Welcome.EULA (eulaDialog)
+import Components.Dialogs.Welcome.Copyright (copyrightDialog)
+import Components.Dialogs.Welcome.Cookie (cookieDialog)
 import Components.Dialogs.ExploreTimeSpaces (exploreTimeSpacesDialog)
 import Components.Dialogs.DangerConfirm (dangerConfirmDialog)
 import Components.Dialogs.NewOrEditTimeline (newOrEditTimelineDialog)
@@ -32,6 +34,8 @@ dialogs { primaryQueues:
     , newOrEditEventOrTimeSpanQueues
     , welcomeQueue
     , eulaQueues
+    , copyrightQueues
+    , cookieQueues
     , exploreTimeSpacesQueues
     , dangerConfirmQueues
     }
@@ -78,8 +82,15 @@ dialogs { primaryQueues:
       , settingsSignal: S.readOnly settingsSignal
       , timeScaleSignal: S.readOnly timeScaleSignal
       }
-  , welcomeDialog { welcomeQueue: Q.readOnly (Q.allowReading welcomeQueue) }
+  , welcomeDialog
+      { welcomeQueue: Q.readOnly (Q.allowReading welcomeQueue)
+      , eulaQueues
+      , copyrightQueues
+      , cookieQueues
+      }
   , eulaDialog { eulaQueues }
+  , copyrightDialog { copyrightQueues }
+  , cookieDialog { cookieQueues }
   , exploreTimeSpacesDialog
       { exploreTimeSpacesSignal: S.readOnly exploreTimeSpacesSignal
       , timeSpaceSelectedSignal: S.readOnly timeSpaceSelectedSignal

@@ -1,9 +1,13 @@
 module Components.Dialogs.Welcome where
 
 import Components.Dialogs.Welcome.EULA (eulaLocalStorageKey)
+import Components.Dialogs.Welcome.Copyright (copyrightLocalStorageKey)
+import Components.Dialogs.Welcome.Cookie (cookieLocalStorageKey)
 import Prelude
 import Data.Maybe (isJust)
 import Effect (Effect)
+import Effect.Aff (launchAff_)
+import Effect.Class (liftEffect)
 import Effect.Uncurried (mkEffectFn1)
 import Web.Storage.Storage (getItem, setItem)
 import Web.HTML (window)
@@ -17,16 +21,19 @@ import React
   , setState
   , getState
   )
-import React.DOM (text, a, strong)
+import React.DOM (text, a, strong, br)
 import React.DOM.Props (href)
 import React.Queue.WhileMounted (whileMountedOne)
+import MaterialUI.Checkbox (checkbox')
 import MaterialUI.Dialog (dialog'')
 import MaterialUI.DialogTitle (dialogTitle)
 import MaterialUI.DialogContent (dialogContent_)
 import MaterialUI.DialogActions (dialogActions_)
 import MaterialUI.Typography (typography)
 import MaterialUI.Button (button)
-import MaterialUI.Enums (body2, subtitle1, secondary, h5)
+import MaterialUI.Enums (body2, subtitle1, secondary, h5, contained)
+import IOQueues (IOQueues)
+import IOQueues (callAsync) as IOQueues
 import Queue.One (READ, Queue) as Q
 
 welcomeLocalStorageKey :: String
@@ -44,18 +51,23 @@ initialState = do
   store <- window >>= localStorage
   mExists <- getItem welcomeLocalStorageKey store
   mEulaAgreed <- getItem eulaLocalStorageKey store
+  mCopyrightAgreed <- getItem copyrightLocalStorageKey store
+  mCookieAgreed <- getItem cookieLocalStorageKey store
   pure
     { open: not (isJust mExists)
-    , eulaAgreed: not (isJust mEulaAgreed)
-    , cookieAgreed: false -- FIXME
-    , copyrightAgreed: false -- FIXME
+    , eulaAgreed: isJust mEulaAgreed
+    , copyrightAgreed: isJust mCopyrightAgreed
+    , cookieAgreed: isJust mCookieAgreed
     }
 
 welcomeDialog ::
   { welcomeQueue :: Q.Queue ( read :: Q.READ ) Unit -- ^ Write to this to open the dialog
+  , eulaQueues :: IOQueues Q.Queue Unit Boolean
+  , copyrightQueues :: IOQueues Q.Queue Unit Boolean
+  , cookieQueues :: IOQueues Q.Queue Unit Boolean
   } ->
   ReactElement
-welcomeDialog { welcomeQueue } = createLeafElement c {}
+welcomeDialog { welcomeQueue, eulaQueues, copyrightQueues, cookieQueues } = createLeafElement c {}
   where
   c :: ReactClass {}
   c = component "WelcomeDialog" constructor'
@@ -76,6 +88,21 @@ welcomeDialog { welcomeQueue } = createLeafElement c {}
                   store <- window >>= localStorage
                   setItem welcomeLocalStorageKey "read" store
                   setState this { open: false } -- FIXME should reveal left the "tutorial" option
+
+                handleClickEula =
+                  launchAff_ do
+                    eulaAgreed <- IOQueues.callAsync eulaQueues unit
+                    liftEffect (setState this { eulaAgreed })
+
+                handleClickCopyright =
+                  launchAff_ do
+                    copyrightAgreed <- IOQueues.callAsync copyrightQueues unit
+                    liftEffect (setState this { copyrightAgreed })
+
+                handleClickCookie =
+                  launchAff_ do
+                    cookieAgreed <- IOQueues.callAsync cookieQueues unit
+                    liftEffect (setState this { cookieAgreed })
               { open, eulaAgreed, cookieAgreed, copyrightAgreed } <- getState this
               pure
                 $ dialog''
@@ -85,7 +112,17 @@ welcomeDialog { welcomeQueue } = createLeafElement c {}
                     , "aria-labelledby": "welcome-dialog-title"
                     }
                     [ dialogTitle { id: "welcome-dialog-title" } [ text "Welcome!" ]
-                    , dialogContent_ welcomeText
+                    , dialogContent_
+                        $ welcomeText
+                        <> [ checkbox' { checked: eulaAgreed }
+                          , button { onClick: mkEffectFn1 (const handleClickEula), variant: contained } [ text "End User License Agreement" ]
+                          , br []
+                          , checkbox' { checked: copyrightAgreed }
+                          , button { onClick: mkEffectFn1 (const handleClickCopyright), variant: contained } [ text "Copyright Disclaimer" ]
+                          , br []
+                          , checkbox' { checked: cookieAgreed }
+                          , button { onClick: mkEffectFn1 (const handleClickCookie), variant: contained } [ text "Cookie Policy" ]
+                          ]
                     , dialogActions_
                         [ button
                             { onClick: mkEffectFn1 (const handleNext)
