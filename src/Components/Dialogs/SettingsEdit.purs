@@ -78,12 +78,18 @@ settingsEditDialog ::
   , settingsEditQueues :: IOQueues Queue Unit (Maybe Settings)
   , onNew :: Effect Unit
   , onReadEULA :: Effect Unit
+  , onReadCopyright :: Effect Unit
+  , onReadCookie :: Effect Unit
+  , onReadWelcome :: Effect Unit
   } ->
   ReactElement
 settingsEditDialog { settingsSignal
 , settingsEditQueues: IOQueues { input, output }
 , onNew
 , onReadEULA
+, onReadCopyright
+, onReadCookie
+, onReadWelcome
 } = createLeafElement c {}
   where
   c :: ReactClass {}
@@ -170,9 +176,28 @@ settingsEditDialog { settingsSignal
                             ]
                         , button
                             { variant: contained
+                            , color: secondary
                             , onClick: mkEffectFn1 (const onReadEULA)
                             }
                             [ text "Read EULA" ]
+                        , button
+                            { variant: contained
+                            , color: secondary
+                            , onClick: mkEffectFn1 (const onReadCopyright)
+                            }
+                            [ text "Read Copyright Disclaimer" ]
+                        , button
+                            { variant: contained
+                            , color: secondary
+                            , onClick: mkEffectFn1 (const onReadCookie)
+                            }
+                            [ text "Read Cookie Policy" ]
+                        , br []
+                        , button
+                            { variant: contained
+                            , onClick: mkEffectFn1 (const onReadWelcome)
+                            }
+                            [ text "Read Welcome Dialog" ]
                         , br []
                         , formGroup_
                             [ formControlLabel'

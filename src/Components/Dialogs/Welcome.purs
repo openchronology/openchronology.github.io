@@ -8,6 +8,7 @@ import Data.Maybe (isJust)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
+import Effect.Timer (setTimeout)
 import Effect.Uncurried (mkEffectFn1)
 import Web.Storage.Storage (getItem, setItem)
 import Web.HTML (window)
@@ -41,6 +42,7 @@ welcomeLocalStorageKey = "welcome"
 
 type State
   = { open :: Boolean
+    , tutorialInquireOpen :: Boolean
     , copyrightAgreed :: Boolean
     , eulaAgreed :: Boolean
     , cookieAgreed :: Boolean
@@ -55,6 +57,7 @@ initialState = do
   mCookieAgreed <- getItem cookieLocalStorageKey store
   pure
     { open: not (isJust mExists)
+    , tutorialInquireOpen: false
     , eulaAgreed: isJust mEulaAgreed
     , copyrightAgreed: isJust mCopyrightAgreed
     , cookieAgreed: isJust mCookieAgreed
@@ -87,7 +90,7 @@ welcomeDialog { welcomeQueue, eulaQueues, copyrightQueues, cookieQueues } = crea
                 handleNext = do
                   store <- window >>= localStorage
                   setItem welcomeLocalStorageKey "read" store
-                  setState this { open: false } -- FIXME should reveal left the "tutorial" option
+                  setState this { tutorialInquireOpen: true }
 
                 handleClickEula =
                   launchAff_ do
@@ -103,7 +106,16 @@ welcomeDialog { welcomeQueue, eulaQueues, copyrightQueues, cookieQueues } = crea
                   launchAff_ do
                     cookieAgreed <- IOQueues.callAsync cookieQueues unit
                     liftEffect (setState this { cookieAgreed })
-              { open, eulaAgreed, cookieAgreed, copyrightAgreed } <- getState this
+
+                handleNoTutorial = do
+                  _ <- setTimeout 1000 (setState this { tutorialInquireOpen: false })
+                  setState this { open: false }
+
+                handleTutorial = do
+                  _ <- setTimeout 1000 (setState this { tutorialInquireOpen: false })
+                  -- TODO iterate the tutorial procedure
+                  setState this { open: false }
+              { open, tutorialInquireOpen, eulaAgreed, cookieAgreed, copyrightAgreed } <- getState this
               pure
                 $ dialog''
                     { disableBackdropClick: true
@@ -113,24 +125,45 @@ welcomeDialog { welcomeQueue, eulaQueues, copyrightQueues, cookieQueues } = crea
                     }
                     [ dialogTitle { id: "welcome-dialog-title" } [ text "Welcome!" ]
                     , dialogContent_
-                        $ welcomeText
-                        <> [ checkbox' { checked: eulaAgreed }
-                          , button { onClick: mkEffectFn1 (const handleClickEula), variant: contained } [ text "End User License Agreement" ]
-                          , br []
-                          , checkbox' { checked: copyrightAgreed }
-                          , button { onClick: mkEffectFn1 (const handleClickCopyright), variant: contained } [ text "Copyright Disclaimer" ]
-                          , br []
-                          , checkbox' { checked: cookieAgreed }
-                          , button { onClick: mkEffectFn1 (const handleClickCookie), variant: contained } [ text "Cookie Policy" ]
-                          ]
+                        $ if not tutorialInquireOpen then
+                            welcomeText
+                              <> [ checkbox' { checked: eulaAgreed }
+                                , button { onClick: mkEffectFn1 (const handleClickEula), variant: contained } [ text "End User License Agreement" ]
+                                , br []
+                                , checkbox' { checked: copyrightAgreed }
+                                , button { onClick: mkEffectFn1 (const handleClickCopyright), variant: contained } [ text "Copyright Disclaimer" ]
+                                , br []
+                                , checkbox' { checked: cookieAgreed }
+                                , button { onClick: mkEffectFn1 (const handleClickCookie), variant: contained } [ text "Cookie Policy" ]
+                                ]
+                          else
+                            [ typography { variant: body2, paragraph: true }
+                                [ text
+                                    """
+Great! Would you like to view the tutorial, or just jump right in?
+"""
+                                ]
+                            ]
                     , dialogActions_
-                        [ button
-                            { onClick: mkEffectFn1 (const handleNext)
-                            , color: secondary
-                            , disabled: not (eulaAgreed && cookieAgreed && copyrightAgreed)
-                            }
-                            [ text "Next" ]
-                        ]
+                        $ if not tutorialInquireOpen then
+                            [ button
+                                { onClick: mkEffectFn1 (const handleNext)
+                                , color: secondary
+                                , disabled: not (eulaAgreed && cookieAgreed && copyrightAgreed)
+                                }
+                                [ text "Next" ]
+                            ]
+                          else
+                            [ button
+                                { onClick: mkEffectFn1 (const handleNoTutorial)
+                                }
+                                [ text "No, Go to the app" ]
+                            , button
+                                { onClick: mkEffectFn1 (const handleTutorial)
+                                , color: secondary
+                                }
+                                [ text "View the Tutorial" ]
+                            ]
                     ]
         }
 

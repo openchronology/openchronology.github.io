@@ -50,6 +50,9 @@ dialogs { primaryQueues:
     { onClickedExport
     , onNew
     , onReadEULA
+    , onReadCopyright
+    , onReadCookie
+    , onReadWelcome
     }
 } =
   [ importDialog importQueues
@@ -72,6 +75,9 @@ dialogs { primaryQueues:
       , settingsEditQueues
       , onNew
       , onReadEULA
+      , onReadCopyright
+      , onReadCookie
+      , onReadWelcome
       }
   , newOrEditTimelineDialog
       { newOrEditTimelineQueues
