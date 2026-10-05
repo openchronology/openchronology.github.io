@@ -1,37 +1,560 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-        <link rel="manifest" href="/site.webmanifest">
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#7b1fa2">
-        <meta name="msapplication-TileColor" content="#7b1fa2">
-        <meta name="theme-color" content="#ffffff">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/fontawesome.min.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/brands.min.css" />
-        <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no">
-        <title>OpenChronology</title>
-        <style>
-         html, body {
-             height: 100%;
-         }
-         #root {
-             height: 100%;
-         }
-         #import-file {
-             height: auto;
-         }
-        </style>
-    </head>
-    <body>
-        <noscript>
-            You need to enable JavaScript to run this app.
-        </noscript>
-        <div id="root"></div>
-<script src="./build/index.min.js"></script>
-    </body>
+  <head>
+    <meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-n8TWpW+bmL5iUqBfhMOebiMQMjHid8q1HD1KcMBf4SI='; script-src-attr 'none'; style-src 'unsafe-inline'; connect-src 'none'; img-src data:; font-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iIzE5MmQyNSIvPjxjaXJjbGUgY3g9IjE2IiBjeT0iMTYiIHI9IjEwIiBmaWxsPSJub25lIiBzdHJva2U9IiNjNGRiOTgiIHN0cm9rZS13aWR0aD0iMiIvPjxwYXRoIGQ9Ik0xNiA4djhsNiA0IiBmaWxsPSJub25lIiBzdHJva2U9IiNjNGRiOTgiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==">
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#192d25" />
+    <title>OpenChronology — a place for moments</title>
+    <style>:root{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;color:#233b30;background:#f5f6f1;font-synthesis:none;--green: #285742;--ink: #20372c;--muted: #7d897f;--line: #dfe5db;--paper: #fff;--sidebar: 208px;--inspector: 300px}*{box-sizing:border-box}body{margin:0}button,input,textarea,select{font:inherit}button{cursor:pointer;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:7px;padding:8px 12px;font-size:12px;font-weight:550;white-space:nowrap;transition:background .15s,transform .15s}button:hover{background:#eaf0e5}button:active{transform:translateY(1px)}button:disabled{opacity:.45;cursor:default}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid #61a378;outline-offset:3px}input,textarea,select{color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:6px;padding:10px;font-size:13px;min-width:0}textarea{resize:vertical}.presented-bounds{margin:12px 0 24px;font-size:12px}#presentation-dialog{width:min(620px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:auto}#presentation-form>div:not(.dialog-heading):not(.dialog-actions),#presentation-form>label{margin-top:16px}#presentation-form label+label{margin-top:12px}#presentation-source{font-family:ui-monospace,monospace;font-size:12px}.presentation-preview{display:block;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:12px;font-size:12px}.time-context{padding:8px 24px;border-bottom:1px solid var(--line);color:var(--muted);font:12px ui-monospace,monospace;overflow-wrap:anywhere}.time-context[hidden]{display:none}label{display:flex;flex-direction:column;gap:8px;font-size:11px;font-weight:600;letter-spacing:.03em}.button-primary{background:var(--green);border-color:var(--green);color:#fff}.button-primary:hover{background:#1d4735}.button-danger{color:#a54a43;border-color:#ecd6d3}.muted,.field-hint{color:var(--muted);font-size:12px;line-height:1.65}.eyebrow{font-size:9px;font-weight:700;letter-spacing:.14em;color:#859083}.app-header{height:72px;background:#192d25;color:#eef4eb;display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid #284033}.brand{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:550;letter-spacing:-.045em;text-decoration:none;color:inherit}.brand-mark{font-size:30px;color:#c4db98;line-height:1}.brand-version{margin-left:10px;font-family:monospace;font-size:9px;border:1px solid #49604e;color:#adc09f;padding:3px 5px;border-radius:4px;letter-spacing:.08em}.header-right{display:flex;align-items:center;gap:12px}.header-right button{color:#e3eddf;border-color:#46614e}.header-right button:hover{background:#294333}.badge{font-size:10px;border:1px solid #48604b;border-radius:20px;padding:5px 9px;color:#c4d8b2}.app-layout{display:grid;grid-template-columns:var(--sidebar) minmax(300px,1fr) var(--inspector);min-height:calc(100vh - 72px)}.workspace{border-right:1px solid var(--line);padding:29px 20px;display:flex;flex-direction:column;background:#f0f3eb}.workspace-new{margin-top:18px;text-align:left;background:#e5ecdf;border-color:#d5dfcd;color:#3b5943;padding:11px}.timeline-list{margin-top:24px;display:flex;flex-direction:column;gap:6px}.timeline-list button{white-space:normal;text-align:left;background:#fff;line-height:1.45;overflow-wrap:anywhere}.timeline-list button small{display:block;color:var(--muted);margin-top:5px;font-size:9px}.workspace-note{font-size:11px;line-height:1.8;color:#7b8978;padding:10px 2px}.workspace-bottom{margin-top:auto;padding-top:100px;font-size:10px;color:#667660;line-height:1.9}.status-dot{display:inline-block;width:6px;height:6px;background:#74a574;border-radius:50%;margin-right:5px}.workspace-bottom p{font-size:10px;color:#8b9588;padding-top:12px;border-top:1px solid #dfe6d8;margin-top:14px}main{padding:0 30px;min-width:0}.document-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:66px;border-bottom:1px solid var(--line)}.breadcrumbs{display:flex;gap:9px;font-size:10px;color:#748273;white-space:nowrap}.breadcrumbs>span:first-child{color:#abb4a5}.file-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.file-actions button{padding:6px 9px;font-size:10px}.document-heading{padding:35px 0 28px}.title-input{display:block;font-family:Georgia,Times New Roman,serif;font-size:34px;letter-spacing:-.04em;border:none;padding:10px 0 7px;background:transparent;width:100%;font-weight:400;line-height:1.2}.title-input:disabled{opacity:1}.description-input{display:block;width:100%;color:#7b8879;font-size:12px;line-height:1.8;resize:none;border:0;background:transparent;padding:0;min-height:26px}.document-meta{display:flex;align-items:center;gap:9px;color:#8b9586;font-size:10px;margin-top:14px}.meta-separator{color:#abb6a3}.timeline-card{background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 6px 30px #1d382304;overflow:hidden}.view-toolbar{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #edf0e9;gap:10px}.view-toolbar>div:first-child{display:flex;gap:12px;align-items:center}.view-name{font-size:12px;font-weight:650}.view-toolbar .muted{font-size:10px}.view-controls{display:flex;align-items:center;gap:5px}.view-controls button{font-size:10px;padding:6px 9px}.calendar-label{display:flex;flex-direction:row;align-items:center;font-size:9px;letter-spacing:0;font-weight:400;gap:4px;margin-right:8px;color:#7b8978}.calendar-label input{width:12px;height:12px;padding:0;accent-color:#285742}.timeline-stage{position:relative;height:365px;touch-action:none;user-select:none;overflow:hidden;outline-offset:-4px;cursor:grab}.timeline-stage.dragging{cursor:grabbing}.axis,.markers{position:absolute;inset:0;pointer-events:none}.axis-baseline{position:absolute;left:48px;right:48px;top:192px;border-top:1px solid #aebda7}.axis-tick{position:absolute;top:36px;bottom:62px;width:1px;background:repeating-linear-gradient(to bottom,#e7ece2 0,#e7ece2 3px,transparent 3px,transparent 7px)}.tick-notch{position:absolute;top:152px;height:9px;border-left:1px solid #b5c2ad}.axis-tick.minor{top:185px;bottom:auto;height:14px;background:none}.axis-tick.minor .tick-notch{top:3px;height:7px;border-color:#cbd5c5}.axis-tick.boundary .tick-notch{top:146px;height:21px;border-width:2px;border-color:#71886b}.tick-label{position:absolute;top:177px;transform:translate(-50%);font-size:10px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:#87947f;max-width:105px;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}.event-marker{position:absolute;top:181px;width:22px;height:22px;border:4px solid #fff;background:#547d5b;border-radius:50%;padding:0;transform:translate(-50%);box-shadow:0 0 0 1px #cedcc7;pointer-events:auto;cursor:pointer}.event-marker:hover,.event-marker:focus-visible{background:#214f38;box-shadow:0 0 0 5px #e7efdf;z-index:5;transform:translate(-50%)}.event-marker.selected{background:#173c28;box-shadow:0 0 0 5px #e3eccb}.event-marker.group{top:176px;width:32px;height:32px;border:3px solid #fff;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:650;background:#3b654a;box-shadow:0 0 0 1px #b8caaa}.event-marker.group.large{width:42px;height:42px;top:171px;font-size:10px}.event-label{position:absolute;width:150px;transform:translate(-50%);text-align:center;font-size:11px;font-weight:500;color:#4c654c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}.event-label small{display:block;color:#9aa690;font-size:9px;font-family:ui-monospace,monospace;margin-top:5px}.event-stem{position:absolute;width:1px;background:#d4dfcc;pointer-events:none}.empty-window{position:absolute;inset:85px 0 auto;text-align:center;color:#95a18d;font-size:13px;line-height:1.8}.empty-window button{font-size:10px;margin-top:9px}.loading-window{position:absolute;right:18px;bottom:14px;font-size:10px;color:#6f7e64;background:#f1f5ed;padding:6px 10px;border-radius:20px}.timeline-footer{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-top:1px solid #edf0e9;gap:12px}.gesture-help{color:#8e9a83;font-size:10px}.gesture-help span{margin:0 8px;color:#b8c1af}.density-control{display:flex;flex-direction:row;align-items:center;font-weight:400;font-size:10px;letter-spacing:0;color:#818e77;gap:7px}.density-control input{width:65px;accent-color:#5c7d50;padding:0;height:12px}.density-control output{min-width:29px;font-family:monospace;font-size:9px}.window-bounds{display:flex;align-items:center;gap:12px;margin-top:15px}.window-bounds label{font-size:8px;letter-spacing:.1em;color:#98a18d;flex:1;gap:5px;min-width:0}.window-bounds input{font-size:10px;font-family:ui-monospace,monospace;background:transparent;border:none;border-bottom:1px solid #dce4d4;border-radius:0;padding:4px 0;width:100%;color:#6f7e63}.window-bounds>span{color:#aeb8a0;font-size:14px;margin-top:11px}.window-bounds button{font-size:9px;padding:6px 10px;margin-top:12px}.below-timeline{display:flex;justify-content:space-between;gap:30px;padding:35px 0}.reading-note{display:flex;gap:14px;max-width:355px}.small-orbit{color:#8a9b72;font-size:28px;line-height:1.2}.reading-note h2{font-family:Georgia,serif;font-weight:400;font-size:18px;letter-spacing:-.02em;margin:0 0 8px}.reading-note p,.precision-note p{font-size:11px;line-height:1.85;color:#8a9680;margin:0 0 11px}.text-button{border:0;padding:0;font-size:10px;color:#668653}.text-button:hover{background:none;text-decoration:underline}.precision-note{max-width:215px;padding-top:2px}.precision-note .eyebrow{font-size:8px;margin-bottom:10px;line-height:1.7}.inspector{border-left:1px solid var(--line);background:#fafbf7;padding:29px 22px;min-width:0}.inspector-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}.inspector-heading button{border:0;color:#9ba68d;font-size:20px;padding:0 3px}.inspector-orbit{font-size:60px;color:#ccd8bb;margin:66px 0 24px}.inspector h2{font-family:Georgia,serif;font-size:24px;line-height:1.3;font-weight:400;letter-spacing:-.03em;margin:0 0 15px}.inspector p{font-size:11px;line-height:1.85;color:#8c9781}.inspector form{display:flex;flex-direction:column;gap:19px;margin-top:30px}.inspector form[hidden]{display:none}.inspector input,.inspector textarea{background:#fff;width:100%;font-size:12px}.inspector label{font-size:10px;color:#75856a}.inspector .field-hint{font-size:9px;margin:-12px 0 0}.inspector details{font-size:10px;color:#78886c}.inspector summary{cursor:pointer;margin-bottom:10px}.event-actions{display:flex;gap:7px;margin-top:4px}.event-actions button{font-size:11px}.group-events{margin-top:22px;display:flex;flex-direction:column;gap:8px;max-height:420px;overflow:auto}.group-events button{text-align:left;white-space:normal;background:#fff;padding:11px;overflow-wrap:anywhere}.group-events small{display:block;color:#94a287;font-family:monospace;font-size:9px;margin-top:6px}#group-details{padding-top:35px}#group-details h2{font-size:24px}#group-zoom,#group-more{font-size:10px}#group-more{margin-top:15px}.form-error{font-size:11px;line-height:1.6;color:#a7473c;min-height:0}dialog{border:1px solid var(--line);border-radius:14px;padding:28px;background:#f9fbf5;color:var(--ink);width:min(440px,calc(100vw - 30px));box-shadow:0 20px 100px #152b3540}dialog::backdrop{background:#17271d66;backdrop-filter:blur(4px)}dialog form{display:flex;flex-direction:column;gap:16px}.dialog-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.dialog-heading h2{font-size:24px;font-family:Georgia,serif;font-weight:400;letter-spacing:-.03em;margin:0}.dialog-heading button{padding:0 4px;border:0;font-size:22px;color:#8a9980}dialog p{font-size:12px;color:#859279;line-height:1.7;margin:0 0 6px}dialog label{margin-top:7px}dialog input,dialog select{width:100%;background:#fff}.dialog-actions{display:flex;gap:10px}.dialog-actions select{flex:1}.sharing-link{word-break:break-all;margin:12px 0;font-family:monospace;font-size:10px!important}#sharing-dialog>label{margin:24px 0 15px}#members-list>div{display:flex;align-items:center;justify-content:space-between;margin:8px 0;font-size:12px}#members-list button{font-size:10px}dialog h3{font-size:13px;margin:24px 0 15px}.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%);z-index:20;background:#20382b;color:#eef6e5;border:1px solid #4d6a44;border-radius:9px;padding:12px 18px;box-shadow:0 4px 24px #1e312625;font-size:12px;max-width:calc(100vw - 32px);line-height:1.6}[hidden]{display:none!important}@media(min-width:1700px){:root{--sidebar: 230px;--inspector: 330px}main{padding:0 48px}.timeline-stage{height:410px}}@media(max-width:1180px){:root{--sidebar: 160px;--inspector: 265px}.workspace{padding:29px 14px}main{padding:0 20px}.breadcrumbs{display:none}.document-toolbar{justify-content:flex-end}.calendar-label{max-width:77px;line-height:1.4}.view-toolbar{padding:13px}.view-toolbar .muted{display:none}.timeline-footer{padding:12px}.gesture-help{font-size:9px}.file-actions button{font-size:9px;padding:6px 7px}.title-input{font-size:30px}.below-timeline{gap:20px}.precision-note{display:none}}@media(max-width:960px){:root{--sidebar: 0px;--inspector: 260px}.workspace{display:none}.app-layout{grid-template-columns:minmax(300px,1fr) var(--inspector)}.title-input{font-size:33px}.document-heading{padding:30px 0 24px}.timeline-footer{flex-wrap:wrap}.calendar-label{display:none}.app-header{height:64px;padding:0 20px}.brand{font-size:17px}.inspector{padding:28px 18px}}@media(max-width:650px){.app-layout{display:block}.app-header{padding:0 15px}.brand-version{display:none}.header-right{gap:7px}.badge{font-size:9px}.header-right button{font-size:10px;padding:6px 8px}main{padding:0 15px}.document-toolbar{min-height:56px}.file-actions{gap:5px}.file-actions button{font-size:9px}.document-heading{padding:25px 0 22px}.title-input{font-size:30px}.description-input{font-size:11px}.view-toolbar{padding:12px}.view-controls{gap:4px}.view-controls button{font-size:10px;padding:7px}.view-toolbar>div:first-child{gap:0}.timeline-stage{height:330px}.timeline-footer{justify-content:center;gap:12px;padding:13px 9px}.gesture-help{font-size:9px}.window-bounds{gap:8px}.window-bounds button{padding:5px 8px}#undo-button{display:none}.below-timeline{padding:27px 0 22px}.reading-note p{font-size:10px}.inspector{border-left:0;border-top:1px solid var(--line);padding:24px;min-height:230px}#inspector-intro{display:flex;gap:18px;align-items:center;padding-top:20px}#inspector-intro h2{font-size:20px;margin:0;white-space:nowrap}#inspector-intro p{font-size:10px;margin:0;max-width:160px}.inspector-orbit{font-size:35px;margin:0}.inspector form{margin-top:24px}.inspector textarea{resize:vertical}.brand-mark{font-size:27px}}
+
+body[data-offline] .app-layout{grid-template-columns:minmax(300px,1fr) var(--inspector)}body[data-offline] .document-toolbar{justify-content:flex-end}.offline-notices{font-size:10px;max-width:100%;padding:0 30px 20px}.offline-notices pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:260px;overflow:auto}</style>
+    
+  </head>
+  <body>
+    <header class="app-header">
+      <a class="brand" href="#"
+        ><span class="brand-mark" aria-hidden="true">◷</span>openchronology<span
+          class="brand-version"
+          >01</span
+        ></a
+      >
+      <div class="header-right">
+        <span id="storage-badge" class="badge">Browser draft</span
+        ><button id="server-button" hidden>Server connection</button><button id="account-button">Sign in</button
+        ><button id="logout-button" hidden>Sign out</button>
+      </div>
+    </header>
+    <div class="app-layout">
+      <aside class="workspace">
+        <div class="eyebrow">YOUR WORKSPACE</div>
+        <button id="new-button" class="workspace-new">＋ New timeline</button>
+        <div id="timeline-list" class="timeline-list">
+          <div class="workspace-note">
+            A timeline is a collection of moments.<br />Make room for yours.
+          </div>
+        </div>
+        <div class="workspace-bottom">
+          <span class="status-dot"></span><span id="workspace-status">Stored in this browser</span>
+          <p>Point events. Exact coordinates.<br />As much space as you need.</p>
+        </div>
+      </aside>
+      <main>
+        <div class="document-toolbar">
+          <div class="breadcrumbs">
+            Timelines <span>/</span> <span id="owner-label">Local workspace</span>
+          </div>
+          <div class="file-actions">
+            <button id="import-button">Import JSON</button
+            ><button id="export-button">Export JSON ↗</button
+            ><button id="och-import" hidden>Import .och</button><button id="och-export" hidden>Export .och ↗</button
+            ><button id="sqlite-open" hidden>Open SQLite</button
+            ><button id="sqlite-save" hidden>Save SQLite</button
+            ><button id="sqlite-save-as" hidden>Save SQLite as…</button
+            ><button id="share-button" hidden>Sharing</button
+            ><button id="publish-button" class="button-primary">Save to server</button>
+          </div>
+        </div>
+        <section class="document-heading">
+          <div class="eyebrow">A WINDOW INTO TIME</div>
+          <input
+            id="timeline-title"
+            class="title-input"
+            aria-label="Timeline title"
+            maxlength="300"
+            value="A notebook of moments"
+          /><textarea
+            id="timeline-description"
+            class="description-input"
+            aria-label="Timeline description"
+            rows="1"
+          >
+Every point has a place. Explore the spaces between them.</textarea
+          >
+          <div class="document-meta">
+            <span id="event-count">10 events</span><span class="meta-separator">·</span
+            ><span id="save-status">A local draft, ready to explore</span>
+          </div>
+        </section>
+        <section class="timeline-card" aria-label="Timeline window">
+          <div class="view-toolbar">
+            <div>
+              <span class="view-name">Timeline</span
+              ><span id="visible-count" class="muted">All moments</span>
+            </div>
+            <div class="view-controls">
+              <button id="presentation-button">Time display</button>
+              <button id="zoom-out" aria-label="Zoom out">−</button
+              ><button id="zoom-in" aria-label="Zoom in">＋</button
+              ><button id="fit-button">Fit all</button
+              ><button id="add-button" class="button-primary">＋ Event</button>
+            </div>
+          </div>
+          <div id="time-context" class="time-context" hidden></div>
+          <div
+            id="timeline-stage"
+            class="timeline-stage"
+            tabindex="0"
+            role="application"
+            aria-label="Interactive timeline. Drag to pan, scroll to zoom, or use arrow keys and plus/minus."
+          >
+            <div id="axis" class="axis"></div>
+            <div id="markers" class="markers"></div>
+            <div id="empty-window" class="empty-window" hidden>
+              No moments in this window.<br /><button id="empty-fit">Fit the timeline</button>
+            </div>
+            <div id="loading-window" class="loading-window" hidden>Loading this window…</div>
+          </div>
+          <div class="timeline-footer">
+            <span class="gesture-help">↔ Drag to pan <span>·</span> Scroll or pinch to zoom</span
+            ><label class="density-control"
+              >Group within
+              <input
+                id="density"
+                type="range"
+                min="12"
+                max="48"
+                value="24"
+                aria-label="Grouping distance in pixels"
+              /><output id="density-value">24 px</output></label
+            >
+          </div>
+        </section>
+        <div class="window-bounds">
+          <label
+            >LEFT BOUND<input
+              id="left-bound"
+              spellcheck="false"
+              aria-label="Left time bound in timeline format" /></label
+          ><span>→</span
+          ><label
+            >RIGHT BOUND<input
+              id="right-bound"
+              spellcheck="false"
+              aria-label="Right time bound in timeline format" /></label
+          ><button id="apply-bounds">Go</button><button id="undo-button" disabled>Undo edit</button>
+        </div>
+        <details class="presented-bounds">
+          <summary>Exact rational bounds</summary>
+          <div class="window-bounds">
+            <label>LEFT RATIONAL<input id="exact-left" spellcheck="false" /></label>
+            <label>RIGHT RATIONAL<input id="exact-right" spellcheck="false" /></label>
+            <button id="apply-exact-bounds">Go to exact bounds</button>
+          </div>
+          <p class="field-hint">
+            These are the underlying coordinates, independent of time display settings.
+          </p>
+        </details>
+        <section class="below-timeline">
+          <div class="reading-note">
+            <span class="small-orbit" aria-hidden="true">⊙</span>
+            <div>
+              <h2>Closer reveals more.</h2>
+              <p>
+                Nearby moments gather into a single point. Zoom in to discover the individual events
+                inside.
+              </p>
+              <button id="dense-demo" class="text-button">Explore 20,000 tiny moments ↗</button>
+            </div>
+          </div>
+          <div class="precision-note">
+            <div class="eyebrow">NOTHING LOST BETWEEN THE TICKS</div>
+            <p>Coordinates remain exact, even when the gaps get very small.</p>
+          </div>
+        </section>
+      </main>
+      <aside id="inspector" class="inspector">
+        <div class="inspector-heading">
+          <span class="eyebrow">THE SELECTED MOMENT</span
+          ><button id="close-inspector" aria-label="Close event details">×</button>
+        </div>
+        <div id="inspector-intro">
+          <div class="inspector-orbit">⊙</div>
+          <h2>A little context<br />for every point.</h2>
+          <p>Select an event to see its details, or add a moment of your own.</p>
+        </div>
+        <div id="group-details" hidden>
+          <h2 id="group-title"></h2>
+          <p id="group-note" class="muted"></p>
+          <button id="group-zoom">Zoom into this group</button>
+          <div id="group-events" class="group-events"></div>
+          <button id="group-more" hidden>Next 100 events</button>
+        </div>
+        <form id="event-form" hidden>
+          <label
+            >Title<input
+              id="event-title"
+              required
+              maxlength="1000"
+              placeholder="Name this moment" /></label
+          ><label
+            >Exact time<input
+              id="event-time"
+              required
+              spellcheck="false"
+              placeholder="1/3, 0.25, or an ISO timestamp"
+          /></label>
+          <p class="field-hint">
+            A raw rational coordinate. ISO input here means Unix seconds; use displayed time for
+            this timeline’s units or calendar.
+          </p>
+          <label>Displayed time<input id="event-presented" spellcheck="false" /></label>
+          <button id="parse-event-presented" type="button">Use this displayed value</button>
+          <p class="field-hint">
+            Saving keeps the exact time above. This button explicitly replaces it with the parsed
+            value.
+          </p>
+          <label
+            >Notes<textarea
+              id="event-description"
+              rows="5"
+              placeholder="What happened here?"
+            ></textarea>
+          </label>
+          <details>
+            <summary>Additional metadata</summary>
+            <label
+              >JSON object<textarea id="event-metadata" rows="6" spellcheck="false">{}</textarea>
+            </label>
+          </details>
+          <div id="event-error" class="form-error" role="alert"></div>
+          <div class="event-actions">
+            <button id="event-save" class="button-primary" type="submit">Save event</button
+            ><button id="event-delete" class="button-danger" type="button">Delete</button>
+          </div>
+        </form>
+      </aside>
+    </div>
+    <input id="json-file" type="file" accept=".ochx,.json,application/json" hidden />
+    <input id="och-file" type="file" accept=".och,application/vnd.openchronology.sqlite" hidden />
+    <dialog id="presentation-dialog">
+      <form id="presentation-form">
+        <div class="dialog-heading">
+          <h2>Timeline time display</h2>
+          <button type="button" data-close="presentation-dialog" aria-label="Close">×</button>
+        </div>
+        <p class="field-hint">
+          These settings belong to this timeline and are included in saved files and server copies.
+          Event coordinates stay exact.
+        </p>
+        <label
+          >Representation<select id="presentation-mode">
+            <option value="rational">Exact rational</option>
+            <option value="float">Floating point / decimal</option>
+            <option value="scientific">Scientific notation</option>
+            <option value="si">SI prefixes</option>
+            <option value="gregorian">Gregorian timestamp</option>
+            <option value="custom">Custom JavaScript / TypeScript subset</option>
+          </select></label
+        >
+        <div id="presentation-numeric">
+          <label
+            >Unit preset<select id="presentation-unit-preset">
+              <option value="">Choose a preset…</option>
+            </select></label
+          >
+          <label
+            >Unit label<input
+              id="presentation-unit"
+              maxlength="80"
+              placeholder="years, minutes, s…"
+          /></label>
+          <label
+            >Significant digits<input id="presentation-digits" type="number" min="1" max="30"
+          /></label>
+          <p class="field-hint">
+            Numeric labels are rounded. SI prefixes work best with unit symbols such as s. A Julian
+            year is exactly 365.25 days.
+          </p>
+        </div>
+        <div id="presentation-calendar" hidden>
+          <label class="calendar-label"
+            ><input id="presentation-adaptive" type="checkbox" checked /> Abbreviate chart labels to
+            the visible scale</label
+          >
+          <label
+            >Calendar coordinate preset<select id="presentation-epoch">
+              <option value="">Choose a preset…</option>
+              <option value="unix">Unix seconds</option>
+              <option value="mjd">Modified Julian Date days (legacy)</option>
+            </select></label
+          >
+          <label
+            >Timezone offset in minutes<input
+              id="presentation-offset"
+              type="number"
+              min="-1439"
+              max="1439"
+          /></label>
+          <p class="field-hint">
+            Proleptic Gregorian calendar with a fixed UTC offset. Input must include Z or ±HH:MM.
+            Repeating fractional seconds print as {+n/d}.
+          </p>
+        </div>
+        <div id="presentation-transform">
+          <label
+            >Stored coordinate at displayed zero<input id="presentation-origin" spellcheck="false"
+          /></label>
+          <label
+            >Stored coordinates per displayed unit<input id="presentation-scale" spellcheck="false"
+          /></label>
+          <p class="field-hint">
+            Displayed value = (stored time − origin) / scale. For Gregorian display, the displayed
+            unit is one second from 1970-01-01T00:00:00Z.
+          </p>
+        </div>
+        <label
+          >Ruler graduation<select id="presentation-ruler">
+            <option value="">Automatic for this representation</option>
+            <option value="decimal">Decimal (ten subdivisions)</option>
+            <option value="gregorian">Gregorian calendar</option>
+            <option value="steps">Custom exact steps</option>
+          </select></label
+        >
+        <div id="presentation-ruler-steps" hidden>
+          <label
+            >Increasing steps (JSON array)<textarea
+              id="presentation-steps"
+              rows="3"
+              maxlength="65536"
+              spellcheck="false"
+              placeholder='["1", "60", "3600", "86400"]'
+            ></textarea>
+          </label>
+          <p class="field-hint">
+            Each step is an exact interval in displayed units, smallest first. Adjacent steps define
+            the subdivisions. For custom printers, use stored coordinate units. Beyond this list,
+            graduations continue by powers of ten.
+          </p>
+        </div>
+        <div id="presentation-custom" hidden>
+          <label
+            >Printer and parser source<textarea
+              id="presentation-source"
+              rows="12"
+              maxlength="16384"
+              spellcheck="false"
+            ></textarea>
+          </label>
+          <button id="presentation-example" type="button">Load minutes example</button>
+          <p class="field-hint">
+            Define function print(time, api) and function parse(text, api). Optional Rational,
+            TimeAPI and primitive type annotations are supported. Only const declarations, return,
+            string concatenation, comparisons, conditional expressions and api calls are allowed. No
+            globals, imports, property access, loops or other function calls.
+          </p>
+          <details>
+            <summary>Available API</summary>
+            <p class="field-hint">
+              rational(text), parseNumber(text), exact(q), add/sub/mul/div(q,q), neg(q), abs(q),
+              compare(q,q), decimal(q,places), scientific(q,digits), timestamp(q,offsetMinutes),
+              parseTimestamp(text), trim(text), stripSuffix(text,suffix), slice(text,start,end),
+              replace(text,from,to), upper/lower(text), startsWith/endsWith(text,prefix). Custom
+              code receives only the exact coordinate; unit scale and origin are handled by your
+              code.
+            </p>
+          </details>
+        </div>
+        <label
+          >Preview exact coordinate<input
+            id="presentation-preview-time"
+            value="1/3"
+            spellcheck="false"
+        /></label>
+        <label
+          >Preview context<select id="presentation-preview-purpose">
+            <option value="input">Exact editing value</option>
+            <option value="axis">Ruler label</option>
+            <option value="event">Event label</option>
+            <option value="tooltip">Full tooltip</option>
+          </select></label
+        >
+        <p class="field-hint">
+          Preview uses the current window span and viewport width. Custom helpers: hasView(),
+          viewLeft(), viewRight(), viewSpan(), viewWidth(), unitsPerPixel(), labelResolution(),
+          purpose(). Existing printers and parsers can ignore this context.
+        </p>
+        <button id="presentation-preview" type="button">Preview printer and parser</button>
+        <output id="presentation-preview-result" class="presentation-preview"></output>
+        <div id="presentation-error" class="form-error" role="alert"></div>
+        <div class="dialog-actions">
+          <button id="presentation-save" class="button-primary" type="submit">
+            Save display settings
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="connection-dialog">
+      <form id="connection-form">
+        <div class="dialog-heading"><h2>Server connection</h2><button type="button" data-close="connection-dialog">×</button></div>
+        <label>Server address<input id="server-origin" type="url" value="https://timescale.info" required spellcheck="false" /></label>
+        <p class="field-hint">The official server is https://timescale.info. You can connect to your own HTTPS server. Local .och files work without a connection.</p>
+        <div id="connection-error" class="form-error" role="alert"></div>
+        <div class="dialog-actions"><button type="button" id="server-disconnect">Disconnect</button><button type="submit" class="button-primary">Connect</button></div>
+      </form>
+    </dialog>
+    <dialog id="desktop-approval-dialog">
+      <div class="dialog-heading"><h2>Connect a desktop session</h2><button data-close="desktop-approval-dialog">×</button></div>
+      <p>Approve only if you started this connection in OpenChronology and the code matches the desktop window.</p>
+      <output id="desktop-approval-code"></output>
+      <button id="desktop-approve" class="button-primary">Approve connection</button>
+    </dialog>
+    <dialog id="account-dialog">
+      <form id="account-form">
+        <div class="dialog-heading">
+          <h2>Your OpenChronology account</h2>
+          <button type="button" data-close="account-dialog" aria-label="Close">×</button>
+        </div>
+        <p>Private timelines, collaborators, and public sharing.</p>
+        <div id="password-fields"><label
+          >Username<input
+            id="account-name"
+            required
+            minlength="3"
+            maxlength="32"
+            autocomplete="username"
+            pattern="[A-Za-z0-9][A-Za-z0-9_-]{2,31}" /></label
+        ><label
+          >Password<input
+            id="account-password"
+            type="password"
+            required
+            minlength="12"
+            maxlength="1024"
+            autocomplete="current-password"
+        /></label>
+        <p class="field-hint">At least 12 characters.</p>
+        <div class="dialog-actions">
+          <button class="button-primary" type="submit" name="action" value="login">Sign in</button
+          ><button type="submit" name="action" value="register">Create account</button>
+        </div></div>
+        <div id="provider-buttons"><button type="button" data-provider="google" hidden>Continue with Google</button><button type="button" data-provider="github" hidden>Continue with GitHub</button><button type="button" data-provider="facebook" hidden>Continue with Facebook</button></div>
+        <button id="desktop-login" type="button" hidden>Sign in using your browser</button>
+        <p id="desktop-login-status" class="field-hint"></p>
+        <div id="account-sessions" hidden><h3>Active sessions</h3><div id="session-list"></div><button id="revoke-sessions" type="button">Sign out other sessions</button></div>
+        <div id="account-error" class="form-error" role="alert"></div>
+      </form>
+    </dialog>
+    <dialog id="sharing-dialog">
+      <div class="dialog-heading">
+        <h2>Share this timeline.</h2>
+        <button data-close="sharing-dialog" aria-label="Close">×</button>
+      </div>
+      <label
+        >Visibility<select id="visibility">
+          <option value="private">Private — you and your collaborators</option>
+          <option value="public">Public — anyone with the link can view</option>
+        </select></label
+      ><button id="copy-link">Copy timeline link</button>
+      <p id="sharing-link" class="sharing-link"></p>
+      <h3>Collaborators</h3>
+      <div id="members-list"></div>
+      <form id="member-form">
+        <label>Account username<input id="member-name" required /></label>
+        <div class="dialog-actions">
+          <select id="member-role" aria-label="Collaborator role">
+            <option value="viewer">Viewer</option>
+            <option value="editor">Editor</option></select
+          ><button type="submit" class="button-primary">Add collaborator</button>
+        </div>
+      </form>
+      <div id="sharing-error" class="form-error" role="alert"></div>
+    </dialog>
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <details class="offline-notices"><summary>Licenses</summary><pre>LICENSE
+
+MIT License
+
+Copyright (c) 2026 OpenChronology contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+rational-ordered-map/LICENSE
+
+MIT License
+
+Copyright (c) 2026 Rational foundations contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+fraction.js/LICENSE
+
+MIT License
+
+Copyright (c) 2025 Robert Eisele
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+</pre></details>
+<script>"use strict";(()=>{typeof BigInt>"u"&&(BigInt=function(e){if(isNaN(e))throw new Error("");return e});var x=BigInt(0),k=BigInt(1),_=BigInt(2),Ge=BigInt(3),je=BigInt(5),G=BigInt(10),ti=BigInt(Number.MAX_SAFE_INTEGER),Rn=2e3,h={s:k,n:x,d:k};function de(e,t){try{e=BigInt(e)}catch{throw ge()}return e*t}function ne(e){return typeof e=="bigint"?e:Math.floor(e)}function M(e,t){if(t===x)throw It();let n=Object.create(We.prototype);n.s=e<x?-k:k,e=e<x?-e:e;let i=Ie(e,t);return n.n=e/i,n.d=t/i,n}var Nn=[_*_,_,_*_,_,_*_,_*Ge,_,_*Ge];function Oe(e){let t=Object.create(null);if(e<=k)return t[e]=k,t;let n=i=>{t[i]=(t[i]||x)+k};for(;e%_===x;)n(_),e/=_;for(;e%Ge===x;)n(Ge),e/=Ge;for(;e%je===x;)n(je),e/=je;for(let i=0,r=_+je;r*r<=e;){for(;e%r===x;)n(r),e/=r;r+=Nn[i],i=i+1&7}return e>k&&n(e),t}var B=function(e,t){let n=x,i=k,r=k;if(e!=null)if(t!==void 0){if(typeof e=="bigint")n=e;else{if(isNaN(e))throw ge();if(e%1!==0)throw Xt();n=BigInt(e)}if(typeof t=="bigint")i=t;else{if(isNaN(t))throw ge();if(t%1!==0)throw Xt();i=BigInt(t)}r=n*i}else if(typeof e=="object"){if("d"in e&&"n"in e)n=BigInt(e.n),i=BigInt(e.d),"s"in e&&(n*=BigInt(e.s));else if(0 in e)n=BigInt(e[0]),1 in e&&(i=BigInt(e[1]));else if(typeof e=="bigint")n=e;else throw ge();r=n*i}else if(typeof e=="number"){if(isNaN(e))throw ge();if(e<0&&(r=-k,e=-e),e%1===0)n=BigInt(e);else{let o=1,s=0,l=1,p=1,c=1,f=1e7;for(e>=1&&(o=10**Math.floor(1+Math.log10(e)),e/=o);l<=f&&c<=f;){let u=(s+p)/(l+c);if(e===u){l+c<=f?(n=s+p,i=l+c):c>l?(n=p,i=c):(n=s,i=l);break}else e>u?(s+=p,l+=c):(p+=s,c+=l),l>f?(n=p,i=c):(n=s,i=l)}n=BigInt(n)*BigInt(o),i=BigInt(i)}}else if(typeof e=="string"){let o=0,s=x,l=x,p=x,c=k,f=k,u=e.replace(/_/g,"").match(/\d+|./g);if(u===null)throw ge();if(u[o]==="-"?(r=-k,o++):u[o]==="+"&&o++,u.length===o+1?l=de(u[o++],r):u[o+1]==="."||u[o]==="."?(u[o]!=="."&&(s=de(u[o++],r)),o++,(o+1===u.length||u[o+1]==="("&&u[o+3]===")"||u[o+1]==="'"&&u[o+3]==="'")&&(l=de(u[o],r),c=G**BigInt(u[o].length),o++),(u[o]==="("&&u[o+2]===")"||u[o]==="'"&&u[o+2]==="'")&&(p=de(u[o+1],r),f=G**BigInt(u[o+1].length)-k,o+=3)):u[o+1]==="/"||u[o+1]===":"?(l=de(u[o],r),c=de(u[o+2],k),o+=3):u[o+3]==="/"&&u[o+1]===" "&&(s=de(u[o],r),l=de(u[o+2],r),c=de(u[o+4],k),o+=5),u.length<=o)i=c*f,r=n=p+i*s+f*l;else throw ge()}else if(typeof e=="bigint")n=e,r=e,i=k;else throw ge();if(i===x)throw It();h.s=r<x?-k:k,h.n=n<x?-n:n,h.d=i<x?-i:i};function Bn(e,t,n){let i=k;for(;t>x;e=e*e%n,t>>=k)t&k&&(i=i*e%n);return i}function _n(e,t){for(;t%_===x;t/=_);for(;t%je===x;t/=je);if(t===k)return x;let n=G%t,i=1;for(;n!==k;i++)if(n=n*G%t,i>Rn)return x;return BigInt(i)}function Dn(e,t,n){let i=k,r=Bn(G,n,t);for(let o=0;o<300;o++){if(i===r)return BigInt(o);i=i*G%t,r=r*G%t}return 0}function Ie(e,t){if(!e)return t;if(!t)return e;for(;;){if(e%=t,!e)return t;if(t%=e,!t)return e}}function We(e,t){if(B(e,t),this instanceof We)e=Ie(h.d,h.n),this.s=h.s,this.n=h.n/e,this.d=h.d/e;else return M(h.s*h.n,h.d)}var It=function(){return new Error("Division by Zero")},ge=function(){return new Error("Invalid argument")},Xt=function(){return new Error("Parameters must be integer")};We.prototype={s:k,n:x,d:k,abs:function(){return M(this.n,this.d)},neg:function(){return M(-this.s*this.n,this.d)},add:function(e,t){return B(e,t),M(this.s*this.n*h.d+h.s*this.d*h.n,this.d*h.d)},sub:function(e,t){return B(e,t),M(this.s*this.n*h.d-h.s*this.d*h.n,this.d*h.d)},mul:function(e,t){return B(e,t),M(this.s*h.s*this.n*h.n,this.d*h.d)},div:function(e,t){return B(e,t),M(this.s*h.s*this.n*h.d,this.d*h.n)},clone:function(){return M(this.s*this.n,this.d)},mod:function(e,t){if(e===void 0)return M(this.s*this.n%this.d,k);if(B(e,t),x===h.n*this.d)throw It();return M(this.s*(h.d*this.n)%(h.n*this.d),h.d*this.d)},gcd:function(e,t){return B(e,t),M(Ie(h.n,this.n)*Ie(h.d,this.d),h.d*this.d)},lcm:function(e,t){return B(e,t),h.n===x&&this.n===x?M(x,k):M(h.n*this.n,Ie(h.n,this.n)*Ie(h.d,this.d))},inverse:function(){return M(this.s*this.d,this.n)},pow:function(e,t){if(B(e,t),h.d===k)return h.s<x?M((this.s*this.d)**h.n,this.n**h.n):M((this.s*this.n)**h.n,this.d**h.n);if(this.s<x)return null;let n=Oe(this.n),i=Oe(this.d),r=k,o=k;for(let s in n)if(s!=="1"){if(s==="0"){r=x;break}if(n[s]*=h.n,n[s]%h.d===x)n[s]/=h.d;else return null;r*=BigInt(s)**n[s]}for(let s in i)if(s!=="1"){if(i[s]*=h.n,i[s]%h.d===x)i[s]/=h.d;else return null;o*=BigInt(s)**i[s]}return h.s<x?M(o,r):M(r,o)},log:function(e,t){if(B(e,t),this.s<=x||h.s<=x)return null;let n=Object.create(null),i=Oe(h.n),r=Oe(h.d),o=Oe(this.n),s=Oe(this.d);for(let c in r)i[c]=(i[c]||x)-r[c];for(let c in s)o[c]=(o[c]||x)-s[c];for(let c in i)c!=="1"&&(n[c]=!0);for(let c in o)c!=="1"&&(n[c]=!0);let l=null,p=null;for(let c in n){let f=i[c]||x,u=o[c]||x;if(f===x){if(u!==x)return null;continue}let m=u,g=f,T=Ie(m,g);if(m/=T,g/=T,l===null&&p===null)l=m,p=g;else if(m*p!==l*g)return null}return l!==null&&p!==null?M(l,p):null},equals:function(e,t){return B(e,t),this.s*this.n*h.d===h.s*h.n*this.d},lt:function(e,t){return B(e,t),this.s*this.n*h.d<h.s*h.n*this.d},lte:function(e,t){return B(e,t),this.s*this.n*h.d<=h.s*h.n*this.d},gt:function(e,t){return B(e,t),this.s*this.n*h.d>h.s*h.n*this.d},gte:function(e,t){return B(e,t),this.s*this.n*h.d>=h.s*h.n*this.d},compare:function(e,t){B(e,t);let n=this.s*this.n*h.d-h.s*h.n*this.d;return(x<n)-(n<x)},ceil:function(e){return e=G**BigInt(e||0),M(ne(this.s*e*this.n/this.d)+(e*this.n%this.d>x&&this.s>=x?k:x),e)},floor:function(e){return e=G**BigInt(e||0),M(ne(this.s*e*this.n/this.d)-(e*this.n%this.d>x&&this.s<x?k:x),e)},round:function(e){return e=G**BigInt(e||0),M(ne(this.s*e*this.n/this.d)+this.s*((this.s>=x?k:x)+_*(e*this.n%this.d)>this.d?k:x),e)},roundTo:function(e,t){B(e,t);let n=this.n*h.d,i=this.d*h.n,r=n%i,o=ne(n/i);return r+r>=i&&o++,M(this.s*o*h.n,h.d)},divisible:function(e,t){return B(e,t),h.n===x?!1:this.n*h.d%(h.n*this.d)===x},valueOf:function(){return Number(this.s*this.n)/Number(this.d)},toString:function(e=15){let t=this.n,n=this.d,i=_n(t,n),r=Dn(t,n,i),o=this.s<x?"-":"";if(o+=ne(t/n),t%=n,t*=G,t&&(o+="."),i){for(let s=r;s--;)o+=ne(t/n),t%=n,t*=G;o+="(";for(let s=i;s--;)o+=ne(t/n),t%=n,t*=G;o+=")"}else for(let s=e;t&&s--;)o+=ne(t/n),t%=n,t*=G;return o},toFraction:function(e=!1){let t=this.n,n=this.d,i=this.s<x?"-":"";if(n===k)i+=t;else{let r=ne(t/n);e&&r>x&&(i+=r,i+=" ",t%=n),i+=t,i+="/",i+=n}return i},toLatex:function(e=!1){let t=this.n,n=this.d,i=this.s<x?"-":"";if(n===k)i+=t;else{let r=ne(t/n);e&&r>x&&(i+=r,t%=n),i+="\\frac{",i+=t,i+="}{",i+=n,i+="}"}return i},toContinued:function(){let e=this.n,t=this.d,n=[];for(;t;){n.push(ne(e/t));let i=e%t;e=t,t=i}return n},simplify:function(e=.001){let t=BigInt(Math.ceil(1/e)),n=this.abs(),i=n.toContinued();for(let r=1;r<i.length;r++){let o=M(i[r-1],k);for(let l=r-2;l>=0;l--)o=o.inverse().add(i[l]);let s=o.sub(n);if(s.n*t<s.d)return o.mul(this.s)}return this}};var An=function(e,t,n,i,r){if(i==="m")throw new TypeError("Private method is not writable");if(i==="a"&&!r)throw new TypeError("Private accessor was defined without a setter");if(typeof t=="function"?e!==t||!r:!t.has(e))throw new TypeError("Cannot write private member to an object whose class did not declare it");return i==="a"?r.call(e,n):r?r.value=n:t.set(e,n),n},X=function(e,t,n,i){if(n==="a"&&!i)throw new TypeError("Private accessor was defined without a getter");if(typeof t=="function"?e!==t||!i:!t.has(e))throw new TypeError("Cannot read private member from an object whose class did not declare it");return n==="m"?i:n==="a"?i.call(e):i?i.value:t.get(e)},Q,d=class e{constructor(t){Q.set(this,void 0),An(this,Q,Object.freeze(t),"f"),Object.freeze(this)}static from(t,n=1n){if(typeof t!="bigint"||typeof n!="bigint")throw new TypeError("Rational components must be bigint");if(n===0n)throw new RangeError("Zero denominator");return new e(new We(t,n))}static parse(t){if(typeof t!="string"||/^[+-]?\d+(?:\/[+-]?\d+)?$/.exec(t)?.[0]!==t)throw new SyntaxError("Expected an integer or integer fraction");let[n,i="1"]=t.split("/");return e.from(BigInt(n),BigInt(i))}static decodeCanonical(t){if(typeof t!="string"||/^-?(?:0|[1-9]\d*)\/[1-9]\d*$/.exec(t)?.[0]!==t)throw new SyntaxError("Expected canonical n/d");let n=e.parse(t);if(n.toString()!==t)throw new SyntaxError("Noncanonical rational");return n}static parseDecimal(t){if(typeof t!="string")throw new TypeError("Decimal input must be text");let n=/^([+-]?)(?:(\d+)(?:\.(\d*))?|\.(\d+))(?:[eE]([+-]?\d+))?$/.exec(t);if(!n||n[0]!==t)throw new SyntaxError("Expected a finite decimal");let i=n[3]??n[4]??"",r=(n[2]??"0")+i,o=BigInt(r);n[1]==="-"&&(o=-o);let s=BigInt(n[5]??"0")-BigInt(i.length);return o===0n?e.zero:s>=0n?e.from(o*10n**s):e.from(o,10n**-s)}get numerator(){return X(this,Q,"f").s*X(this,Q,"f").n}get denominator(){return X(this,Q,"f").d}compare(t){return X(this,Q,"f").compare(X(t,Q,"f"))}equals(t){return this.compare(t)===0}add(t){return new e(X(this,Q,"f").add(X(t,Q,"f")))}sub(t){return new e(X(this,Q,"f").sub(X(t,Q,"f")))}mul(t){return new e(X(this,Q,"f").mul(X(t,Q,"f")))}div(t){if(t.numerator===0n)throw new RangeError("Division by zero");return new e(X(this,Q,"f").div(X(t,Q,"f")))}neg(){return e.from(-this.numerator,this.denominator)}abs(){return this.numerator<0n?this.neg():this}min(t){return this.compare(t)<=0?this:t}max(t){return this.compare(t)>=0?this:t}floor(){let t=this.numerator,n=this.denominator;return e.from(t/n-(t<0n&&t%n!==0n?1n:0n))}ceil(){let t=this.numerator,n=this.denominator;return e.from(t/n+(t>0n&&t%n!==0n?1n:0n))}toApproximateNumber(){let t=this.numerator;if(t===0n)return 0;let n=t<0n?-t:t,i=this.denominator,r=n.toString(2).length,o=i.toString(2).length,s=Math.max(0,r-54),l=Math.max(0,o-54),p=Number(n>>BigInt(s))/Number(i>>BigInt(l)),c=s-l,f=c>1023?p*2**1023*2**(c-1023):c<-1022?p*2**-1022*2**(c+1022):p*2**c;return t<0n?-f:f}toString(){return`${this.numerator}/${this.denominator}`}toJSON(){return this.toString()}[(Q=new WeakMap,Symbol.toPrimitive)](){throw new TypeError("Use explicit Rational arithmetic or conversion methods")}};d.zero=d.from(0n);d.one=d.from(1n);var Je=function(e,t,n,i,r){if(i==="m")throw new TypeError("Private method is not writable");if(i==="a"&&!r)throw new TypeError("Private accessor was defined without a setter");if(typeof t=="function"?e!==t||!r:!t.has(e))throw new TypeError("Cannot write private member to an object whose class did not declare it");return i==="a"?r.call(e,n):r?r.value=n:t.set(e,n),n},D=function(e,t,n,i){if(n==="a"&&!i)throw new TypeError("Private accessor was defined without a getter");if(typeof t=="function"?e!==t||!i:!t.has(e))throw new TypeError("Cannot read private member from an object whose class did not declare it");return n==="m"?i:n==="a"?i.call(e):i?i.value:t.get(e)},at,C,Xe,Mt,ue=e=>e?.height??0,Rt=(e,t)=>Object.freeze({firstTime:e,lastTime:e,entryCount:t,distinctCount:1,maxGap:d.zero});function Ze(e,t){return e?t?Object.freeze({firstTime:e.firstTime,lastTime:t.lastTime,entryCount:e.entryCount+t.entryCount,distinctCount:e.distinctCount+t.distinctCount,maxGap:e.maxGap.max(t.firstTime.sub(e.lastTime)).max(t.maxGap)}):e:t}function Z(e,t,n,i,r){return{key:e,value:t,weight:n,left:i,right:r,height:1+Math.max(ue(i),ue(r)),summary:Ze(Ze(i?.summary,Rt(e,n)),r?.summary)}}function Zt(e){let t=e.right;return Z(t.key,t.value,t.weight,Z(e.key,e.value,e.weight,e.left,t.left),t.right)}function Kt(e){let t=e.left;return Z(t.key,t.value,t.weight,t.left,Z(e.key,e.value,e.weight,t.right,e.right))}function lt(e){let t=ue(e.left)-ue(e.right);return t>1?(ue(e.left.left)<ue(e.left.right)&&(e=Z(e.key,e.value,e.weight,Zt(e.left),e.right)),Kt(e)):t<-1?(ue(e.right.right)<ue(e.right.left)&&(e=Z(e.key,e.value,e.weight,e.left,Kt(e.right))),Zt(e)):e}function Lt(e,t,n,i){if(!e)return Z(t,n,i);let r=t.compare(e.key);return r===0?Z(e.key,n,i,e.left,e.right):lt(r<0?Z(e.key,e.value,e.weight,Lt(e.left,t,n,i),e.right):Z(e.key,e.value,e.weight,e.left,Lt(e.right,t,n,i)))}function ct(e,t){if(!e)return;let n=t.compare(e.key);if(n<0)return lt(Z(e.key,e.value,e.weight,ct(e.left,t),e.right));if(n>0)return lt(Z(e.key,e.value,e.weight,e.left,ct(e.right,t)));if(!e.left)return e.right;if(!e.right)return e.left;let i=e.right;for(;i.left;)i=i.left;return lt(Z(i.key,i.value,i.weight,e.left,ct(e.right,i.key)))}function be(e,t){if(!t.lower)return!1;let n=e.compare(t.lower);return n<0||n===0&&!t.includeLower}function pe(e,t){if(!t.upper)return!1;let n=e.compare(t.upper);return n>0||n===0&&!t.includeUpper}function $t(e,t,n={}){if(e!==void 0&&!(e instanceof d)||t!==void 0&&!(t instanceof d))throw new TypeError("Bounds must be Rational values");return{lower:e,upper:t,includeLower:n.includeLower??!0,includeUpper:n.includeUpper??!1}}function dt(e,t,n){if(!e)return;n.visitedNodes++;let i=e.summary;if(!(be(i.lastTime,t)||pe(i.firstTime,t)))return!be(i.firstTime,t)&&!pe(i.lastTime,t)?(n.consumedSubtrees++,i):Ze(Ze(dt(e.left,t,n),!be(e.key,t)&&!pe(e.key,t)?Rt(e.key,e.weight):void 0),dt(e.right,t,n))}function Ct(e,t,n,i){let r;for(;e;){i&&i.visitedNodes++;let o=t===void 0?1:e.key.compare(t);o>0||o===0&&n?(r=e,e=e.left):e=e.right}return r}var Me=class e{constructor(t=()=>1n){at.add(this),C.set(this,void 0),Xe.set(this,void 0),Je(this,Xe,t,"f")}get size(){return D(this,C,"f")?.summary.distinctCount??0}get entryCount(){return D(this,C,"f")?.summary.entryCount??0n}get height(){return ue(D(this,C,"f"))}get(t){return D(this,at,"m",Mt).call(this,t)?.value}has(t){return D(this,at,"m",Mt).call(this,t)!==void 0}set(t,n){if(!(t instanceof d))throw new TypeError("Keys must be Rational values");let i=D(this,Xe,"f").call(this,n);if(typeof i!="bigint"||i<=0n)throw new RangeError("Weights must be positive bigint");return Je(this,C,Lt(D(this,C,"f"),t,n,i),"f"),this}delete(t){return this.has(t)?(Je(this,C,ct(D(this,C,"f"),t),"f"),!0):!1}clear(){Je(this,C,void 0,"f")}clone(){let t=new e(D(this,Xe,"f"));return Je(t,C,D(this,C,"f"),"f"),t}minKey(){return D(this,C,"f")?.summary.firstTime}maxKey(){return D(this,C,"f")?.summary.lastTime}successor(t,n=!1){let i=Ct(D(this,C,"f"),t,n);return i?[i.key,i.value]:void 0}predecessor(t,n=!1){let i=D(this,C,"f"),r;for(;i;){let o=i.key.compare(t);o<0||o===0&&n?(r=i,i=i.right):i=i.left}return r?[r.key,r.value]:void 0}*range(t,n,i={}){let r=$t(t,n,i),o=D(this,C,"f");function*s(l){!l||be(l.summary.lastTime,r)||pe(l.summary.firstTime,r)||(yield*s(l.left),!be(l.key,r)&&!pe(l.key,r)&&(yield[l.key,l.value]),yield*s(l.right))}yield*s(o)}[(C=new WeakMap,Xe=new WeakMap,at=new WeakSet,Mt=function(n){let i=D(this,C,"f");for(;i;){let r=n.compare(i.key);if(r===0)return i;i=r<0?i.left:i.right}},Symbol.iterator)](){return this.range()}aggregate(t,n,i={}){return dt(D(this,C,"f"),$t(t,n,i),{visitedNodes:0,consumedSubtrees:0})}countRange(t,n,i={}){return this.aggregate(t,n,i)?.entryCount??0n}overview(t,n,i,r="span",o={}){if(!(i instanceof d)||i.compare(d.zero)<0)throw new RangeError("Threshold must be nonnegative");if(r!=="span"&&r!=="neighbors")throw new TypeError("Unknown grouping mode");let s=$t(t,n,o),l=D(this,C,"f"),p={visitedNodes:0,consumedSubtrees:0},c=[];if(r==="neighbors"||i.equals(d.zero)){let f=m=>{let g=c[c.length-1];g&&m.firstTime.sub(g.lastTime).compare(i)<0?c[c.length-1]=Ze(g,m):c.push(m)},u=m=>{if(!m)return;p.visitedNodes++;let g=m.summary;if(!(be(g.lastTime,s)||pe(g.firstTime,s))){if(!be(g.firstTime,s)&&!pe(g.lastTime,s)&&(g.distinctCount===1||g.maxGap.compare(i)<0)){p.consumedSubtrees++,f(g);return}u(m.left),!be(m.key,s)&&!pe(m.key,s)&&f(Rt(m.key,m.weight)),u(m.right)}};u(l)}else{let f=Ct(l,t,s.includeLower,p);for(;f&&!pe(f.key,s);){let u=f.key.add(i),m=n!==void 0&&n.compare(u)<0,g={lower:f.key,includeLower:!0,upper:m?n:u,includeUpper:m&&s.includeUpper},T=dt(l,g,p);if(T&&c.push(T),m)break;f=Ct(l,u,!0,p)}}return Object.freeze({groups:Object.freeze(c),stats:Object.freeze(p)})}};var Nt=(e,t)=>e/t-(e<0n&&e%t!==0n?1n:0n);function ut(e,t,n){let i=e-(t<=2n?1n:0n),r=Nt(i,400n),o=i-r*400n,s=t+(t>2n?-3n:9n);return r*146097n+o*365n+o/4n-o/100n+(153n*s+2n)/5n+n-1n-719468n}function pt(e){let t=e+719468n,n=Nt(t,146097n),i=t-n*146097n,r=(i-i/1460n+i/36524n-i/146096n)/365n,o=r+n*400n,s=i-(365n*r+r/4n-r/100n),l=(5n*s+2n)/153n,p=s-(153n*l+2n)/5n+1n,c=l+(l<10n?3n:-9n);return[o+(c<=2n?1n:0n),c,p]}function xe(e){let t=/^([+-]?\d{4,})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(\.\d+|\{\+[0-9]+\/[1-9][0-9]*\})?(Z|[+-]\d{2}:\d{2})$/.exec(e);if(!t)throw new Error("Expected a timestamp with Z or an explicit \xB1HH:MM offset.");let[n,i,r,o,s,l]=t.slice(1,7).map(BigInt);if(i<1n||i>12n||r<1n||r>31n||o>23n||s>59n||l>59n)throw new Error("Invalid calendar date or clock time.");let p=ut(n,i,r),c=pt(p);if(c[0]!==n||c[1]!==i||c[2]!==r)throw new Error("Invalid day for this month.");let f=0n;if(t[8]!=="Z"){let[m,g]=t[8].slice(1).split(":").map(BigInt);if(m>23n||g>59n)throw new Error("Invalid timezone offset.");f=(m*3600n+g*60n)*(t[8][0]==="-"?-1n:1n)}let u=d.zero;if(t[7]?.startsWith(".")?u=d.parseDecimal("0"+t[7]):t[7]&&(u=d.parse(t[7].slice(2,-1))),u.compare(d.one)>=0)throw new Error("Fractional seconds must be below one.");return d.from(p*86400n+o*3600n+s*60n+l-f).add(u)}function $e(e,t=0){if(!Number.isInteger(t)||Math.abs(t)>1439)throw new Error("Invalid timezone offset.");let n=e.add(d.from(BigInt(t)*60n)),i=n.floor().numerator,r=Nt(i,86400n),o=i-r*86400n,[s,l,p]=pt(r),c=T=>T.toString().padStart(2,"0"),f=s>=0n?s.toString().padStart(4,"0"):"-"+(-s).toString().padStart(4,"0"),u=n.sub(d.from(i)),m="";if(!u.equals(d.zero)){let T=u.denominator,y=0,z=0;for(;T%2n===0n;)T/=2n,y++;for(;T%5n===0n;)T/=5n,z++;let S=Math.max(y,z);T===1n&&S<=1e3?m="."+(u.numerator*10n**BigInt(S)/u.denominator).toString().padStart(S,"0").replace(/0+$/,""):m="{+"+u.toString()+"}"}let g=t===0?"Z":(t<0?"-":"+")+c(BigInt(Math.floor(Math.abs(t)/60)))+":"+c(BigInt(Math.abs(t)%60));return`${f}-${c(l)}-${c(p)}T${c(o/3600n)}:${c(o%3600n/60n)}:${c(o%60n)}${m}${g}`}function q(e){let t=e.trim();if(t.includes("/"))return d.parse(t);let n=/^([+-]?(?:\d+(?:\.\d*)?|\.\d+))(?:[eE]([+-]?\d+))?$/.exec(t);if(!n)throw new Error("Expected a rational, decimal, or scientific number.");let i=Number(n[2]??0);if(!Number.isSafeInteger(i)||Math.abs(i)>1e4)throw new Error("Scientific exponents must be between -10000 and 10000.");let r=d.parseDecimal(n[1]);return i>=0?r.mul(d.from(10n**BigInt(i))):r.div(d.from(10n**BigInt(-i)))}function we(e){let t=e.numerator<0n?-e.numerator:e.numerator;if(t===0n)return 0;let n=e.denominator,i=t.toString().length-n.toString().length;return(i>=0?t<n*10n**BigInt(i):t*10n**BigInt(-i)<n)&&i--,i}function Yt(e,t){let n=e.numerator<0n?-e.numerator:e.numerator,i=t>=0?n*10n**BigInt(t):n,r=t>=0?e.denominator:e.denominator*10n**BigInt(-t);return(2n*i+r)/(2n*r)}function Ke(e,t=6){if(!Number.isInteger(t)||t<0||t>30)throw new Error("Decimal places must be between 0 and 30.");let n=Yt(e,t).toString().padStart(t+1,"0"),i=t?n.slice(0,-t)+"."+n.slice(-t):n;return(e.numerator<0n&&/[1-9]/.test(i)?"-":"")+i}function se(e,t=6,n=!1){if(!Number.isInteger(t)||t<1||t>30)throw new Error("Significant digits must be between 1 and 30.");if(e.numerator===0n)return n?"0e+0":"0";let i=we(e),r=Yt(e,t-1-i).toString();r.length>t&&(r=r.slice(0,-1),i++),r=r.padStart(t,"0");let o=e.numerator<0n?"-":"";if(n||i<-6||i>=21){let p=r.slice(1).replace(/0+$/,"");return`${o}${r[0]}${p?"."+p:""}e${i>=0?"+":""}${i}`}let s=i+1,l=s<=0?"0."+"0".repeat(-s)+r:s>=r.length?r+"0".repeat(s-r.length):r.slice(0,s)+"."+r.slice(s);return l.includes(".")&&(l=l.replace(/0+$/,"").replace(/\.$/,"")),o+l}function ae(e){if(e!==void 0){if(!(e.left instanceof d)||!(e.span instanceof d)||e.span.compare(d.zero)<=0)throw new Error("Presentation context needs exact bounds and a positive span.");if(!Number.isFinite(e.widthPixels)||e.widthPixels<=0||e.widthPixels>1e6)throw new Error("Presentation width must be between zero and one million pixels.");if(!["axis","event","input","tooltip"].includes(e.purpose))throw new Error("Invalid presentation purpose.");if(e.spacingPixels!==void 0&&(!Number.isFinite(e.spacingPixels)||e.spacingPixels<=0||e.spacingPixels>1e6))throw new Error("Invalid presentation label spacing.");return e}}function ve(e){return e.span.div(d.parseDecimal(e.widthPixels.toString()))}var en=Object.freeze({rational:[1],parseNumber:[1],exact:[1],add:[2],sub:[2],mul:[2],div:[2],neg:[1],abs:[1],compare:[2],decimal:[1,2],scientific:[1,2],timestamp:[1,2],parseTimestamp:[1],stripSuffix:[2],trim:[1],slice:[2,3],replace:[3],upper:[1],lower:[1],startsWith:[2],endsWith:[2],hasView:[0],viewLeft:[0],viewRight:[0],viewSpan:[0],viewWidth:[0],unitsPerPixel:[0],labelResolution:[0],purpose:[0]});function On(e){if(e.length>16384)throw new Error("Custom source is limited to 16,384 characters.");let t=[],n=0;for(;n<e.length;){if(/\s/.test(e[n])){n++;continue}if(e.startsWith("//",n)){let r=e.indexOf(`
+`,n);n=r<0?e.length:r+1;continue}if(e.startsWith("/*",n)){let r=e.indexOf("*/",n+2);if(r<0)throw new Error("Unclosed comment.");n=r+2;continue}let i=e[n];if(i==='"'||i==="'"){n++;let r="",o=!1;for(;n<e.length;){let s=e[n++];if(s===i){o=!0;break}if(s===`
+`||s==="\r")throw new Error("Use escaped newlines in strings.");if(s==="\\"){let l=e[n++],p={n:`
+`,r:"\r",t:"	","\\":"\\",'"':'"',"'":"'"};if(!Object.hasOwn(p,l))throw new Error("Unsupported string escape.");r+=p[l]}else r+=s}if(!o||r.length>2048)throw new Error("Unclosed or oversized string.");t.push({text:"literal",value:r,literal:!0})}else{let r=/^(?:===|!==|<=|>=|[A-Za-z_$][A-Za-z0-9_$]*|[+-]?\d+(?:\.\d+)?|[{}(),;:.?+<>=])/.exec(e.slice(n))?.[0];if(!r)throw new Error(`Unsupported syntax at character ${n+1}.`);if(n+=r.length,/^[+-]?\d/.test(r)){let o=Number(r);if(!Number.isFinite(o)||Math.abs(o)>1e6)throw new Error("Use api.rational for large numeric literals.");t.push({text:"literal",value:o,literal:!0})}else t.push({text:r})}if(t.length>4096)throw new Error("Custom source has too many tokens.")}return t}function jn(e){let t=On(e),n=0,i=0,r=()=>t[n]?.text,o=f=>{if(r()!==f)throw new Error(`Expected ${f}, found ${r()??"end of source"}.`);n++},s=()=>{let f=r();if(!f||!/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(f)||t[n].literal)throw new Error("Expected an identifier.");return n++,f},l=f=>{if(r()===":"&&(o(":"),!f.includes(s())))throw new Error("Unsupported type annotation.")};function p(f,u=0,m=0){if(u>32||++i>1024)throw new Error("Custom expression is too complex.");let g,T=t[n];if(T?.literal)n++,g={kind:"literal",value:T.value};else if(r()==="true"||r()==="false")g={kind:"literal",value:r()==="true"},n++;else if(r()==="(")o("("),g=p(f,u+1),o(")");else{let z=s();if(z==="api"){o(".");let S=s();if(!Object.hasOwn(en,S))throw new Error(`Unavailable API method: ${S}.`);o("(");let V=[];if(r()!==")")do{if(V.push(p(f,u+1)),r()!==",")break;o(",")}while(!0);if(o(")"),!en[S].includes(V.length))throw new Error(`Wrong argument count for api.${S}.`);g={kind:"call",name:S,args:V}}else{if(!f.has(z))throw new Error(`Unknown local variable: ${z}.`);g={kind:"name",name:z}}}let y={"===":1,"!==":1,"<":2,">":2,"<=":2,">=":2,"+":3};for(;r()&&Object.hasOwn(y,r())&&y[r()]>=m;){let z=r();n++,g={kind:"binary",op:z,left:g,right:p(f,u+1,y[z]+1)}}if(m===0&&r()==="?"){o("?");let z=p(f,u+1);o(":"),g={kind:"choice",test:g,yes:z,no:p(f,u+1)}}return g}let c=new Map;for(;n<t.length;){o("function");let f=s();if(!["print","parse"].includes(f)||c.has(f))throw new Error("Define print and parse exactly once.");o("(");let u=s();if(["api","true","false"].includes(u))throw new Error("Invalid parameter name.");l(f==="print"?["Rational"]:["string"]),o(","),o("api"),l(["TimeAPI"]),o(")"),l(f==="print"?["string"]:["Rational"]),o("{");let m=new Set([u]),g=[];for(;r()==="const";){o("const");let y=s();if(m.has(y)||["api","true","false"].includes(y))throw new Error("Duplicate or reserved local variable.");l(["Rational","string","number","boolean"]),o("=");let z=p(m);if(o(";"),m.add(y),g.push({name:y,value:z}),g.length>128)throw new Error("Too many local variables.")}o("return");let T=p(m);o(";"),o("}"),c.set(f,{parameter:u,locals:g,result:T})}if(!c.has("print")||!c.has("parse"))throw new Error("Both print and parse functions are required.");return{print:c.get("print"),parse:c.get("parse")}}var mt=e=>(e<0n?-e:e).toString(2).length;function tn(e){if(typeof e=="string"&&e.length>2048)throw new Error("Custom text exceeds 2048 characters.");if(e instanceof d&&(mt(e.numerator)>4096||mt(e.denominator)>4096))throw new Error("Custom arithmetic exceeds the 4096-bit component limit. Use a built-in formatter for this time.");return e}function R(e){if(typeof e!="string")throw new Error("Expected text.");return e}function A(e){if(!(e instanceof d))throw new Error("Expected an exact rational.");return e}function ft(e){if(typeof e!="number")throw new Error("Expected a numeric option.");return e}function nn(e){let t=ft(e);if(!Number.isInteger(t)||Math.abs(t)>2048)throw new Error("String indices must be integers between -2048 and 2048.");return t}function Qn(e,t,n){let i=t[0],r=t[1];if(e==="hasView")return n!==void 0;if(e==="purpose")return n?.purpose??"input";if(["viewLeft","viewRight","viewSpan","viewWidth","unitsPerPixel","labelResolution"].includes(e)){if(!n)throw new Error("This formatter call has no viewport context.");switch(e){case"viewLeft":return n.left;case"viewRight":return n.left.add(n.span);case"viewSpan":return n.span;case"viewWidth":return n.widthPixels;case"unitsPerPixel":return ve(n);default:return ve(n).mul(d.parseDecimal((n.spacingPixels??(n.purpose==="axis"?115:6)).toString()))}}switch(e){case"rational":return d.parse(R(i));case"parseNumber":{let o=R(i),s=/[eE]([+-]?\d+)$/.exec(o);if(s&&Math.abs(Number(s[1]))>1e3)throw new Error("Custom exponent exceeds 1000.");return q(o)}case"exact":return A(i).toString();case"add":return A(i).add(A(r));case"sub":return A(i).sub(A(r));case"mul":return A(i).mul(A(r));case"div":return A(i).div(A(r));case"neg":return A(i).neg();case"abs":return A(i).abs();case"compare":return A(i).compare(A(r));case"decimal":return Ke(A(i),r===void 0?6:ft(r));case"scientific":return se(A(i),r===void 0?6:ft(r),!0);case"timestamp":return $e(A(i),r===void 0?0:ft(r));case"parseTimestamp":return xe(R(i));case"trim":return R(i).trim();case"slice":return R(i).slice(nn(r),t[2]===void 0?void 0:nn(t[2]));case"replace":{let o=R(i),s=R(r),l=R(t[2]);return o.replace(s,()=>l)}case"upper":return R(i).toUpperCase();case"lower":return R(i).toLowerCase();case"startsWith":return R(i).startsWith(R(r));case"endsWith":return R(i).endsWith(R(r));case"stripSuffix":{let o=R(i).trim(),s=R(r);if(!o.endsWith(s))throw new Error(`Expected suffix ${s}.`);return s?o.slice(0,-s.length).trim():o}default:throw new Error("Unavailable API method.")}}function rn(e,t,n){let i=new Map([[e.parameter,tn(t)]]),r=0,o=0,s=0,l=0;function p(c,f=0){if(++r>4096||f>64)throw new Error("Custom execution budget exceeded.");let u;switch(c.kind){case"literal":u=c.value;break;case"name":u=i.get(c.name);break;case"call":if(++l>128)throw new Error("Custom API call budget exceeded.");u=Qn(c.name,c.args.map(m=>p(m,f+1)),n);break;case"choice":{let m=p(c.test,f+1);if(typeof m!="boolean")throw new Error("Conditions must be boolean.");u=p(m?c.yes:c.no,f+1);break}case"binary":{let m=p(c.left,f+1),g=p(c.right,f+1);if(c.op==="+")u=R(m)+R(g);else{if(m instanceof d||g instanceof d||typeof m!=typeof g)throw new Error("Use api.compare for rational comparisons.");switch(c.op){case"===":u=m===g;break;case"!==":u=m!==g;break;case"<":u=m<g;break;case">":u=m>g;break;case"<=":u=m<=g;break;default:u=m>=g}}break}}if(tn(u),u instanceof d&&(s+=mt(u.numerator)+mt(u.denominator)),s>65536)throw new Error("Custom arithmetic budget exceeded.");if(typeof u=="string"&&(o+=u.length),o>32768)throw new Error("Custom text allocation budget exceeded.");return u}for(let c of e.locals)i.set(c.name,p(c.value));return p(e.result)}function ht(e){let t=jn(e);return{print:(n,i)=>R(rn(t.print,n,ae(i))),parse:(n,i)=>A(rn(t.parse,n,ae(i)))}}var Ye=`function print(time: Rational, api: TimeAPI): string {
+  const minutes = api.div(time, api.rational("60"));
+  return api.decimal(minutes, 6) + " minutes";
+}
+function parse(text: string, api: TimeAPI): Rational {
+  const minutes = api.parseNumber(api.stripSuffix(text, " minutes"));
+  return api.mul(minutes, api.rational("60"));
+}`;var Bt=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],gt=d.from(86400n),et=d.from(3600n),tt=d.from(60n);function Ue(e,t){let n=$e(e.floor(),t),i=/^([+-]?\d+)-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(Z|[+-]\d{2}:\d{2})$/.exec(n);return{year:i[1],month:i[2],day:i[3],hour:i[4],minute:i[5],second:i[6],zone:i[7]}}var Qe=e=>`${e.year}-${e.month}-${e.day}`;function Un(e){return ve(e).mul(d.parseDecimal((e.spacingPixels??(e.purpose==="axis"?115:6)).toString()))}function Hn(e,t){return e.year===t.year?`${e.month}-${e.day}`:Qe(e)}function on(e,t,n){if(!n||n.purpose==="input"||n.purpose==="tooltip")return $e(e,t);let i=Un(n),r=Ue(n.left,t);if(i.compare(d.from(1n,1000000n))<0)return"\u0394 "+se(e.sub(n.left),6)+"s";let o=i.compare(d.one)<0?Math.min(6,Math.max(0,-we(i))):0,s=o>0?d.parseDecimal(Ke(e,o)):e,l=Ue(s,t),p=Ue(n.left.add(n.span),t);if(i.compare(d.from(31557600n))>=0)return l.year;if(i.compare(d.from(2419200n))>=0)return r.year===p.year&&l.year===r.year?Bt[Number(l.month)-1]:`${l.year}-${l.month}`;let c=Hn(l,r);if(i.compare(gt)>=0)return c;let f=n.span.compare(gt)<=0,u=n.span.compare(et)<=0,m=n.span.compare(tt)<=0,g=d.from(BigInt(l.second)).add(s.sub(s.floor())),T=o?Ke(g,o).padStart(3+o,"0"):l.second,y;return i.compare(et)>=0?y=`${l.hour}h`:i.compare(tt)>=0?y=u?`${l.minute}m`:`${l.hour}:${l.minute}`:m?y=`${T}s`:u?y=`${l.minute}m ${T}s`:y=`${l.hour}:${l.minute}:${T}`,(f?"":c+" ")+y}function sn(e,t){let n=Ue(t.left,e),i=Ue(t.left.add(t.span),e),r=e===0?"UTC":"UTC"+n.zone;if(ve(t).mul(d.parseDecimal(Math.min(6,t.spacingPixels??6).toString())).compare(d.from(1n,1000000n))<0)return`\u0394 from ${$e(t.left,e)} \xB7 ${r}`;let s=Qe(n)===Qe(i)?Qe(n):`${Qe(n)} \u2192 ${Qe(i)}`;if(t.span.compare(tt)<=0){let l=`${n.hour}:${n.minute}`,p=`${i.hour}:${i.minute}`;return`${s} \xB7 base ${l}${l===p?"":" \u2192 "+p} \xB7 ${r}`}if(t.span.compare(et)<=0){let l=`${n.hour}:00`,p=`${i.hour}:00`;return`${s} \xB7 base ${l}${l===p?"":" \u2192 "+p} \xB7 ${r}`}return`${s} \xB7 ${r}`}function an(e,t,n){let i=e.trim();if(!n||i.includes("T"))return xe(i);let r=Ue(n.left,t),o=/^Δ\s+(.+)s$/.exec(i);if(o)return n.left.add(q(o[1]));let s=r.year,l=r.month,p=r.day,c="00",f="00",u=d.zero,m=i,g,T=/^([+-]?\d{4,})-(\d{2})-(\d{2})(?:\s+(.*))?$/.exec(i),y=/^(\d{2})-(\d{2})(?:\s+(.*))?$/.exec(i);if(T)[s,l,p]=T.slice(1,4),m=T[4]??"";else if(y)[l,p]=y.slice(1,3),m=y[3]??"";else if(/^[+-]?\d{4,}$/.test(i))s=i,l=p="01",m="";else{let S=/^([+-]?\d{4,})-(\d{2})$/.exec(i);S?(s=S[1],l=S[2],p="01",m=""):Bt.includes(i)&&(l=String(Bt.indexOf(i)+1).padStart(2,"0"),p="01",m="")}if(m){let S=/^(\d{2})h$/.exec(m),V=/^(\d{2})m$/.exec(m),me=/^(?:(\d{2})m\s+)?(\d{2}(?:\.\d+)?)s$/.exec(m),he=/^(\d{2}):(\d{2})(?::(\d{2}(?:\.\d+)?))?$/.exec(m);if(S)c=S[1],g=gt;else if(V)c=r.hour,f=V[1],g=et;else if(me)c=r.hour,f=me[1]??r.minute,u=q(me[2]),g=me[1]?et:tt;else if(he)c=he[1],f=he[2],u=q(he[3]??"0"),g=gt;else throw new Error("Expected a full timestamp or a contextual Gregorian label.")}if(u.compare(tt)>=0)throw new Error("Seconds must be below 60.");let z=xe(`${s}-${l}-${p}T${c}:${f}:00${r.zone}`).add(u);if(!T&&!y&&g&&z.compare(n.left)<0){let S=z.add(g);S.compare(n.left.add(n.span))<=0&&(z=S)}return z}var Dt=512,At=e=>e>=0?d.from(10n**BigInt(e)):d.from(1n,10n**BigInt(-e)),_t=(e,t)=>e/t-(e<0n&&e%t?1n:0n);function xt(e){if(!e||typeof e!="object"||Array.isArray(e))throw new Error("Invalid ruler graduation settings.");let t=e;if(t.kind==="decimal"||t.kind==="gregorian")return{kind:t.kind};if(t.kind!=="steps"||!Array.isArray(t.steps)||t.steps.length<2||t.steps.length>32)throw new Error("Custom graduation needs 2\u201332 increasing exact steps.");let n=d.zero;return{kind:"steps",steps:t.steps.map(r=>{if(typeof r!="string"||r.length>1024)throw new Error("Each ruler step must be an exact number of at most 1024 characters.");let o=q(r);if(o.compare(n)<=0||o.toString().length>1024)throw new Error("Ruler steps must be positive, strictly increasing, and at most 1024 characters.");return n=o,o.toString()})}}function ye(e,t=e.toString(),n=d.zero){return{step:e,nominal:e,name:t,anchor:n}}function bt(e,t=d.one){let n=e.div(t),i=we(n);return At(i).compare(n)<0&&i++,ye(t.mul(At(i)))}function Fn(e,t){let n=e.left.add(e.span),i=[];if(t.step){let c=t.step,f=t.anchor??d.zero,u=f.add(e.left.sub(f).div(c).floor().mul(c));u.compare(e.left)<0&&(u=u.add(c));for(let m=u;m.compare(n)<=0;m=m.add(c)){if(i.length>=Dt)throw new Error("Ruler exceeds its visible tick budget.");i.push(m)}return i}let[r,o]=pt(e.left.div(d.from(86400n)).floor().numerator),s=c=>t.months?d.from(ut(_t(c,12n),c-_t(c,12n)*12n+1n,1n)*86400n):d.from(ut(c,1n,1n)*86400n),l=t.months??t.years,p=_t(t.months?r*12n+o-1n:r,l)*l;s(p).compare(e.left)<0&&(p+=l);for(let c=s(p);c.compare(n)<=0;p+=l,c=s(p)){if(i.length>=Dt)throw new Error("Ruler exceeds its visible tick budget.");i.push(c)}return i}function qn(e){let t=Math.min(0,we(e)-1),n=[...new Set([t,Math.min(1,t+1),Math.min(1,t+2),0,1])].sort((i,r)=>i-r).map(i=>ye(At(i)));for(let[i,r]of[[60,"minute"],[300,"5 minutes"],[900,"15 minutes"],[1800,"30 minutes"],[3600,"hour"],[10800,"3 hours"],[21600,"6 hours"],[43200,"12 hours"],[86400,"day"],[604800,"week"]])n.push(ye(d.from(BigInt(i)),r,i===604800?d.from(345600n):d.zero));if(n.push({name:"month",nominal:d.from(2629800n),months:1n},{name:"quarter",nominal:d.from(7889400n),months:3n},{name:"year",nominal:d.from(31557600n),years:1n}),e.compare(d.from(31557600n))>0){let i=bt(e,d.from(31557600n)).step,r=i.div(d.from(31557600n)).numerator;r>10n&&n.push({name:`${r/10n} years`,nominal:i.div(d.from(10n)),years:r/10n}),n.push({name:`${r} years`,nominal:i,years:r})}return n}function Ot(e,t={kind:"decimal"},n=0){ae(e);let i=xt(t);if(!Number.isInteger(n)||Math.abs(n)>1439)throw new Error("Invalid ruler timezone offset.");let r=ve(e),o=r.mul(d.parseDecimal(Math.max(i.kind==="gregorian"?70:90,e.widthPixels/32).toString())),s=r.mul(d.parseDecimal(Math.max(9,e.widthPixels/384).toString())),l,p,c;if(i.kind==="decimal")l=bt(o),p=ye(l.step.div(d.from(10n)));else{let y=i.kind==="gregorian"?qn(o):i.steps.map(S=>ye(d.parse(S))),z=y.findIndex(S=>S.nominal.compare(o)>=0);if(z<0?(l=bt(o,y.at(-1).nominal),p=ye(l.step.div(d.from(10n)))):i.kind==="steps"&&z===0?(l=bt(o,y[0].nominal),p=ye(l.step.div(d.from(10n)))):(l=y[z],p=y[z-1]),i.kind==="gregorian"){if(l.step&&l.step.compare(d.from(10n))<=0)p=ye(l.step.div(d.from(10n)));else{let S=V=>V.nominal.compare(s)>=0&&V.nominal.compare(l.nominal)<0;p=y.find(V=>["1/1","10/1","minute","hour","day","week","month","year"].includes(V.name)&&S(V))??y.find(S)}c=y.find(S=>["minute","hour","day","month","year"].includes(S.name)&&S.nominal.compare(l.nominal)>0&&S.nominal.compare(e.span)<=0)}}let f=i.kind==="gregorian"?d.from(BigInt(n)*60n):d.zero,u={...e,left:e.left.add(f)},m=new Map,g=(y,z,S)=>{for(let V of Fn(u,y)){let me=V.sub(f),he=m.get(me.toString());m.set(me.toString(),{time:me,level:z,label:S||he?.label===!0,interval:he?.label?he.interval:y.nominal})}};p&&p.nominal.compare(s)>=0&&g(p,"minor",!1),g(l,"major",!0),c&&g(c,"boundary",!1);let T=[...m.values()].sort((y,z)=>y.time.compare(z.time));if(T.length>Dt)throw new Error("Ruler exceeds its visible tick budget.");return{ticks:T,graduation:l.name}}var wt=Object.freeze({version:1,mode:"rational",significantDigits:6,unit:"",scale:"1/1",origin:"0/1",offsetMinutes:0}),vt=[{label:"Coordinates",unit:"",scale:"1"},{label:"Seconds",unit:"s",scale:"1"},{label:"Minutes",unit:"minutes",scale:"60"},{label:"Hours",unit:"hours",scale:"3600"},{label:"Days",unit:"days",scale:"86400"},{label:"Julian years (365.25 days)",unit:"years",scale:"31557600"},{label:"Millions of Julian years",unit:"million years",scale:"31557600000000"}];function ke(e){if(!e||typeof e!="object"||Array.isArray(e))throw new Error("Invalid time presentation settings.");let t=e,n=["rational","float","scientific","si","gregorian","custom"];if(t.version!==1||typeof t.mode!="string"||!n.includes(t.mode))throw new Error("Unsupported time presentation version or mode.");if(!Number.isInteger(t.significantDigits)||Number(t.significantDigits)<1||Number(t.significantDigits)>30)throw new Error("Significant digits must be between 1 and 30.");if(typeof t.unit!="string"||t.unit.length>80||/[\u0000-\u001f\u007f]/.test(t.unit))throw new Error("Unit labels must be at most 80 printable characters.");if(typeof t.scale!="string"||typeof t.origin!="string"||t.scale.length>8192||t.origin.length>8192)throw new Error("Scale and origin must be exact numbers of at most 8192 characters.");let i=q(t.scale),r=q(t.origin);if(i.toString().length>8192||r.toString().length>8192)throw new Error("Canonical scale and origin must fit within 8192 characters.");if(i.compare(d.zero)<=0)throw new Error("Unit scale must be positive.");if(!Number.isInteger(t.offsetMinutes)||Math.abs(Number(t.offsetMinutes))>1439)throw new Error("Timezone offset must be integer minutes between -1439 and 1439.");if(t.mode==="custom"&&t.source===void 0)throw new Error("Custom presentation needs source code.");if(t.adaptiveLabels!==void 0&&typeof t.adaptiveLabels!="boolean")throw new Error("Adaptive labels must be true or false.");if(t.source!==void 0){if(typeof t.source!="string")throw new Error("Custom source must be text.");ht(t.source)}return{version:1,mode:t.mode,significantDigits:Number(t.significantDigits),unit:t.unit,scale:i.toString(),origin:r.toString(),offsetMinutes:Number(t.offsetMinutes),...t.adaptiveLabels===void 0?{}:{adaptiveLabels:t.adaptiveLabels},...typeof t.source=="string"?{source:t.source}:{},...t.ruler===void 0?{}:{ruler:xt(t.ruler)}}}var Qt=["q","r","y","z","a","f","p","n","\xB5","m","","k","M","G","T","P","E","Z","Y","R","Q"],ln=new Map([...Qt.filter(Boolean).map(e=>[e,(Qt.indexOf(e)-10)*3]),["u",-6],["\u03BC",-6],["c",-2],["d",-1],["h",2],["da",1]]);function jt(e){return e>=0?d.from(10n**BigInt(e)):d.from(1n,10n**BigInt(-e))}function cn(e,t){let n=e.trim();if(!t)return n;if(!n.endsWith(t))throw new Error(`Expected the unit ${t}.`);return n.slice(0,-t.length).trim()}function He(e){let t=e?ke(e):wt,n=t.mode==="custom"?d.one:d.parse(t.scale),i=t.mode==="custom"?d.zero:d.parse(t.origin),r=t.unit.trim(),o=r?" "+r:"",s=p=>({...p,left:p.left.sub(i).div(n),span:p.span.div(n)}),l=p=>{ae(p);let c=Ot(s(p),t.ruler??{kind:t.mode==="gregorian"?"gregorian":"decimal"},t.offsetMinutes);return{...c,ticks:c.ticks.map(f=>({...f,time:i.add(f.time.mul(n)),interval:f.interval.mul(n)}))}};return t.mode==="custom"?{...ht(t.source),rules:l}:{rules:l,describe(p){return ae(p),t.mode==="gregorian"&&t.adaptiveLabels!==!1?sn(t.offsetMinutes,s(p)):""},print(p,c){ae(c);let f=p.sub(i).div(n);if(t.mode==="gregorian")return on(f,t.offsetMinutes,c&&t.adaptiveLabels!==!1?s(c):void 0);if(t.mode==="rational")return f.toString()+o;if(t.mode==="si"){let u=f.numerator===0n?0:Math.floor(we(f)/3)*3;if(u<-30||u>30)return se(f,t.significantDigits,!0)+o;let m=se(f.div(jt(u)),t.significantDigits);q(m).abs().compare(d.from(1000n))>=0&&u<30&&(u+=3,m=se(f.div(jt(u)),t.significantDigits));let g=Qt[u/3+10]+r;return m+(g?" "+g:"")}return se(f,t.significantDigits,t.mode==="scientific")+o},parse(p,c){ae(c);let f;if(t.mode==="gregorian")f=an(p,t.offsetMinutes,c?s(c):void 0);else if(t.mode==="si"){let u=cn(p,r),m=0,g=u.endsWith("da")?"da":u.at(-1);g&&ln.has(g)&&(m=ln.get(g),u=u.slice(0,-g.length).trim()),f=q(u).mul(jt(m))}else f=q(cn(p,r));return i.add(f.mul(n))}}}function ie(e){return e.includes("T")?xe(e):e.includes("/")?d.parse(e):d.parseDecimal(e)}function Ee(e){if(!e||typeof e!="object")throw new Error("Expected an OpenChronology document.");let t=e;if(t.format!=="openchronology"||t.version!==1)throw new Error("Unsupported timeline format or version.");if(typeof t.title!="string"||t.title.length>300||typeof t.description!="string"||t.description.length>2e4)throw new Error("The timeline needs a title and description.");if(!Array.isArray(t.events)||t.events.length>2e5)throw new Error("Expected at most 200,000 point events.");let n=new Set,i=t.events.map(r=>{if(!r||typeof r!="object")throw new Error("Invalid event.");let o=r;if(typeof o.id!="string"||!/^[A-Za-z0-9_.:-]{1,128}$/.test(o.id)||n.has(o.id))throw new Error("Event IDs must be unique ASCII identifiers.");if(n.add(o.id),typeof o.time!="string")throw new Error("Time must be a string containing an exact rational or finite decimal.");if(!o.metadata||typeof o.metadata!="object"||Array.isArray(o.metadata))throw new Error("Event metadata must be a JSON object.");let s=JSON.parse(JSON.stringify(o.metadata));for(let l of["title","description"])if(s[l]!==void 0&&typeof s[l]!="string")throw new Error(`Event ${l} must be text.`);return{id:o.id,time:ie(o.time).toString(),metadata:s}});return{format:"openchronology",version:1,title:t.title,description:t.description,...t.presentation===void 0?{}:{presentation:ke(t.presentation)},events:i}}var Ce=class{points=new Me(t=>BigInt(t.length));byId=new Map;title;description;presentation;constructor(t){this.title=t.title,this.description=t.description,this.presentation=t.presentation?ke(t.presentation):void 0;let n=new Map;for(let i of t.events){if(this.byId.has(i.id))throw new Error("Event IDs must be unique.");let r=ie(i.time).toString(),o=Object.freeze({...i,time:r,metadata:Object.freeze({...i.metadata})});this.byId.set(i.id,o);let s=n.get(r);s?s.push(o):n.set(r,[o])}for(let[i,r]of n)r.sort((o,s)=>o.id<s.id?-1:o.id>s.id?1:0),this.points.set(d.parse(i),Object.freeze(r))}put(t){let n=ie(t.time),i=Object.freeze({...t,time:n.toString(),metadata:Object.freeze({...t.metadata})});this.delete(t.id);let r=[...this.points.get(n)??[],i].sort((o,s)=>o.id<s.id?-1:o.id>s.id?1:0);this.points.set(n,Object.freeze(r)),this.byId.set(t.id,i)}delete(t){let n=this.byId.get(t);if(!n)return!1;let i=d.parse(n.time),r=this.points.get(i).filter(o=>o.id!==t);return r.length?this.points.set(i,Object.freeze(r)):this.points.delete(i),this.byId.delete(t),!0}document(){return{format:"openchronology",version:1,title:this.title,description:this.description,...this.presentation?{presentation:this.presentation}:{},events:[...this.points].flatMap(([,t])=>[...t])}}frame(t,n,i=24){let r=this.points.overview(t.left,t.right,t.threshold(n,i),"span",{includeUpper:!0});return{visitedNodes:r.stats.visitedNodes,groups:r.groups.map(o=>{let s=o.firstTime.toString(),l=o.entryCount===1n?this.points.get(o.firstTime)[0]:void 0;return{first:s,last:o.lastTime.toString(),count:o.entryCount.toString(),distinct:o.distinctCount,...l?{id:l.id,title:l.metadata.title??"Untitled event"}:{}}})}}eventsBetween(t,n,i=100){let r=[];for(let[,o]of this.points.range(d.parse(t),d.parse(n),{includeUpper:!0}))for(let s of o)if(r.push(s),r.length>=i)return r;return r}};function K(e){if(!Number.isFinite(e))throw new Error("Invalid screen coordinate.");return d.from(BigInt(Math.round(e*1024)),1024n)}function un(e){if(!Number.isFinite(e))throw new Error("Invalid wheel delta.");let t=Math.max(-.7,Math.min(.7,e*.002)),n=BigInt(Math.round(Math.exp(Math.abs(t))*1e6));return t<0?d.from(1000000n,n):d.from(n,1000000n)}function Vn(e){let t=e.numerator,n=e.denominator,i=t.toString(2).length-n.toString(2).length;return(i>=0?t<n<<BigInt(i):t<<BigInt(-i)<n)&&i--,i}function dn(e,t){let n=t<0?e.numerator<<BigInt(-t):e.numerator,i=t>0?e.denominator<<BigInt(t):e.denominator,r=n<0n?-n:n,o=(r+i/2n)/i*(n<0n?-1n:1n);return t>=0?d.from(o<<BigInt(t)):d.from(o,1n<<BigInt(-t))}var le=class e{constructor(t=d.from(-2n),n=d.from(28n)){this.left=t;this.span=n;if(n.compare(d.zero)<=0)throw new Error("The visible window must have positive width.")}get right(){return this.left.add(this.span)}clone(){return new e(this.left,this.span)}rasterize(t){if(!Number.isFinite(t))throw new Error("Invalid screen width.");let n=BigInt(Math.max(1,Math.ceil(t)))<<20n,i=this.span.div(d.from(n)),r=Vn(i);return new e(dn(this.left,r),dn(this.span,r))}at(t,n){return this.left.add(this.span.mul(K(t).div(K(n))))}x(t,n){return t.sub(this.left).div(this.span).toApproximateNumber()*n}threshold(t,n){return this.span.mul(K(n).div(K(Math.max(1,t))))}pan(t,n){return new e(this.left.sub(this.span.mul(K(t).div(K(n)))),this.span)}zoom(t,n,i){if(i.compare(d.zero)<=0)throw new Error("Zoom factor must be positive.");let r=this.at(t,n),o=this.span.mul(i);return new e(r.sub(o.mul(K(t).div(K(n)))),o)}pinch(t,n,i,r){let o=this.span.mul(r),s=this.at(t,i);return new e(s.sub(o.mul(K(n).div(K(i)))),o)}static fit(t,n){if(!t||!n)return new e;let i=n.sub(t),r=i.equals(d.zero)?d.from(4n):i.mul(d.from(7n,5n));return new e(t.sub(r.sub(i).div(d.from(2n))),r)}};function yt(e=!1){let t=["An idea arrives","First sketch","A conversation","A new direction","The working prototype","Notes in the margin","A useful discovery","The first release","A quiet refinement","What comes next"],n=["0","1/3","3","7/2","8","10","41/3","17","21","24"],i=t.map((r,o)=>({id:`sample-${o}`,time:n[o],metadata:{title:r,description:o===1?"One third is exact, however far you zoom.":"A point in time. Add a note or move its exact coordinate."}}));if(e)for(let r=0;r<2e4;r++)i.push({id:`dense-${r.toString().padStart(5,"0")}`,time:d.from(10000000000n+BigInt(r),1000000000n).toString(),metadata:{title:`Small moment ${r+1}`}});return Ee({format:"openchronology",version:1,title:e?"Twenty thousand tiny moments":"A notebook of moments",description:"Every point has a place. Explore the spaces between them.",events:i})}async function pn(e,t,n,i){throw new Error("This offline file uses JSON import and export.")}async function fn(e,t){throw new Error("This offline file exchanges .ochx JSON timelines only.")}async function Ut(e,t,n){throw new Error("This offline file exchanges .ochx JSON timelines only.")}var H=!0,a=e=>document.getElementById(e),U=!H&&!!window.__TAURI__,F=a("timeline-stage"),v=new Ce(H?{format:"openchronology",version:1,title:"Untitled timeline",description:"",events:[]}:yt()),I=le.fit(v.points.minKey(),v.points.maxKey()),w=null,P={user:null,csrf:null,server:!1},Pe=!1,Y=null,Le={groups:[],visitedNodes:0},te=null,Ft=null,qe=[],nt=0,mn,hn,gn,Ht=!1,ee=null,Re=null,O=0,ze=0,fe=0,Et=!1,b=e=>a(e),E=(e,t)=>{a(e).textContent=t},j=()=>!!v&&(!w||w.canEdit),N=()=>Math.max(1,F.clientWidth-96),qt=()=>Number(b("density").value);function oe(e){E("toast",e),a("toast").hidden=!1,clearTimeout(gn),gn=setTimeout(()=>{a("toast").hidden=!0},7e3)}function $(e){oe(e instanceof Error?e.message:String(e))}function Gn(){return typeof crypto.randomUUID=="function"?crypto.randomUUID():Array.from(crypto.getRandomValues(new Uint8Array(16)),e=>e.toString(16).padStart(2,"0")).join("")}async function L(e,t="GET",n){if(H)throw new Error("This offline file uses JSON import and export.");return pn(e,t,n,P.csrf)}function J(){Ht||(Ht=!0,requestAnimationFrame(()=>{Ht=!1,Jn()}))}var bn,xn=He();function zt(){let e=v?v.presentation:w?.presentation;return e!==bn&&(xn=He(e),bn=e),xn}function Se(e,t){return{left:I.left,span:I.span,widthPixels:N(),purpose:e,...t===void 0?{}:{spacingPixels:t}}}function ce(e,t="tooltip",n){try{return zt().print(e,Se(t,n))}catch(i){return e.toString()+" [display error: "+(i instanceof Error?i.message:String(i))+"]"}}function wn(e,t="axis",n){let i=Se(t,n),r=ce(e,t,n);return r.length<=27?r:r.slice(0,24)+"\u2026"}var vn=new Map;function Wn(){let e=a("axis");e.replaceChildren();let t=document.createElement("div");t.className="axis-baseline",e.append(t);let n=zt(),i;try{i=n.rules(Se("axis"))}catch{i=He().rules(Se("axis"))}e.dataset.graduation=i.graduation;let r=n.describe?.(Se("axis"))??"";a("time-context").hidden=!r,E("time-context",r.length>100?r.slice(0,97)+"\u2026":r),a("time-context").title=r;for(let o of i.ticks){let s=o.time,l=document.createElement("div");l.className="axis-tick "+o.level,l.dataset.time=s.toString(),l.style.left=`${48+I.x(s,N())}px`;let p=document.createElement("span");if(p.className="tick-notch",l.append(p),o.label){let c=document.createElement("span");c.className="tick-label";let f=Math.max(1,Math.min(1e6,I.x(I.left.add(o.interval),N())));c.textContent=wn(s,"axis",f),c.title=ce(s)+`
+Exact: `+s.toString(),l.append(c)}e.append(l)}for(let[o,s]of[["exact-left",I.left.toString()],["exact-right",I.right.toString()]])document.activeElement!==a(o)&&(b(o).value=s);for(let[o,s]of[["left-bound",I.left],["right-bound",I.right]])if(document.activeElement!==a(o)){let l=ce(s,"input");b(o).value=l,vn.set(o,{text:l,time:s})}}function kt(){let e=a("markers");e.replaceChildren();let t=0n,n=new Me(r=>BigInt(r.count));for(let r of Le.groups)n.set(d.parse(r.first),r);let i=0;for(let[,r]of n){let o=d.parse(r.first),s=d.parse(r.last),l=o.add(s).div(d.from(2n)),p=I.x(l,N());if(p<0||p>N())continue;t+=BigInt(r.count);let c=BigInt(r.count),f=document.createElement("button");f.className="event-marker"+(c>1n?" group":"")+(c>999n?" large":"")+(te?.first===r.first?" selected":""),f.style.left=`${48+p}px`,f.dataset.first=r.first,f.dataset.count=r.count,f.textContent=c>1n?c>999n?`${(Number(c)/1e3).toFixed(c<10000n?1:0)}k`:c.toString():"",f.setAttribute("aria-label",c>1n?`${c} events near ${ce(o)}`:r.title??"Event"),f.title=c>1n?`${c} events; select to explore`:r.title??"Untitled event",f.addEventListener("click",()=>{Kn(r).catch($)}),f.addEventListener("dblclick",()=>Sn(r));let u=i++%4,m=u<2?128-u*43:234+(u-2)*43,g=document.createElement("div");g.className="event-stem",g.style.left=`${48+p}px`,g.style.top=`${u<2?m+32:201}px`,g.style.height=`${u<2?181-m-32:m-201}px`;let T=document.createElement("div");T.className="event-label",T.style.left=`${48+p}px`,T.style.top=`${m}px`,T.textContent=c>1n?`${c.toLocaleString()} moments`:r.title??"Untitled event";let y=document.createElement("small");y.textContent=wn(l,"event"),y.title=ce(l)+`
+Exact: `+l.toString(),T.append(y),e.append(g,T,f)}E("visible-count",`${t.toLocaleString()} visible \xB7 ${Le.groups.length} points`),a("empty-window").hidden=Le.groups.length>0}function Jn(){if(Wn(),v)Le=v.frame(I,N(),qt()),a("loading-window").hidden=!0,kt();else if(w){kt(),clearTimeout(mn);let e=++nt,t=I.clone(),n=w.id;a("loading-window").hidden=!1,mn=setTimeout(()=>{L(`timelines/${n}/query`,"POST",{kind:"overview",lower:t.left.toString(),upper:t.right.toString(),threshold:t.threshold(N(),qt()).toString()}).then(i=>{e!==nt||w?.id!==n||(Le=i,kt(),a("loading-window").hidden=!0)}).catch(i=>{e===nt&&(a("loading-window").hidden=!0,$(i))})},70)}else Le={groups:[],visitedNodes:0},kt()}function W(){b("timeline-title").value=v?.title??w?.title??"Loading timeline\u2026",a("timeline-description").value=v?.description??w?.description??"",b("timeline-title").disabled=!j(),a("timeline-description").disabled=!j();let e=v?.points.entryCount??BigInt(w?.event_count??0);E("event-count",`${e.toLocaleString()} events`),E("owner-label",w?w.owner:U?"Offline workspace":"Local workspace"),E("storage-badge",w?w.visibility==="public"?"Public timeline":"Private timeline":U&&ee?"SQLite file":H?"Offline HTML":"Browser draft"),E("publish-button",w?"Save changes":"Save to server"),a("publish-button").disabled=Et||!!w&&!j(),a("publish-button").hidden=H||!P.server||!!w&&!w.canEdit,a("och-import").hidden=H||U||!P.fileExchange,a("och-export").hidden=H||U||!P.fileExchange,a("share-button").hidden=!w?.canShare,a("add-button").hidden=!j(),a("undo-button").disabled=!qe.length,E("save-status",Pe?w?"Unsaved server changes":"Unsaved changes":U&&ee&&Re!==fe?"Local file has unsaved changes":w?"Saved on the server":U&&ee?"Saved in a SQLite timeline":H?"Export JSON to save your work":"A local draft, ready to explore"),E("workspace-status",w?"Server timeline":U?"Offline workspace":"Stored in this browser")}async function yn(){return new Promise((e,t)=>{let n=indexedDB.open("openchronology",1);n.onupgradeneeded=()=>n.result.createObjectStore("drafts"),n.onsuccess=()=>e(n.result),n.onerror=()=>t(n.error)})}async function Xn(){let e=await yn();try{return await new Promise((t,n)=>{let i=e.transaction("drafts").objectStore("drafts").get("current");i.onsuccess=()=>t(i.result??null),i.onerror=()=>n(i.error)})}finally{e.close()}}function kn(){H||w||U||!v||(clearTimeout(hn),hn=setTimeout(()=>{if(w||!v)return;let e=v.document();yn().then(t=>new Promise((n,i)=>{let r=t.transaction("drafts","readwrite");r.objectStore("drafts").put(e,"current"),r.oncomplete=()=>{t.close(),n()},r.onerror=()=>{t.close(),i(r.error)}})).then(()=>{w||E("save-status","Saved in this browser")}).catch(()=>{E("save-status","Browser storage unavailable \u2014 export to keep your work")})},700))}function Ve(){fe++,Pe=!0,W(),J(),kn()}function De(e){O++,ze++,fe++,w=null,ee=null,Re=null,v=new Ce(e),I=le.fit(v.points.minKey(),v.points.maxKey()),Pe=!1,qe=[],Y=null,te=null,nt++,a("group-details").hidden=!0,a("event-form").hidden=!0,a("inspector-intro").hidden=!1,W(),J(),kn()}async function it(){let e=a("timeline-list");if(!P.user)return;let t=await L("timelines");e.replaceChildren();for(let n of t.timelines){let i=document.createElement("button");i.textContent=n.title;let r=document.createElement("small");r.textContent=`${n.visibility} \xB7 ${n.role}`,i.append(r),i.addEventListener("click",()=>{location.hash=`timeline/${n.id}`}),e.append(i)}if(!t.timelines.length){let n=document.createElement("p");n.className="workspace-note",n.textContent="Your server timelines will appear here.",e.append(n)}}async function Zn(e){let t=++O;ze++,v=null,w=null,ee=null,Re=null,Le={groups:[],visitedNodes:0},Y=null,te=null,qe=[],nt++,W(),J(),a("event-form").hidden=!0,a("group-details").hidden=!0,a("inspector-intro").hidden=!1;let n=await L(`timelines/${e}`);if(t===O){if(w=n,n.presentation&&(n.presentation=ke(n.presentation)),n.canEdit){let i=await L(`timelines/${e}/document`);if(t!==O)return;w=i.timeline,v=new Ce(Ee(i.document))}I=le.fit(v?.points.minKey()??(n.first?d.parse(n.first):void 0),v?.points.maxKey()??(n.last?d.parse(n.last):void 0)),Pe=!1,W(),J()}}async function Gt(e=!1){if(H)return;let t=/^#desktop\/([A-Z2-9]{10})$/.exec(location.hash);if(t){if(!P.user){a("account-button").click();return}E("desktop-approval-code",t[1]),a("desktop-approval-dialog").open||a("desktop-approval-dialog").showModal();return}let n=/^#timeline\/([a-f0-9-]+)$/i.exec(location.hash);if(n){if(w?.id===n[1]&&!e)return;if(!Ae()){window.history.replaceState(null,"",w?`#timeline/${w.id}`:location.pathname);return}await Zn(n[1])}}function ot(e,t){ze++,Y=e??null,a("event-form").hidden=!1,a("group-details").hidden=!0,a("inspector-intro").hidden=!0,b("event-title").value=e?.metadata.title??"",b("event-time").value=e?.time??(t??I.left.add(I.span.div(d.from(2n)))).toString(),b("event-presented").value=ce(ie(b("event-time").value),"input"),b("event-presented").disabled=!j(),a("parse-event-presented").disabled=!j(),a("event-description").value=e?.metadata.description??"";let n={...e?.metadata};delete n.title,delete n.description,a("event-metadata").value=JSON.stringify(n,null,2);for(let i of["event-title","event-time","event-description","event-metadata"])a(i).disabled=!j();a("event-save").hidden=!j(),a("event-delete").hidden=!e||!j(),E("event-error",""),window.innerWidth<650&&a("inspector").scrollIntoView({behavior:"smooth",block:"start"})}async function En(e,t=null){let n,i=null;if(v){n=[];e:for(let[,r]of v.points.range(d.parse(t?.time??e.first),d.parse(e.last),{includeUpper:!0}))for(let o of r)if(!(t&&o.time===t.time&&o.id<=t.id)&&(n.push(o),n.length>100))break e;if(n.length>100){n=n.slice(0,100);let r=n.at(-1);i={time:r.time,id:r.id}}}else{let r=await L(`timelines/${w.id}/query`,"POST",{kind:"events",lower:e.first,upper:e.last,limit:100,after:t});n=r.events,i=r.next}return{events:n,next:i}}async function Kn(e){let t=++ze;te=e,Y=null,J();let n=await En(e);if(t===ze){if(BigInt(e.count)===1n&&n.events[0]){ot(n.events[0]);return}a("event-form").hidden=!0,a("inspector-intro").hidden=!0,a("group-details").hidden=!1,E("group-title",`${BigInt(e.count).toLocaleString()} moments`),E("group-note",e.distinct===1?"These events share the same exact coordinate. Zoom cannot separate coincident points.":"These moments are close at this scale. Zoom in to reveal their separate coordinates."),a("group-zoom").hidden=e.distinct===1,Tn(n.events,n.next),window.innerWidth<650&&a("inspector").scrollIntoView({behavior:"smooth",block:"start"})}}function Tn(e,t){Ft=t,a("group-more").hidden=!t;let n=a("group-events");n.replaceChildren();for(let i of e){let r=document.createElement("button");r.textContent=i.metadata.title??"Untitled event";let o=document.createElement("small");o.textContent=ce(d.parse(i.time),"event"),o.title=ce(d.parse(i.time))+`
+Exact: `+i.time,r.append(o),r.addEventListener("click",()=>ot(i)),n.append(r)}}function Sn(e){e.distinct!==1&&(I=le.fit(d.parse(e.first),d.parse(e.last)),J())}function Tt(e){rt(I.zoom(N()/2,N(),e))}function rt(e){I=e.rasterize(N()),J()}function Pn(){I=le.fit(v?.points.minKey()??(w?.first?d.parse(w.first):void 0),v?.points.maxKey()??(w?.last?d.parse(w.last):void 0)),J()}var re=new Map,Te=null,Ne=null,Be=!1,zn=0;function St(e){return e-F.getBoundingClientRect().left-48}function In(){let e=[...re.values()];return{mid:e.length===1?St(e[0].x):St((e[0].x+e[1].x)/2),distance:e.length<2?1:Math.max(1,Math.hypot(e[0].x-e[1].x,e[0].y-e[1].y))}}function Mn(){if(!re.size){Te=null;return}Te={view:I.clone(),...In()}}F.addEventListener("pointerdown",e=>{if(!(e.pointerType==="mouse"&&e.button!==0)){if(e.pointerType==="mouse"&&e.target.closest("button")){Be=!1;return}re.set(e.pointerId,{x:e.clientX,y:e.clientY}),F.setPointerCapture(e.pointerId),Mn(),re.size===1?(Ne={id:e.pointerId,x:e.clientX,y:e.clientY,time:Date.now(),target:e.target},Be=!1):Be=!0}});F.addEventListener("pointermove",e=>{if(!re.has(e.pointerId)||!Te)return;re.set(e.pointerId,{x:e.clientX,y:e.clientY});let t=In();if(Ne&&Math.hypot(e.clientX-Ne.x,e.clientY-Ne.y)>5&&(Be=!0),!Be)return;F.classList.add("dragging");let n=re.size===1?Te.view.pan(t.mid-Te.mid,N()):Te.view.pinch(Te.mid,t.mid,N(),K(Te.distance).div(K(t.distance)));rt(n)});function $n(e,t=!1){if(!re.has(e.pointerId))return;let n=!Be&&!t&&Ne?.id===e.pointerId;re.delete(e.pointerId),F.hasPointerCapture(e.pointerId)&&F.releasePointerCapture(e.pointerId),Mn(),re.size||F.classList.remove("dragging");let i=Ne?.target?.closest("button");n&&i?(i.click(),zn=Date.now()+500):n&&j()&&ot(void 0,I.at(Math.max(0,Math.min(N(),St(e.clientX))),N())),re.size||(Ne=null)}F.addEventListener("pointerup",e=>$n(e));F.addEventListener("pointercancel",e=>$n(e,!0));F.addEventListener("click",e=>{e.isTrusted&&(Be||Date.now()<zn)&&(e.preventDefault(),e.stopImmediatePropagation())},!0);F.addEventListener("wheel",e=>{if(e.preventDefault(),e.shiftKey)rt(I.pan(-e.deltaY,N()));else{let t=e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?F.clientHeight:1);rt(I.zoom(Math.max(0,Math.min(N(),St(e.clientX))),N(),un(t)))}},{passive:!1});F.addEventListener("keydown",e=>{e.key==="ArrowLeft"||e.key==="ArrowRight"?(e.preventDefault(),rt(I.pan(N()*(e.key==="ArrowLeft"?.1:-.1),N()))):e.key==="+"||e.key==="="?(e.preventDefault(),Tt(d.from(4n,5n))):e.key==="-"&&(e.preventDefault(),Tt(d.from(5n,4n)))});a("zoom-in").onclick=()=>Tt(d.from(4n,5n));a("zoom-out").onclick=()=>Tt(d.from(5n,4n));a("fit-button").onclick=Pn;a("empty-fit").onclick=Pn;a("add-button").onclick=()=>ot();a("close-inspector").onclick=()=>{ze++,Y=null,te=null,a("event-form").hidden=!0,a("group-details").hidden=!0,a("inspector-intro").hidden=!1,J()};b("density").oninput=()=>{E("density-value",`${qt()} px`),J()};a("apply-bounds").onclick=()=>{try{let e=zt(),t=Se("input"),n=o=>{let s=b(o).value,l=vn.get(o);return l?.text===s?l.time:e.parse(s,t)},i=n("left-bound"),r=n("right-bound");I=new le(i,r.sub(i)),J()}catch(e){$(e)}};b("event-time").oninput=()=>{try{b("event-presented").value=ce(ie(b("event-time").value),"input")}catch{}};a("parse-event-presented").onclick=()=>{if(j())try{b("event-time").value=zt().parse(b("event-presented").value,Se("input")).toString(),E("event-error","")}catch(e){E("event-error",e instanceof Error?e.message:String(e))}};function Wt(){let e=b("presentation-mode").value;a("presentation-custom").hidden=e!=="custom",a("presentation-calendar").hidden=e!=="gregorian",a("presentation-numeric").hidden=e==="gregorian"||e==="custom",a("presentation-transform").hidden=e==="custom",a("presentation-ruler-steps").hidden=b("presentation-ruler").value!=="steps"}function Cn(){return ke({version:1,mode:b("presentation-mode").value,unit:b("presentation-unit").value,significantDigits:Number(b("presentation-digits").value),scale:b("presentation-scale").value,origin:b("presentation-origin").value,offsetMinutes:Number(b("presentation-offset").value),adaptiveLabels:b("presentation-adaptive").checked,source:a("presentation-source").value,...b("presentation-ruler").value?{ruler:{kind:b("presentation-ruler").value,...b("presentation-ruler").value==="steps"?{steps:JSON.parse(a("presentation-steps").value)}:{}}}:{}})}for(let[e,t]of vt.entries()){let n=document.createElement("option");n.value=String(e),n.textContent=t.label,a("presentation-unit-preset").append(n)}b("presentation-unit-preset").onchange=()=>{if(!b("presentation-unit-preset").value)return;let e=vt[Number(b("presentation-unit-preset").value)];b("presentation-unit").value=e.unit,b("presentation-scale").value=e.scale};b("presentation-epoch").onchange=()=>{let e=b("presentation-epoch").value==="mjd";b("presentation-origin").value=e?"40587":"0",b("presentation-scale").value=e?"1/86400":"1"};b("presentation-mode").onchange=Wt;b("presentation-ruler").onchange=Wt;a("presentation-example").onclick=()=>{a("presentation-source").value=Ye};a("presentation-button").onclick=()=>{let e=(v?v.presentation:w?.presentation)??wt;for(let[t,n]of Object.entries({mode:e.mode,digits:e.significantDigits,unit:e.unit,scale:e.scale,origin:e.origin,offset:e.offsetMinutes}))b("presentation-"+t).value=String(n);b("presentation-unit-preset").value="",b("presentation-adaptive").checked=e.adaptiveLabels!==!1,b("presentation-epoch").value="",b("presentation-ruler").value=e.ruler?.kind??"",a("presentation-steps").value=JSON.stringify(e.ruler?.kind==="steps"?e.ruler.steps:["1","60","3600","86400"]),a("presentation-source").value=e.source??Ye,E("presentation-error",""),E("presentation-preview-result",""),a("presentation-save").disabled=!j(),Wt(),a("presentation-dialog").showModal()};a("presentation-preview").onclick=()=>{try{let e=He(Cn()),t=ie(b("presentation-preview-time").value),n=Se(b("presentation-preview-purpose").value),i=e.print(t,n),r=e.parse(i,n),o=e.rules(n);E("presentation-preview-result",`${i}
+Parsed: ${r.toString()}
+${r.equals(t)?"Exact round trip":"Rounded display; parsing would choose a different coordinate"}
+Ruler: ${o.graduation} \xB7 ${o.ticks.length} visible marks`),E("presentation-error","")}catch(e){E("presentation-error",e instanceof Error?e.message:String(e))}};a("presentation-form").onsubmit=e=>{if(e.preventDefault(),!!j())try{v.presentation=Cn(),Ve(),a("event-form").hidden||(b("event-presented").value=ce(ie(b("event-time").value),"input")),a("presentation-dialog").close()}catch(t){E("presentation-error",t instanceof Error?t.message:String(t))}};a("apply-exact-bounds").onclick=()=>{try{let e=ie(b("exact-left").value),t=ie(b("exact-right").value);I=new le(e,t.sub(e)),J()}catch(e){$(e)}};a("group-zoom").onclick=()=>{te&&Sn(te)};a("group-more").onclick=()=>{let e=ze;te&&Ft&&En(te,Ft).then(t=>{e===ze&&Tn(t.events,t.next)}).catch($)};a("event-form").onsubmit=e=>{e.preventDefault();try{if(!j())return;let t=JSON.parse(a("event-metadata").value);if(!t||typeof t!="object"||Array.isArray(t))throw new Error("Additional metadata must be a JSON object.");let n={id:Y?.id??Gn(),time:ie(b("event-time").value).toString(),metadata:{...t,title:b("event-title").value,description:a("event-description").value}};qe.push({before:Y??void 0,after:n}),v.put(n),te=null,Y=n,ot(n),Ve()}catch(t){E("event-error",t instanceof Error?t.message:String(t))}};a("event-delete").onclick=()=>{!Y||!j()||(qe.push({before:Y}),v.delete(Y.id),Y=null,te=null,a("event-form").hidden=!0,a("inspector-intro").hidden=!1,Ve())};a("undo-button").onclick=()=>{let e=qe.pop();!e||!v||(e.after&&v.delete(e.after.id),e.before&&v.put(e.before),Y=null,te=null,a("event-form").hidden=!0,a("inspector-intro").hidden=!1,Ve())};b("timeline-title").onchange=()=>{j()&&(v.title=b("timeline-title").value,Ve())};a("timeline-description").onchange=()=>{j()&&(v.description=a("timeline-description").value,Ve())};function Ae(){return!Pe&&!(U&&ee&&Re!==fe)||confirm("Save or export your changes first if you want to keep them. Replace this timeline?")}a("new-button").onclick=()=>{Ae()&&(_e(),ee=null,De({format:"openchronology",version:1,title:"Untitled timeline",description:"",events:[]}))};function _e(){O++,H||window.history.replaceState(null,"",location.pathname)}a("dense-demo").onclick=()=>{Ae()&&(_e(),ee=null,De(yt(!0)))};a("import-button").onclick=()=>b("json-file").click();b("json-file").onchange=()=>{let e=b("json-file").files?.[0];if(b("json-file").value="",!e||!Ae())return;let t=O;e.text().then(n=>{let i=Ee(JSON.parse(n));t===O&&(_e(),ee=null,De(i),oe("JSON timeline imported."))}).catch($)};a("export-button").onclick=()=>{(async()=>{let e=v?.document()??(await L(`timelines/${w.id}/document`)).document;Vt(new Blob([JSON.stringify(e,null,2)+`
+`],{type:"application/json"}),e.title,".ochx")})().catch($)};function Vt(e,t,n){let i=URL.createObjectURL(e),r=document.createElement("a");r.href=i,r.download=(t.toLowerCase().replace(/[^a-z0-9]+/g,"-").slice(0,70)||"timeline")+n,r.click(),setTimeout(()=>URL.revokeObjectURL(i),1e3)}a("och-import").onclick=()=>{if(!P.user){a("account-button").click();return}b("och-file").click()};b("och-file").onchange=()=>{let e=b("och-file").files?.[0];if(b("och-file").value="",!e||!Ae())return;let t=O;fn(e,P.csrf).then(n=>{let i=Ee(n);t===O&&(_e(),De(i),oe(".och timeline imported through the server."))}).catch($)};a("och-export").onclick=()=>{(async()=>{if(!v&&w){Vt(await Ut(`timelines/${w.id}/file`),w.title,".och");return}if(!P.user){a("account-button").click();return}v&&Vt(await Ut("files/export",v.document(),P.csrf),v.title,".och")})().catch($)};a("account-button").onclick=()=>{(async()=>{if(H||await Fe(),!P.server){oe("Server sharing is unavailable. Local timelines remain available.");return}a("password-fields").hidden=!!P.user,a("desktop-login").hidden=!U||!!P.user,E("account-error","");for(let e of document.querySelectorAll("[data-provider]"))e.hidden=U||!(P.providers??[]).includes(e.dataset.provider),e.disabled=!1,e.textContent=`${P.user?"Link":"Continue with"} ${e.dataset.provider==="github"?"GitHub":e.dataset.provider==="facebook"?"Facebook":"Google"}`;a("account-sessions").hidden=!P.user,P.user&&await Ln(),a("account-dialog").open||a("account-dialog").showModal()})().catch($)};async function Fe(){P=await L("session"),st(),W()}async function Ln(){let e=await L("auth/account");a("session-list").replaceChildren();for(let t of e.sessions){let n=document.createElement("p");n.textContent=`${t.kind==="desktop"?"Desktop":"Browser"}${t.current?" (this session)":""} \xB7 ${new Date(t.created_at).toLocaleString()}`,a("session-list").append(n)}for(let t of document.querySelectorAll("[data-provider]"))t.disabled=e.identities.includes(t.dataset.provider)}a("revoke-sessions").onclick=()=>{L("auth/revoke-others","POST",{}).then(Ln).catch($)};for(let e of document.querySelectorAll("[data-provider]"))e.onclick=()=>{let t=/^#desktop\/[A-Z2-9]{10}$/.test(location.hash)?"/"+location.hash:"/";L(`auth/${e.dataset.provider}/start`,"POST",{returnTo:t,link:!!P.user}).then(n=>location.assign(n.url)).catch(n=>E("account-error",n.message))};var Pt=0;a("desktop-login").onclick=()=>{if(!U)return;let e=++Pt;(async()=>{let t=await window.__TAURI__.core.invoke("desktop_auth_start");E("desktop-login-status",`Confirm code ${t.userCode} in your browser. ${t.verificationUri}`);let n=Date.now()+6e5,i=async()=>{if(!(e!==Pt||Date.now()>n))try{if((await window.__TAURI__.core.invoke("desktop_auth_poll")).pending){setTimeout(()=>void i(),3500);return}await Fe(),a("account-dialog").close(),await it(),oe("Desktop connected to your account.")}catch(r){$(r)}};setTimeout(()=>void i(),3500)})().catch($)};a("desktop-approve").onclick=()=>{L("auth/device/approve","POST",{userCode:a("desktop-approval-code").textContent}).then(()=>{a("desktop-approval-dialog").close(),window.history.replaceState(null,"","/"),oe("Desktop session approved. You can return to the application.")}).catch($)};for(let e of document.querySelectorAll("[data-close]"))e.onclick=()=>a(e.dataset.close).close();a("account-form").onsubmit=e=>{e.preventDefault();let t=e.submitter?.value??"login";E("account-error",""),L(`auth/${t}`,"POST",{username:b("account-name").value,password:b("account-password").value}).then(async n=>{P={...P,...n},b("account-password").value="",a("account-dialog").close(),st(),W(),await it(),await Gt(!0)}).catch(n=>E("account-error",n.message))};function st(){E("account-button",P.user?`@${P.user.username}`:"Sign in"),a("logout-button").hidden=!P.user,a("account-button").hidden=H,a("server-button").hidden=!U}a("logout-button").onclick=()=>{Ae()&&L("auth/logout","POST",{}).then(()=>{P={...P,user:null,csrf:null},Pt++,st(),a("timeline-list").replaceChildren(),w&&(_e(),De(yt())),oe("Signed out."),Fe().catch($)}).catch($)};a("publish-button").onclick=()=>{(async()=>{if(!P.user){a("account-button").click();return}if(!v)throw new Error("This timeline is read-only.");if(Et)return;Et=!0,W();let e=fe,t=O;try{let n=w?await L(`timelines/${w.id}`,"PUT",{revision:w.revision,document:v.document()}):await L("timelines","POST",v.document());if(t!==O)return;w=n,Pe=e!==fe,window.history.replaceState(null,"",`#timeline/${n.id}`),W(),await it(),oe("Timeline saved. It is "+n.visibility+".")}finally{Et=!1,W()}})().catch($)};async function Jt(){let e=await L(`timelines/${w.id}/members`);a("members-list").replaceChildren();for(let t of e.members){let n=document.createElement("div"),i=document.createElement("span"),r=document.createElement("button");i.textContent=`@${t.username} \xB7 ${t.role}`,r.textContent="Remove",r.onclick=()=>{L(`timelines/${w.id}/members`,"DELETE",{username:t.username}).then(Jt).catch(o=>E("sharing-error",o.message))},n.append(i,r),a("members-list").append(n)}}a("share-button").onclick=()=>{w?.canShare&&(a("visibility").value=w.visibility,E("sharing-link",`${location.origin}${location.pathname}#timeline/${w.id}`),E("sharing-error",""),a("sharing-dialog").showModal(),Jt().catch($))};a("visibility").onchange=()=>{L(`timelines/${w.id}/settings`,"PATCH",{visibility:a("visibility").value}).then(e=>{w=e,W()}).catch(e=>E("sharing-error",e.message))};a("copy-link").onclick=()=>{navigator.clipboard.writeText(a("sharing-link").textContent).then(()=>oe("Timeline link copied.")).catch(()=>oe("Select and copy the link shown above."))};a("member-form").onsubmit=e=>{e.preventDefault(),L(`timelines/${w.id}/members`,"POST",{username:b("member-name").value,role:a("member-role").value}).then(async()=>{b("member-name").value="",E("sharing-error",""),await Jt()}).catch(t=>E("sharing-error",t.message))};if(U){a("server-button").onclick=()=>{E("connection-error",""),a("connection-dialog").showModal()};let e=async t=>{if(w&&!v){let n=await L(`timelines/${w.id}/document`);v=new Ce(Ee(n.document))}w&&(w=null,Pe=!0,ee=null,Re=null,_e()),O++,Pt++,await window.__TAURI__.core.invoke("desktop_connect",{origin:t}),P={user:null,csrf:null,server:!1},a("timeline-list").replaceChildren(),st(),W(),t&&await Fe(),a("connection-dialog").close()};a("connection-form").onsubmit=t=>{t.preventDefault(),e(b("server-origin").value).catch(n=>E("connection-error",n.message))},a("server-disconnect").onclick=()=>{e(null).catch(t=>E("connection-error",t.message))};for(let t of["sqlite-open","sqlite-save","sqlite-save-as"])a(t).hidden=!1;a("sqlite-open").onclick=()=>{if(!Ae())return;let t=O;window.__TAURI__.core.invoke("desktop_open").then(async n=>{if(!n||t!==O)return;let i=Ee(n.document);await window.__TAURI__.core.invoke("desktop_accept_open",{path:n.path}),t===O&&(_e(),De(i),ee=n.path,Re=fe,W())}).catch($)};for(let[t,n]of[["sqlite-save",!1],["sqlite-save-as",!0]])a(t).onclick=()=>{if(!v)return;let i=fe,r=O;window.__TAURI__.core.invoke("desktop_save",{document:v.document(),saveAs:n||!ee}).then(o=>{!o||r!==O||(ee=o,Re=i,w||(Pe=i!==fe),W(),oe("SQLite timeline saved."))}).catch($)}}new ResizeObserver(J).observe(F);H||window.addEventListener("hashchange",()=>{Gt().catch($)});if(H){document.body.dataset.offline="true",a("new-button").classList.remove("workspace-new"),document.querySelector(".file-actions").prepend(a("new-button")),document.querySelector(".workspace").hidden=!0,document.querySelector(".breadcrumbs").hidden=!0;for(let e of["account-button","logout-button","publish-button","share-button","sqlite-open","sqlite-save","sqlite-save-as","server-button","och-import","och-export"])a(e).hidden=!0;document.querySelector("#empty-window").firstChild.textContent="Import JSON or add your first event."}W();st();J();(async()=>{if(U)try{let e=await window.__TAURI__.core.invoke("desktop_server");b("server-origin").value=e??"https://timescale.info",e&&(await Fe(),P.user&&await it())}catch{}if(!U&&!H){try{let e=await Xn();e&&!location.hash&&De(Ee(e))}catch{}try{await Fe(),P.user&&await it()}catch{}}await Gt()})().catch($);})();
+</script>
+</body>
 </html>
