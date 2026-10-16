@@ -1195,10 +1195,27 @@ accounts secure, provide truthful information, and report unauthorized access.
 An account is personal unless you are authorized to act for an organization.
 Accounts are for people aged 13 or older; the service does not offer accounts to
 children under 13 or parental-consent accounts. Sign-up asks for your year of birth.
-Accounts of people who may be under 18 always see warnings before sensitive content
-(below). Anyone may read public timelines without an account. This eligibility rule
+Anyone may read public timelines without an account. This eligibility rule
 does not restrict rights under the software license or use of a separate offline
 installation.
+
+## Young people
+
+Accounts of people who may be under 18 (by the year of birth they gave) get the most
+protective settings, which they cannot turn off:
+
+- warnings before sensitive content (below) always show, and its images stay blurred
+  until chosen;
+- the timelines they star are not shown on their profile;
+- browsing leaves out labelled timelines.
+
+Timelines start private for everyone. The service has no private messages, no contact
+between people outside public pull-request discussions, no location features, no
+advertising and no profiling for advertising. A parent or guardian who believes their
+child under 13 has an account, or who has a concern about a teenager's account, can
+contact the operator; the account can be closed and its data deleted. If you are
+young and something here upsets or worries you, use **Report** or tell an adult you
+trust.
 
 ## Your data and collaborators
 
@@ -1277,16 +1294,54 @@ bypass, credential theft, or deliberate disruption. Respect technical rate and
 size limits. Report suspected security defects privately using the published
 contact; do not access other users' data or disrupt the service while investigating.
 
+## How content is moderated
+
 Anyone, with or without an account, can report a timeline, moment, duration,
-comment, published plugin or account they can see. The owner is not told who
-reported. The operator may label, limit, remove, or suspend content or accounts for
-these violations, security incidents, or legal obligations. The owner is told what
-was decided and why, and can ask once for the decision to be reviewed (a suspended
-account by contacting the operator). Signed-in reporters with a confirmed email are
-told the outcome. Where practicable, the operator will provide an opportunity to
-export lawful data. Immediate action may be necessary; unlawful or harmful material need
-not remain available. This discretion does not transfer ownership of user data.
-Copyright complaints and repeat infringement are handled under COPYRIGHT.md.
+comment, published plugin or suite, or account they can see, choosing what is wrong
+(child sexual abuse or exploitation, other illegal content, sexually explicit content,
+graphic violence, promoting suicide or self-harm, harassment or private information,
+spam, copyright infringement, or something else). The owner is not told who reported.
+Reports of child abuse and other illegal content are reviewed first.
+
+People, not automated systems, review reports and decide. The operator and the site's
+administrators may:
+
+- dismiss a report;
+- add a sensitive-content label, which the owner cannot remove;
+- restrict content, so only its owner (and administrators) can see it;
+- suspend an account;
+
+for violations of these terms, security incidents, or legal obligations. Apparent child
+sexual abuse material is restricted at once, preserved as the law requires and reported
+to the authorities (in the US, to NCMEC). Immediate action may be necessary; unlawful
+or harmful material need not remain available. Where practicable, the operator will
+provide an opportunity to export lawful data. This discretion does not transfer
+ownership of user data. Copyright complaints and repeat infringement are handled under
+COPYRIGHT.md.
+
+The service uses no automated content detection. Two automatic measures shape what
+appears, not whether it is allowed: browsing ranks public timelines with an account
+standing (from account age, email confirmation, two-factor authentication, stars and
+forks received, and moderation decisions), leaving out new accounts' timelines until
+they are established; and signing up, sending email, reporting, publishing plugins,
+repeated failed sign-ins and new accounts' contributions to others' timelines may ask
+for a human-verification challenge. Search ranks by relevance to what
+you typed.
+
+## Complaints
+
+- **About content:** use **Report** on it.
+- **About a decision on your content or account:** you are told what was decided and
+  why, by notice in your account and by email, and can ask once from Account for it
+  to be reviewed by someone. A suspended account asks by contacting the operator.
+  Signed-in reporters with a confirmed email are told the outcome of their report.
+- **About anything else:** contact the operator, for example about how a report was
+  handled, about the service not meeting these terms or its legal duties, or about
+  being wrongly treated as under 18.
+
+Complaints are answered as soon as practicable and are not used against the person
+who makes them. Where you live may also give you the right to complain to a regulator
+or a court, or (in the EU) to an out-of-court dispute settlement body.
 
 ## Availability, departure, and liability
 
@@ -1294,8 +1349,9 @@ Keep independent exports. Local edits do not publish automatically: saving to th
 server changes the timeline or proposal you explicitly select. The service may
 change or be interrupted and does not promise perpetual hosting, particular
 storage capacity, recovery of every version, or a service-level guarantee.
-You can delete owned timelines through the interface. Account deletion and other
-data requests currently require operator assistance; see PRIVACY.md.
+You can delete, through the interface, the timelines you own, your comments, and
+your account (Account → Delete your account), which deletes what it owns and wrote,
+as PRIVACY.md describes. Other data requests go to the operator; see PRIVACY.md.
 
 To the extent permitted by applicable law, the service is provided as available,
 without promises of uninterrupted availability or fitness for a particular purpose.
@@ -1348,8 +1404,8 @@ in five minutes. Temporary records are cleaned by the delivery worker. Authentic
 secrets and recovery-code hashes remain until replaced, disabled, or account removal.
 
 The database stores the timelines you explicitly save: exact rational times,
-titles, notes, tags, metadata, formatting scripts, plugin definitions, and embedded
-images. It also stores visibility, collaborator permissions, saved revision documents,
+titles, notes, tags, metadata, formatting scripts, plugin definitions, and links
+to images (not copies of them). It also stores visibility, collaborator permissions, saved revision documents,
 fork relationships and ancestry, proposed
 and base snapshots, and discussion comments with account attribution. These support
 editing, search, sharing, collaboration, and export. Private timelines are excluded
@@ -1365,7 +1421,9 @@ Secrets, passwords, and MFA codes are excluded from that audit trail.
 Sign-up asks for your year of birth, to confirm you are old enough for an account and to
 keep warnings before sensitive content on for accounts of people who may be under 18;
 only the year is stored, with your choice of whether to see sensitive content without
-warnings. The service computes an account standing (from account age, confirmation,
+warnings. A sign-up refused for its age is answered neutrally, and a hash of that
+browser's sign-in token is kept for one day so that another answer from it is refused
+too; nothing else about the refused sign-up is kept. The service computes an account standing (from account age, confirmation,
 two-factor authentication, stars and forks received, and moderation decisions) to rank
 public timelines; only administrators see it. Reports record what was reported, the
 category and any details you give, and your account if you were signed in; the owner of
@@ -1378,7 +1436,11 @@ authentication rate-limit keys are hashed. Hosting providers and reverse proxies
 may generate request and security logs. The deployment must document their actual
 fields, recipients, and retention before this notice becomes effective. Support,
 privacy, and abuse reports may contain the information you provide and are used
-to respond and investigate. The application includes no advertising or analytics
+to respond and investigate. If the operator turns on Cloudflare Turnstile for
+human-verification challenges (instead of the built-in proof of work), your browser
+loads Cloudflare's challenge when one is asked for, and Cloudflare receives network
+and device information to tell people from automated traffic, under its own privacy
+policy. The application includes no advertising or analytics
 integration; a deployment adding either must update this notice and meet applicable
 consent requirements before doing so.
 
@@ -1437,11 +1499,19 @@ to that timeline. Independently owned forks and submitted snapshots on other
 timelines remain; ancestry needed by those forks and reviews is retained. A public
 review exposes its submitted snapshot, not the source fork's other private history.
 Revoking upstream access stops future reads and synchronization but does not erase
-copies already made. Account deletion is not currently self-service;
-request it using the privacy contact when published. Requests concerning comments
-on other owners' timelines require operator review, balancing applicable rights
-and discussion integrity. Do not assume closing a recommendation deletes its
-snapshots or comments. Expired login flows and sessions are cleaned by authentication
+copies already made. Do not assume closing a recommendation deletes its snapshots or
+comments.
+
+You can delete your own comments at any time, from the pull request they are on. You can
+delete your account from Account → Delete your account, confirming with your username,
+your password and, if two-factor authentication is on, a code. Deleting it deletes at once
+the timelines you own (as deleting each would), the pull requests and comments you wrote
+on other timelines, your published plugins and suites, stars, memberships, API keys,
+sign-in methods, sessions and security records. Kept: changes already merged into other
+people's timelines, which are part of their history (it names an account that no longer
+exists), others' forks of your timelines, and moderation records, which no longer name
+you. The last administrator of an installation cannot delete their account. Other
+requests, such as about content of yours elsewhere, go to the privacy contact. Expired login flows and sessions are cleaned by authentication
 operations, rather than guaranteed immediate physical erasure at expiry.
 
 Backup deletion and log retention depend on the deployment and must be specified
@@ -1463,20 +1533,35 @@ Accounts are for people aged 13 or older; the service does not knowingly offer
 accounts to children under 13. A sign-up giving a year of birth under 13 is refused,
 and an account created through a social sign-in that does so is closed before it can be
 used. Report suspected accounts of children under 13 to the operator so they can be
-investigated and addressed under applicable law. Accounts of people who may be under 18
-always see warnings before sensitive content. This is not a claim that an age question
-alone satisfies children's privacy or online-safety laws.
+investigated and addressed under applicable law.
+
+Accounts of people who may be under 18 get high-privacy settings by default that they
+cannot change: warnings before sensitive content always show, the timelines they star
+are not shown on their profile, and browsing leaves out labelled timelines. For everyone,
+timelines start private, profiles show only a username and an optional avatar, and the
+service collects no location, has no private messaging, and does no profiling for
+advertising. The year of birth is used only for these settings and the age requirement.
+This is not a claim that an age question alone satisfies children's privacy or
+online-safety laws.
 
 Material privacy changes must describe the new practices before they take effect;
 existing data must not be repurposed incompatibly without the necessary legal basis.
 </pre></details>
 <details><summary>Copyright, abuse, and security reports (draft)</summary><pre># Copyright, abuse, and security reporting
 
-Draft version: 2026-10-06. Operator: Athan Clark, an individual.
+Draft version: 2026-10-15. Operator: Athan Clark, an individual.
 Public reporting email and, if used, designated-agent details are pending.
 This draft does not assert that a DMCA agent has been registered or that a safe
-harbor automatically applies. Reports cannot yet be submitted through an in-app
-form; the published operator contact will be the reporting channel.
+harbor automatically applies.
+
+Anyone can report a timeline, moment, duration, comment, published plugin or suite, or
+account with **Report**, choosing &quot;Copyright infringement&quot; and describing the work and
+why its use is unauthorized; no account is needed. A formal notice, such as a US DMCA
+notice, goes to the operator contact once it is published, as described below.
+
+Images on timelines are links to where their owners host them, not copies stored by
+the service (docs/images.md). A complaint about a linked image can ask for the link to
+be removed from the timeline; removing the image itself is a matter for its host.
 
 For a copyright complaint, identify the copyrighted work, the specific timeline,
 plugin, comment, image, or URL at issue, your contact information, and why the use
@@ -1489,9 +1574,13 @@ is permitted, including by license or fair use, assess that before sending a cla
 The operator should review complete reports promptly, restrict identified material
 when appropriate, and notify the affected user unless prohibited or unsafe.
 Report details may be shared with that user to allow a response; sensitive contact
-information should be limited to what the process requires. Repeat infringers'
-hosted accounts may be terminated in appropriate circumstances. Preserve a limited
-record of decisions and respect lawful preservation requirements.
+information should be limited to what the process requires. In-app reports are
+handled in the review queue (docs/moderation.md): restricted material becomes visible
+only to its owner, who is told why and can ask for a review. Repeat infringers' hosted
+accounts are suspended in appropriate circumstances: before deciding, the operator
+reviews the account's earlier restrictions for copyright, which the moderation records
+keep (`oc_moderation_cases`, `oc_reports`).
+Preserve a limited record of decisions and respect lawful preservation requirements.
 
 If US DMCA procedures apply, an affected user may provide a counter-notice with a
 signature, identification of the removed material and its former location, a
@@ -1538,10 +1627,11 @@ Before making the hosted policies effective:
   log fields and concrete retention/removal schedules. Document processors,
   international transfers, and representatives where required. Ensure contracts and
   actual configuration match the public privacy notice.
-- Establish identity verification, export, account deletion, correction, complaint,
-  appeal, breach-response, and legal-hold procedures. Timeline deletion is implemented;
-  account deletion and removal of library definitions/discussion require operator
-  work. Do not promise self-service functions that do not exist.
+- Establish identity verification, export, correction, complaint, appeal,
+  breach-response, and legal-hold procedures. Deleting timelines, one's own comments and
+  one's own account is self-service (PRIVACY.md); a copy of all of an account's data at
+  once is not (each timeline exports separately), so access and portability requests
+  need operator work. Do not promise self-service functions that do not exist.
 - Decide whether to use a US DMCA designated agent. If so, register and publish
   matching required contact details, track renewal deadlines, and establish the
   notice/counter-notice and repeat-infringer process before relying on safe harbor.
@@ -1551,6 +1641,26 @@ Before making the hosted policies effective:
   is not age verification or parental consent, and accounts that may be under 18 always
   see sensitive-content warnings. Review this against the regions served (for example
   higher digital-consent ages under the GDPR in some EU countries).
+- US COPPA (the amended rule, in force since 22 April 2026): the service is for a
+  general audience and refuses accounts under 13 through a neutral age screen (no hint
+  of the age needed; a refused browser is refused again for a day). If the operator
+  learns an account belongs to a child under 13, close it and delete its data. Keep a
+  written information security program and a data retention policy anyway; the rule
+  requires both of services it covers, and they are good practice for any.
+- UK Age Appropriate Design Code (Children's Code): write a data protection impact
+  assessment covering under-18 users, and keep the high-privacy defaults for accounts
+  that may be under 18 (TERMS.md, Young people). Review it with RISK-ASSESSMENT.md.
+- US state laws on minors and social media: about twenty states have them, many
+  enjoined or in litigation, and their definitions of a social media platform vary.
+  Check, for the states served, whether the service meets their definitions (most
+  exclude services whose main purpose is not social interaction, or that are
+  educational): for example Texas's SCOPE Act (HB 18), New York's SAFE for Kids Act
+  (its rules on feeds for minors take effect 25 January 2027), and Utah, Louisiana,
+  Texas and Alabama's app store accountability laws if the desktop app is distributed
+  through an app store.
+- Australia's social media minimum age (under 16, since 10 December 2025): the service
+  is likely outside it (its purpose is not social interaction, and educational services
+  are excluded), but record the reasoning before offering accounts there.
 - Content policy (TERMS.md): no pornography or gratuitous gore; educational depictions
   allowed when labelled. Keep it that way to stay outside age-verification laws for
   pornography (US state laws, the UK Online Safety Act's pornography duties) and
@@ -1562,7 +1672,9 @@ Before making the hosted policies effective:
   reports of child abuse and other illegal content are listed first.
 - UK Online Safety Act: complete and keep current the illegal-content risk assessment and
   the children's access and risk assessments (template: RISK-ASSESSMENT.md), and keep
-  reporting and complaints working (Report, the review queue, review requests).
+  reporting and complaints working (Report, the review queue, review requests). The terms
+  describe how users and children are protected, how moderation decides, and the
+  complaints procedure (TERMS.md: Young people; How content is moderated; Complaints).
 - EU Digital Services Act: publish a single point of contact for authorities and users,
   keep notice-and-action (Report) and statements of reasons (the owner's notice and
   email) working, and publish the moderation policy (TERMS.md acceptable use).
@@ -2275,7 +2387,7 @@ Public License instead of this License.  But first, please read
 - **node-postgres**, MIT. **esbuild**, MIT. **TypeScript**, Apache-2.0. **Playwright**, Apache-2.0. JavaScript dependency versions are in `package-lock.json`.
 
 The Debian package includes this file, the application's GPLv3 license, the SQLite extension's license/notices, and the browser dependency license notices. System GMP, SQLite, GTK, and WebKit packages retain their own licenses.
-</pre></details></details> · <span class="build-identity">Build: 8ef94759be77c59fafefeede239ca66c2e0df4b5</span></footer>
+</pre></details></details> · <span class="build-identity">Build: 35fa49914267d32ccc238d7671eb81dfbd429710</span></footer>
   <details class="offline-notices"><summary>Licenses</summary><pre>LICENSE
 
                     GNU GENERAL PUBLIC LICENSE
